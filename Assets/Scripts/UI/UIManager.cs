@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class UIManager : MonoBehaviour {
+    UI activingUI = null;
+    
+    public void CloseUI() {
+        activingUI.OnInactive();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void OpenUI(UI targetUI) {
+        activingUI.OnInactive();
+        activingUI = targetUI;
+        activingUI.OnActive();
     }
 }

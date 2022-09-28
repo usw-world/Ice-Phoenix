@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
 
-public class dummy_player : MonoBehaviour {
+public class Player : MonoBehaviour {
     State moveState = new State("Move");
     State jumpState = new State("Jump");
     StateMachine playerStateMachine;
