@@ -27,6 +27,21 @@ public class InputManager : MonoBehaviour {
     }
     
     void Update() {
-        
+        float keyDirection = Input.GetAxisRaw("Horizontal");
+        if(Input.GetKeyDown(KeyCode.Escape)) { // Esc key case
+
+        }
+        if(keyDirection == 0) { // any arrow key being not pressed
+            player.SetDirection(0);
+        } else { // right arrow(<-) or left arrow(->)
+            player.SetDirection(keyDirection);
+        }
+        if(Input.GetButtonDown("Jump")
+        || Input.GetKeyDown(KeyCode.UpArrow)) {
+            player.Jump();
+        }
+        if(Input.GetKeyUp(KeyCode.UpArrow)) {
+
+        }
     }
 }
