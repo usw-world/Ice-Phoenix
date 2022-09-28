@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameObjectState;
+using System;
 
-public class Monster : MonoBehaviour
-{
+public class Monster : MonoBehaviour {    
     public GameObject monster;
     public string enemyName;
     public float moveSpeed;    
-    public float fieldOfVision;     
+    public float fieldOfVision;
     private void SetEnemyStatus(string _enemyName,float _moveSpeed,float _fieldOfVision)
     {
         enemyName = _enemyName;        
