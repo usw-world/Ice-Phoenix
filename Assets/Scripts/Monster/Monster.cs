@@ -9,27 +9,24 @@ public class Monster : MonoBehaviour {
     public string enemyName;
     public float moveSpeed;    
     public float fieldOfVision;
-    private void SetEnemyStatus(string _enemyName,float _moveSpeed,float _fieldOfVision)
+    public int maxHp;
+    public int nowHp;
+    private void SetEnemyStatus(string _enemyName,float _moveSpeed,float _fieldOfVision,int _maxHp,int _nowHp)
     {
         enemyName = _enemyName;        
         moveSpeed = _moveSpeed;
         fieldOfVision = _fieldOfVision;
+        maxHp = _maxHp;
+        nowHp = _nowHp;
     }
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.CompareTag("Player"))
-        {
-            print("충돌");
-            Destroy(monster,2f);
-            Die();
-        }
-    }
+    
 
     void Die()
     {        
         GetComponent<MonsterAi>().enabled = false;
         GetComponent<Collider2D>().enabled = false;
         Destroy(GetComponent<Rigidbody2D>());
+        Destroy(monster,2f);
     }
 
     void Start()
