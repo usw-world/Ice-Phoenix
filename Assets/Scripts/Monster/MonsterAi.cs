@@ -45,7 +45,7 @@ public class MonsterAi : MonoBehaviour
     void InitialState()
     {
         moveToplayerState.OnStay += () => {
-            MoveToTarget();
+            MoveToTarget();            
         };
         patrolState.OnStay += () => {
             patrol();
@@ -87,12 +87,12 @@ public class MonsterAi : MonoBehaviour
     {
         Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
         Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
-        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector3.down,LayerMask.GetMask("Ground"),2);
-        if(raycast.collider == null)
-        {
+        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);        
+        if (raycast.collider == null) {
             Turn();
             Debug.Log("There is no Ground in front of Monster");                        
         }
+
         transform.Translate(new Vector2(nextMove, 0) * monster.moveSpeed * Time.deltaTime);
         if(nextMove < 0) {
             transform.localScale = new Vector3(-1, 1, 1);
