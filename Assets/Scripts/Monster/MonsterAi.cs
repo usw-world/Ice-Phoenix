@@ -11,6 +11,7 @@ public class MonsterAi : MonoBehaviour
 
     Rigidbody2D rigid;
     public Transform target;
+    public int nowMove;
     public int nextMove;
     Monster monster;
     private void Awake()
@@ -55,11 +56,21 @@ public class MonsterAi : MonoBehaviour
         };
     }
     void MoveToTarget()
-    {
+    {                
         float dir = target.position.x - transform.position.x;
         dir = (dir < 0) ? -1 : 1;
         FaceTarget();
         transform.Translate(new Vector2(dir, 0) * monster.moveSpeed * Time.deltaTime);
+        
+        Vector2 frontVec = new Vector2(transform.position.x + dir, transform.position.y);
+        Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
+        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);
+
+        if (raycast.collider == null) {
+            Turn();
+            Debug.Log("There is no Ground in front of Monster");
+            return;
+        }
     }
 
     void FaceTarget()
@@ -85,12 +96,16 @@ public class MonsterAi : MonoBehaviour
     }
     void patrol()
     {
+        float distance = Vector3.Distance(transform.position, target.position);
+        if(distance <= 5f) {
+            monsterStateMachine.ChangeState(moveToplayerState);
+        }
         Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
         Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
-        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);        
+        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);
         if (raycast.collider == null) {
-            Turn();
             Debug.Log("There is no Ground in front of Monster");                        
+            Turn();
         }
 
         transform.Translate(new Vector2(nextMove, 0) * monster.moveSpeed * Time.deltaTime);
@@ -103,6 +118,10 @@ public class MonsterAi : MonoBehaviour
         nextMove = nextMove*(-1);
         CancelInvoke();
         Invoke("Think",5);
+    }
+    void Idle()
+    {
+        
     }
     void Think()
     {
