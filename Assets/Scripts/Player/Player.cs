@@ -10,8 +10,8 @@ public class Player : LivingEntity, IDamageable {
     StateMachine playerStateMachine;
 
     [Header("Move Status")]
-    float moveSpeed = 10f;
-    float jumpPower = 22f;
+    float moveSpeed = 9f;
+    float jumpPower = 25f;
     Vector2 moveDirection;
     bool canMove = true;
     bool isGrounding = false;
@@ -82,7 +82,7 @@ public class Player : LivingEntity, IDamageable {
 
         if(moveDirection == Vector2.zero) {
             playerStateMachine.ChangeState(idleState, false);
-            Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .1f);
+            Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .2f);
             playerRigidbody.velocity = destSpeed;
         } else {
             if(!canMove) return;
@@ -105,9 +105,6 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     public void OnDamage() {
-        print("usoocK");
-    }
-    public void Foo() {
-        print("Foo");
+        print("player is hit damage.");
     }
 }
