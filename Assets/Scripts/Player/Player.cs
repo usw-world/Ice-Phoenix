@@ -7,6 +7,7 @@ public class Player : LivingEntity, IDamageable {
     State idleState = new State("Idle");
     State moveState = new State("Move");
     State floatState = new State("Float");
+    State dodgeState = new State("Dodge");
     StateMachine playerStateMachine;
 
     [Header("Move Status")]
@@ -33,7 +34,7 @@ public class Player : LivingEntity, IDamageable {
         }
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<CapsuleCollider2D>();
-        frontCheckCollider = frontCheckCollider ?? GetComponent<BoxCollider2D>();
+        frontCheckCollider = frontCheckCollider==null ? GetComponent<BoxCollider2D>() : frontCheckCollider;
     }
     void Start() {
         InitialState();
@@ -57,14 +58,21 @@ public class Player : LivingEntity, IDamageable {
         moveDirection = Vector2.right * dirX;
     }
     private bool CheckFront() {
-        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, frontCheckCollider.bounds.size, 0, transform.forward, .02f, GROUNDABLE_LAYER);
+        RaycastHit2D hit = Physics2D.BoxCast(frontCheckCollider.bounds.center, frontCheckCollider.bounds.size, 0, transform.forward, .02f, GROUNDABLE_LAYER);
         return !hit;
     }
     public void Jump() {
         if(currentJumpCount < maxJumpCount) {
+            currentJumpCount ++;
             playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             playerStateMachine.ChangeState(floatState);
-            currentJumpCount ++;
+        }
+    }
+    public void StopJump() {
+        if(playerRigidbody.velocity.y > 0) {
+            Vector2 nextV = playerRigidbody.velocity;
+            nextV.y /= 2;
+            playerRigidbody.velocity = nextV;
         }
     }
     public void DownJump() {
@@ -73,18 +81,19 @@ public class Player : LivingEntity, IDamageable {
     public void Dodge() {
 
     }
+    public virtual void BasicAttack(){}
     void Update() {
-        CheckMove();
+        BasicMove();
         CheckBottom();
     }
-    protected void CheckMove() {
-        if(!isGrounding) return;
+    protected void BasicMove() {
+        if(!isGrounding && !CheckFront()) return;
 
-        if(moveDirection == Vector2.zero) {
+        if(moveDirection == Vector2.zero) { // Stop Moving
             playerStateMachine.ChangeState(idleState, false);
             Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .2f);
             playerRigidbody.velocity = destSpeed;
-        } else {
+        } else { // Stay Running
             if(!canMove) return;
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
             Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .15f);
@@ -93,7 +102,7 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     protected void CheckBottom() {
-        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
+        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size * .99f, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
         if(hit) {
             if(playerRigidbody.velocity.y <= 0) {
                 currentJumpCount = 0;
