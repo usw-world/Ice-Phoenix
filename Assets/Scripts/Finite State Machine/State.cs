@@ -15,6 +15,10 @@ namespace GameObjectState {
         public voidEvent OnStay;
         public voidEvent OnStayFixed;
         public voidEvent OnInactive;
+
+        public override string ToString() {
+            return stateName;
+        }
         /* 
             Usage Example >>
 

@@ -36,12 +36,17 @@ public class InputManager : MonoBehaviour {
         } else { // right arrow(<-) or left arrow(->)
             player.SetDirection(keyDirection);
         }
-        if(Input.GetButtonDown("Jump")
-        || Input.GetKeyDown(KeyCode.UpArrow)) {
+        if(Input.GetButtonDown("Jump")) {
             player.Jump();
         }
-        if(Input.GetKeyUp(KeyCode.UpArrow)) {
-
+        if(Input.GetButtonUp("Jump")) {
+            player.StopJump();
+        }
+        if(Input.GetButtonDown("Basic Attack")) {
+            player.BasicAttack();
+        }
+        if(Input.GetButtonDown("Dodge")) {
+            player.Dodge();
         }
     }
 }

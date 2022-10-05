@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
 
-public class Player : MonoBehaviour {
+public class Player : LivingEntity, IDamageable {
     State idleState = new State("Idle");
     State moveState = new State("Move");
-    State jumpState = new State("Jump");
+    State floatState = new State("Float");
+    State dodgeState = new State("Dodge");
     StateMachine playerStateMachine;
 
     [Header("Move Status")]
-    float moveSpeed = 10f;
-    float jumpPower = 22f;
+    float moveSpeed = 9f;
+    float jumpPower = 25f;
     Vector2 moveDirection;
     bool canMove = true;
+    bool isGrounding = false;
     int maxJumpCount = 1;
     int currentJumpCount = 0;
     const int GROUNDABLE_LAYER = 64;
+    [SerializeField] BoxCollider2D frontCheckCollider;
+    [SerializeField] GameObject groundedPlatform;
 
     [Header("Physic Attribute")]
     Rigidbody2D playerRigidbody;
-    Collider2D playerCollider;
+    CapsuleCollider2D playerCollider;
 
     void Awake() {
         if(TryGetComponent<StateMachine>(out playerStateMachine)) {
@@ -29,40 +33,46 @@ public class Player : MonoBehaviour {
             Debug.LogError("Player hasn't any 'StateMachine'.");
         }
         playerRigidbody = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<Collider2D>();
-        if(playerCollider is not BoxCollider2D)
-            print("I think it's good what player collider is BoxCollider2D. But not now.");
+        playerCollider = GetComponent<CapsuleCollider2D>();
+        frontCheckCollider = frontCheckCollider==null ? GetComponent<BoxCollider2D>() : frontCheckCollider;
     }
     void Start() {
         InitialState();
     }
     void InitialState() {
-        jumpState.OnActive += () => {
-            playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        floatState.OnActive += () => {
+            canMove = false;
+            isGrounding = false;
         };
-        moveState.OnStay += () => {
-            playerRigidbody.velocity = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
+        floatState.OnInactive += () => {
+            canMove = true;
+            isGrounding = true;
         };
-        idleState.OnActive += () => {
-            playerRigidbody.velocity = new Vector2(0, playerRigidbody.velocity.y);
+        floatState.OnStay += () => {
+            Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
+            Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .05f);
+            playerRigidbody.velocity = addingSpeed;
         };
     }
     public void SetDirection(float dirX) {
-        if(dirX == 0) {
-            playerStateMachine.ChangeState(idleState);
-        } else {
-            if(!canMove) return;
-            moveDirection = Vector2.right * dirX;
-            playerStateMachine.ChangeState(moveState);
-        }
+        moveDirection = Vector2.right * dirX;
     }
-    private void CheckFront() {
-        
+    private bool CheckFront() {
+        RaycastHit2D hit = Physics2D.BoxCast(frontCheckCollider.bounds.center, frontCheckCollider.bounds.size, 0, transform.forward, .02f, GROUNDABLE_LAYER);
+        return !hit;
     }
     public void Jump() {
         if(currentJumpCount < maxJumpCount) {
-            playerStateMachine.ChangeState(jumpState);
             currentJumpCount ++;
+            playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            playerStateMachine.ChangeState(floatState);
+        }
+    }
+    public void StopJump() {
+        if(playerRigidbody.velocity.y > 0) {
+            Vector2 nextV = playerRigidbody.velocity;
+            nextV.y /= 2;
+            playerRigidbody.velocity = nextV;
         }
     }
     public void DownJump() {
@@ -71,18 +81,39 @@ public class Player : MonoBehaviour {
     public void Dodge() {
 
     }
+    public virtual void BasicAttack(){}
     void Update() {
+        BasicMove();
         CheckBottom();
     }
-    private void OnCollisionEnter2D(Collision2D collisionInfo) {
-        if(1<<collisionInfo.collider.gameObject.layer == GROUNDABLE_LAYER) {
-            RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, playerCollider.bounds.size.y/2 + .02f, GROUNDABLE_LAYER);
-            if(hit) {
-                currentJumpCount = 0;
-                playerStateMachine.ChangeState(idleState);
-            }
+    protected void BasicMove() {
+        if(!isGrounding && !CheckFront()) return;
+
+        if(moveDirection == Vector2.zero) { // Stop Moving
+            playerStateMachine.ChangeState(idleState, false);
+            Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .2f);
+            playerRigidbody.velocity = destSpeed;
+        } else { // Stay Running
+            if(!canMove) return;
+            Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
+            Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .15f);
+            playerRigidbody.velocity = addingSpeed;
+            playerStateMachine.ChangeState(moveState, false);
         }
     }
     protected void CheckBottom() {
+        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size * .99f, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
+        if(hit) {
+            if(playerRigidbody.velocity.y <= 0) {
+                currentJumpCount = 0;
+                playerStateMachine.ChangeState(idleState, false);
+                groundedPlatform = hit.transform.gameObject;
+            }
+        } else {
+            playerStateMachine.ChangeState(floatState);
+        }
+    }
+    public void OnDamage() {
+        print("player is hit damage.");
     }
 }
