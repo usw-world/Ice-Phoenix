@@ -14,6 +14,7 @@ public class MonsterAi : MonoBehaviour
     public int nowMove;
     public int nextMove;
     Monster monster;
+    Vector3 monsterPos;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -100,18 +101,32 @@ public class MonsterAi : MonoBehaviour
         if(distance <= 5f) {
             monsterStateMachine.ChangeState(moveToplayerState);
         }
+
         Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
         Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
-        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);
+        RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);        
+        
         if (raycast.collider == null) {
             Debug.Log("There is no Ground in front of Monster");                        
             Turn();
         }
 
         transform.Translate(new Vector2(nextMove, 0) * monster.moveSpeed * Time.deltaTime);
-        if(nextMove < 0) {
+        if(nextMove < 0) {            
             transform.localScale = new Vector3(-1, 1, 1);
-        } else transform.localScale = new Vector3(1, 1, 1);
+            Debug.DrawRay(transform.position, new Vector3(-1,0,0), new Color(0,1,0));
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, new Vector3(-1,0,0),1,64);
+            if(hit.collider != null) {
+                Turn();
+            }
+        } else {
+            transform.localScale = new Vector3(1, 1, 1);
+            Debug.DrawRay(transform.position, new Vector3(1,0,0), new Color(0,1,0));
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, new Vector3(1,0,0),1,64);
+            if(hit.collider != null) {
+                Turn();
+            }
+        }
     }
     void Turn()
     {
