@@ -31,6 +31,9 @@ public class InputManager : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Escape)) { // Esc key case
 
         }
+        if(Input.GetButtonDown("Horizontal")) {
+            player.SetDoubleTab(keyDirection);
+        }
         if(keyDirection == 0) { // any arrow key being not pressed
             player.SetDirection(0);
         } else { // right arrow(<-) or left arrow(->)
@@ -45,8 +48,7 @@ public class InputManager : MonoBehaviour {
         if(Input.GetButtonDown("Basic Attack")) {
             player.BasicAttack();
         }
-        if(Input.GetButtonDown("Dodge")) {
-            player.Dodge();
-        }
+        // if(Input.GetButtonDown("Dodge"))
+        //     player.Dodge();
     }
 }

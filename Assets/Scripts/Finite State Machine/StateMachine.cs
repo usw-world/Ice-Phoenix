@@ -29,6 +29,9 @@ namespace GameObjectState {
                 currentState = nextState;
             }
         }
+        public bool Compare(State target) {
+            return currentState == target;
+        }
         private void Update() {
             if(currentState != null && currentState.OnStay != null) {
                 currentState.OnStay();

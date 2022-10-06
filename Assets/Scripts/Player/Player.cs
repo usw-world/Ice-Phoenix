@@ -4,10 +4,14 @@ using UnityEngine;
 using GameObjectState;
 
 public class Player : LivingEntity, IDamageable {
-    State idleState = new State("Idle");
-    State moveState = new State("Move");
-    State floatState = new State("Float");
-    State dodgeState = new State("Dodge");
+    protected State idleState = new State("Idle");
+    protected State moveState = new State("Move");
+    protected State floatState = new State("Float");
+    protected State dodgeState = new State("Dodge");
+    protected State basicState { get {
+        if(moveDirection == Vector2.zero) return idleState;
+        else return moveState;
+    } }
     StateMachine playerStateMachine;
 
     [Header("Move Status")]
@@ -21,6 +25,20 @@ public class Player : LivingEntity, IDamageable {
     const int GROUNDABLE_LAYER = 64;
     [SerializeField] BoxCollider2D frontCheckCollider;
     [SerializeField] GameObject groundedPlatform;
+
+    [Header("Dodge Status")]
+    float dodgeSpeed = 30f;
+    float dodgeDuration = .4f;
+    float doubletabDir = 0;
+
+    int dodgeCount = 0;
+    int maxDodgeCount = 2;
+    float cooldownForDodge = 0;
+    float dodgeResetTime = 1f;
+
+    #region Coroutines
+    Coroutine dodgeCoroutine;
+    #endregion
 
     [Header("Physic Attribute")]
     Rigidbody2D playerRigidbody;
@@ -51,11 +69,32 @@ public class Player : LivingEntity, IDamageable {
         floatState.OnStay += () => {
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
             Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .05f);
+            LookAtX(moveDirection.x);
             playerRigidbody.velocity = addingSpeed;
+        };
+        moveState.OnStay += () => {
+            LookAtX(moveDirection.x);
+        };
+        dodgeState.OnInactive += () => {
+            if(dodgeCoroutine != null)
+                StopCoroutine(dodgeCoroutine);
         };
     }
     public void SetDirection(float dirX) {
         moveDirection = Vector2.right * dirX;
+    }
+    public void SetDoubleTab(float dirX) {
+        if(doubletabDir < 0 && dirX < 0
+        || doubletabDir > 0 && dirX > 0)
+            Dodge();
+        else
+            doubletabDir = dirX * .2f;
+    }
+    public void ResetDoubleTab() {
+        if(doubletabDir > 0)
+            doubletabDir = Mathf.Max(0, doubletabDir - Time.deltaTime);
+        else
+            doubletabDir = Mathf.Min(0, doubletabDir + Time.deltaTime);
     }
     private bool CheckFront() {
         RaycastHit2D hit = Physics2D.BoxCast(frontCheckCollider.bounds.center, frontCheckCollider.bounds.size, 0, transform.forward, .02f, GROUNDABLE_LAYER);
@@ -79,15 +118,49 @@ public class Player : LivingEntity, IDamageable {
         
     }
     public void Dodge() {
+        if(dodgeCount <= 0) return;
+        if(dodgeCoroutine != null) StopCoroutine(dodgeCoroutine);
+        dodgeCoroutine = StartCoroutine(DodgeCoroutine());
+    }
+    public IEnumerator DodgeCoroutine() {
+        playerStateMachine.ChangeState(dodgeState);
+        doubletabDir = 0;
+        float dirX = moveDirection.x==0 ? transform.localScale.x : moveDirection.x;
+        float offset = 0;
+        float v;
 
+        cooldownForDodge = dodgeResetTime;
+        dodgeCount --;
+        playerRigidbody.velocity = Vector2.zero;
+        while(offset < 1) {
+            v = Mathf.Lerp(dodgeSpeed * dirX, 0, offset);
+            playerRigidbody.velocity = new Vector2(v, playerRigidbody.velocity.y);
+            offset += Time.deltaTime/dodgeDuration;
+            yield return 0;
+        }
+        offset = 1f;
+        v = Mathf.Lerp(dodgeSpeed * dirX, 0, offset);
+        playerRigidbody.velocity = new Vector2(v, playerRigidbody.velocity.y);
+
+        playerStateMachine.ChangeState(basicState);
     }
     public virtual void BasicAttack(){}
     void Update() {
         BasicMove();
         CheckBottom();
+        ResetDoubleTab();
+        ResetDodgeTime();
+    }
+    protected void ResetDodgeTime() {
+        if(dodgeResetTime > 0)
+            dodgeResetTime -= Time.deltaTime;
+        else if(dodgeCount != maxDodgeCount)
+            dodgeCount = maxDodgeCount;
     }
     protected void BasicMove() {
-        if(!isGrounding && !CheckFront()) return;
+        if(!isGrounding 
+        || !CheckFront()
+        || playerStateMachine.Compare(dodgeState)) return;
 
         if(moveDirection == Vector2.zero) { // Stop Moving
             playerStateMachine.ChangeState(idleState, false);
@@ -101,12 +174,19 @@ public class Player : LivingEntity, IDamageable {
             playerStateMachine.ChangeState(moveState, false);
         }
     }
+    protected void LookAtX(float x) {
+        if(x > 0) transform.localScale = new Vector3(1, 1, 1);
+        else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
+    }
     protected void CheckBottom() {
+        if(playerStateMachine.Compare(dodgeState))
+            return;
+
         RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size * .99f, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
         if(hit) {
             if(playerRigidbody.velocity.y <= 0) {
                 currentJumpCount = 0;
-                playerStateMachine.ChangeState(idleState, false);
+                playerStateMachine.ChangeState(basicState, false);
                 groundedPlatform = hit.transform.gameObject;
             }
         } else {
