@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
+
 public class MonsterAi : MonoBehaviour
 {
     State patrolState = new State("Patrol");
     State moveToplayerState = new State("MoveToPlayer");
     State dieState = new State("Die");
     StateMachine monsterStateMachine;
+
+
 
     Rigidbody2D rigid;
     public Transform target;
@@ -153,12 +156,5 @@ public class MonsterAi : MonoBehaviour
         Destroy(monster.monster,2f);
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.CompareTag("Player"))
-        {
-            monster.nowHp -= 20;
-            print("충돌");
-        }
-    }
+    
 }

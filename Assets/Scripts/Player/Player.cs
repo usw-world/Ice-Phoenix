@@ -193,7 +193,9 @@ public class Player : LivingEntity, IDamageable {
             playerStateMachine.ChangeState(floatState);
         }
     }
-    public void OnDamage() {
-        print("player is hit damage.");
+    
+    public int Hp = 3;
+    public void OnDamage(int damage) {
+        Hp = Hp - damage;
     }
 }

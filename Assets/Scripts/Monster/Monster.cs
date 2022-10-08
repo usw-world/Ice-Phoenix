@@ -5,6 +5,7 @@ using GameObjectState;
 using System;
 
 public class Monster : MonoBehaviour {    
+    public GameObject Player;
     public GameObject monster;
     public string enemyName;
     public float moveSpeed;    
@@ -38,5 +39,15 @@ public class Monster : MonoBehaviour {
     {
 
     }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("Player"))
+        {
+            col.gameObject.GetComponent<Player>().OnDamage(1);
+            Debug.Log("체력감소");
+        }
+    }
+
     
 }
