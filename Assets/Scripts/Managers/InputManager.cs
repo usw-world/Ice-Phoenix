@@ -45,6 +45,9 @@ public class InputManager : MonoBehaviour {
         if(Input.GetButtonUp("Jump")) {
             player.StopJump();
         }
+        if(Input.GetButtonDown("Down Jump")) {
+            player.DownJump();
+        }
         if(Input.GetButtonDown("Basic Attack")) {
             player.BasicAttack();
         }

@@ -4,6 +4,9 @@ using UnityEngine;
 using GameObjectState;
 
 public class Player : LivingEntity, IDamageable {
+    static public Player playerInstance;
+    public const int DEFAULT_PLAYER_LAYERMASK = 8;
+
     protected State idleState = new State("Idle");
     protected State moveState = new State("Move");
     protected State floatState = new State("Float");
@@ -42,17 +45,21 @@ public class Player : LivingEntity, IDamageable {
 
     [Header("Physic Attribute")]
     Rigidbody2D playerRigidbody;
-    CapsuleCollider2D playerCollider;
+    BoxCollider2D playerCollider;
 
     void Awake() {
+        if(playerInstance != null)
+            Destroy(playerInstance.gameObject);
+        playerInstance = this.GetComponent<Player>();
+
         if(TryGetComponent<StateMachine>(out playerStateMachine)) {
             playerStateMachine.SetIntialState(new State("Nothing"));
         } else {
             Debug.LogError("Player hasn't any 'StateMachine'.");
         }
         playerRigidbody = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<CapsuleCollider2D>();
-        frontCheckCollider = frontCheckCollider==null ? GetComponent<BoxCollider2D>() : frontCheckCollider;
+        playerCollider = GetComponents<BoxCollider2D>()[0];
+        frontCheckCollider = frontCheckCollider==null ? GetComponents<BoxCollider2D>()[1] : frontCheckCollider;
     }
     void Start() {
         InitialState();
@@ -88,7 +95,7 @@ public class Player : LivingEntity, IDamageable {
         || doubletabDir > 0 && dirX > 0)
             Dodge();
         else
-            doubletabDir = dirX * .2f;
+            doubletabDir = dirX * .22f;
     }
     public void ResetDoubleTab() {
         if(doubletabDir > 0)
@@ -101,6 +108,7 @@ public class Player : LivingEntity, IDamageable {
         return !hit;
     }
     public void Jump() {
+        doubletabDir = 0; // Reset dash intent
         if(currentJumpCount < maxJumpCount) {
             currentJumpCount ++;
             playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
@@ -115,7 +123,13 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     public void DownJump() {
-        
+        doubletabDir = 0; // Reset dash intent
+        RaycastHit2D[] inners = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
+        foreach(RaycastHit2D inner in inners) {
+            Platform targetPlatform = inner.transform.GetComponent<Platform>();
+            if(targetPlatform)
+                targetPlatform.DisablePlatform();
+        }
     }
     public void Dodge() {
         if(dodgeCount <= 0) return;
@@ -152,8 +166,8 @@ public class Player : LivingEntity, IDamageable {
         ResetDodgeTime();
     }
     protected void ResetDodgeTime() {
-        if(dodgeResetTime > 0)
-            dodgeResetTime -= Time.deltaTime;
+        if(cooldownForDodge > 0)
+            cooldownForDodge -= Time.deltaTime;
         else if(dodgeCount != maxDodgeCount)
             dodgeCount = maxDodgeCount;
     }
@@ -182,7 +196,7 @@ public class Player : LivingEntity, IDamageable {
         if(playerStateMachine.Compare(dodgeState))
             return;
 
-        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size * .99f, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
+        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
         if(hit) {
             if(playerRigidbody.velocity.y <= 0) {
                 currentJumpCount = 0;
