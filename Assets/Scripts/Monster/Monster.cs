@@ -5,29 +5,28 @@ using GameObjectState;
 using System;
 
 public class Monster : MonoBehaviour {    
+    public Animator MonsterAnim;
     public GameObject Player;
     public GameObject monster;
     public string enemyName;
     public float moveSpeed;    
     public float fieldOfVision;
+    public int attackRange;
     public int maxHp;
     public int nowHp;
-    private void SetEnemyStatus(string _enemyName,float _moveSpeed,float _fieldOfVision,int _maxHp,int _nowHp)
+    private void SetEnemyStatus(string _enemyName,float _moveSpeed,float _fieldOfVision, int _attackRange,int _maxHp,int _nowHp)
     {
         enemyName = _enemyName;        
         moveSpeed = _moveSpeed;
         fieldOfVision = _fieldOfVision;
+        attackRange = _attackRange;
         maxHp = _maxHp;
         nowHp = _nowHp;
-    }
-    
+    }        
 
     void Die()
     {        
-        GetComponent<MonsterAi>().enabled = false;
-        GetComponent<Collider2D>().enabled = false;
-        Destroy(GetComponent<Rigidbody2D>());
-        Destroy(monster,2f);
+        
     }
 
     void Start()
@@ -40,14 +39,12 @@ public class Monster : MonoBehaviour {
 
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.CompareTag("Player"))
-        {
-            col.gameObject.GetComponent<Player>().OnDamage(1);
-            Debug.Log("체력감소");
-        }
-    }
-
-    
+    // private void OnCollisionEnter2D(Collision2D col)
+    // {
+    //     if (col.gameObject.CompareTag("Player"))
+    //     {
+    //         col.gameObject.GetComponent<Player>().OnDamage(1);
+    //         Debug.Log("체력감소");
+    //     }
+    // }   
 }

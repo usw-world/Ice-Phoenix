@@ -194,7 +194,7 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     
-    public int Hp = 3;
+    public int Hp = 100;
     public void OnDamage(int damage) {
         Hp = Hp - damage;
     }
