@@ -54,7 +54,7 @@ public class MonsterAi : MonoBehaviour
         StartCoroutine(dt());
         //float distance = Vector2.Distance(transform.position, target.position); //몬스터 플레이어 거리
         // print(distance);
-        if(distance <= monster.fieldOfVision && distance > monster.attackRange && !MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack")) {
+        if(distance <= monster.fieldOfVision && distance > monster.attackRange && !monsterStateMachine.Compare(attackState)) {
             MonsterAnim.SetBool("moving", true);
             monsterStateMachine.ChangeState(moveToplayerState);
         } else {
@@ -75,7 +75,7 @@ public class MonsterAi : MonoBehaviour
     
     void InitialState()
     {
-        moveToplayerState.OnStay += () => {
+        moveToplayerState.OnActive += () => {
             MoveToTarget();            
         };
         attackState.OnActive += () => {
@@ -90,10 +90,18 @@ public class MonsterAi : MonoBehaviour
     }
     void MoveToTarget()
     {
-        float dir = target.position.x - transform.position.x;
-        dir = (dir < 0) ? -1 : 1;
-        FaceTarget();
-        transform.Translate(new Vector2(dir, 0) * monster.moveSpeed * Time.deltaTime);
+        if(!MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack"))
+        {
+            if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
+            {
+                MonsterAnim.SetBool("moving", false);
+                return;
+            }
+            float dir = target.position.x - transform.position.x;
+            dir = (dir < 0) ? -1 : 1;
+            FaceTarget();
+            transform.Translate(new Vector2(dir, 0) * monster.moveSpeed * Time.deltaTime);
+        }        
         
         // Vector2 frontVec = new Vector2(transform.position.x + dir, transform.position.y);
         // Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
@@ -108,13 +116,10 @@ public class MonsterAi : MonoBehaviour
 
     void AttackToTarget()
     {
-        if (!MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack"))
-        {
-            FaceTarget();
-        }
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position,boxSize,0);        
             if(curTime <= 0)
             {
+                FaceTarget();
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if(collider.tag == "Player")
@@ -134,19 +139,21 @@ public class MonsterAi : MonoBehaviour
     }
     void FaceTarget()
     {
-        if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
+        if(!MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack"))
         {
-            MonsterAnim.SetBool("moving", false);
-            transform.localScale = new Vector2(1.8f,1.8f);
-        }
-
-        if (target.position.x - transform.position.x < 0) {
-            transform.localScale = new Vector3(-1.8f, 1.8f, 1);
-        }
-        else
-        {
-            transform.localScale = new Vector3(1.8f, 1.8f, 1);
-        }        
+            // if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
+            // {
+            //     MonsterAnim.SetBool("moving", false);
+            //     // return;
+            // }
+            if (target.position.x - transform.position.x < 0.1f) {
+                transform.localScale = new Vector3(-1.8f, 1.8f, 1);
+            }
+            else
+            {
+                transform.localScale = new Vector3(1.8f, 1.8f, 1);
+            }
+        }                
     }
 
     public void FixedUpdate() {
