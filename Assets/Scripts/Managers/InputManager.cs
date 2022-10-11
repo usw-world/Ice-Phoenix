@@ -22,7 +22,7 @@ public class InputManager : MonoBehaviour {
             }
         }
         if(uiManager == null) {
-            Debug.LogError($"UI Manager in {this.name} is null.");
+            Debug.LogWarning($"UI Manager in {this.name} is null.");
         }
     }
     
@@ -31,13 +31,13 @@ public class InputManager : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Escape)) { // Esc key case
 
         }
-        if(Input.GetButtonDown("Horizontal")) {
-            player.SetDoubleTab(keyDirection);
-        }
         if(keyDirection == 0) { // any arrow key being not pressed
             player.SetDirection(0);
         } else { // right arrow(<-) or left arrow(->)
             player.SetDirection(keyDirection);
+        }
+        if(Input.GetButtonDown("Horizontal")) {
+            player.SetDoubleTab(keyDirection);
         }
         if(Input.GetButtonDown("Jump")) {
             player.Jump();

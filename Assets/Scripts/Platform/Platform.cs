@@ -13,7 +13,7 @@ public class Platform : MonoBehaviour {
                 return platformEffector;
         }
     }
-    bool isDeactive = false;
+    public bool isDeactive { get; private set; } = false;
     int? originMask = null;
     int GetOriginMask {
         get {

@@ -47,6 +47,9 @@ public class Player : LivingEntity, IDamageable {
     Rigidbody2D playerRigidbody;
     BoxCollider2D playerCollider;
 
+    [Header("Graphics")]
+    SpriteRenderer playerSprite;
+
     void Awake() {
         if(playerInstance != null)
             Destroy(playerInstance.gameObject);
@@ -60,6 +63,8 @@ public class Player : LivingEntity, IDamageable {
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponents<BoxCollider2D>()[0];
         frontCheckCollider = frontCheckCollider==null ? GetComponents<BoxCollider2D>()[1] : frontCheckCollider;
+
+        playerSprite = GetComponent<SpriteRenderer>();
     }
     void Start() {
         InitialState();
@@ -68,6 +73,7 @@ public class Player : LivingEntity, IDamageable {
         floatState.OnActive += () => {
             canMove = false;
             isGrounding = false;
+            currentJumpCount ++;
         };
         floatState.OnInactive += () => {
             canMove = true;
@@ -92,7 +98,7 @@ public class Player : LivingEntity, IDamageable {
     }
     public void SetDoubleTab(float dirX) {
         if(doubletabDir < 0 && dirX < 0
-        || doubletabDir > 0 && dirX > 0)
+        || doubletabDir > 0 && dirX > 0) 
             Dodge();
         else
             doubletabDir = dirX * .22f;
@@ -110,9 +116,9 @@ public class Player : LivingEntity, IDamageable {
     public void Jump() {
         doubletabDir = 0; // Reset dash intent
         if(currentJumpCount < maxJumpCount) {
-            currentJumpCount ++;
+            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
             playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-            playerStateMachine.ChangeState(floatState);
+            playerStateMachine.ChangeState(floatState, true);
         }
     }
     public void StopJump() {
@@ -142,6 +148,7 @@ public class Player : LivingEntity, IDamageable {
         float dirX = moveDirection.x==0 ? transform.localScale.x : moveDirection.x;
         float offset = 0;
         float v;
+        LookAtX(dirX);
 
         cooldownForDodge = dodgeResetTime;
         dodgeCount --;
@@ -178,7 +185,7 @@ public class Player : LivingEntity, IDamageable {
 
         if(moveDirection == Vector2.zero) { // Stop Moving
             playerStateMachine.ChangeState(idleState, false);
-            Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .2f);
+            Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f);
             playerRigidbody.velocity = destSpeed;
         } else { // Stay Running
             if(!canMove) return;
@@ -189,22 +196,22 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     protected void LookAtX(float x) {
-        if(x > 0) transform.localScale = new Vector3(1, 1, 1);
-        else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
+        if(x > 0) playerSprite.flipX = false; // transform.localScale = new Vector3(1, 1, 1);
+        else if (x < 0) playerSprite.flipX = true; // transform.localScale = new Vector3(-1, 1, 1);
     }
     protected void CheckBottom() {
         if(playerStateMachine.Compare(dodgeState))
             return;
-
-        RaycastHit2D hit = Physics2D.BoxCast(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
-        if(hit) {
+        Bounds b = playerCollider.bounds;
+        RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
+        if(hit && !(hit.transform.tag == "Platform" && hit.transform.GetComponent<Platform>().isDeactive)) {
             if(playerRigidbody.velocity.y <= 0) {
                 currentJumpCount = 0;
                 playerStateMachine.ChangeState(basicState, false);
                 groundedPlatform = hit.transform.gameObject;
             }
         } else {
-            playerStateMachine.ChangeState(floatState);
+            playerStateMachine.ChangeState(floatState, false);
         }
     }
     
