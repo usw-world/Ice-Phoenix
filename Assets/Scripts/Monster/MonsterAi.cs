@@ -14,12 +14,14 @@ public class MonsterAi : MonoBehaviour
 
     public Transform target;
     public int nowMove;
-    public int nextMove;
+    public int nextMove;    
     private float curTime;
     public float coolTime = 2f;
     public Transform pos;
     public Vector2 boxSize;
+    float distance;
 
+    SpriteRenderer rend;
     public Animator MonsterAnim;
     Rigidbody2D rigid;
     Monster monster;
@@ -29,12 +31,9 @@ public class MonsterAi : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody2D>();
         // Invoke("Think", 5);
-        if (TryGetComponent<StateMachine>(out monsterStateMachine))
-        {
+        if (TryGetComponent<StateMachine>(out monsterStateMachine)) {
             monsterStateMachine.SetIntialState(new State("Idle"));
-        }
-        else
-        {
+        } else {
             Debug.LogError("Monster hasn't any 'StateMachine'.");
         }
     }
@@ -43,55 +42,49 @@ public class MonsterAi : MonoBehaviour
         InitialState();
         // MonsterAnim = monster.MonsterAnim;
         monster = GetComponent<Monster>();
+        rend = GetComponent<SpriteRenderer>();
+    }
+    IEnumerator dt()
+    {
+        distance = Vector2.Distance(transform.position, target.position);
+        yield return new WaitForSeconds(0.5f);
     }
     void Update()
     {
-        float distance = Vector3.Distance(transform.position, target.position); //몬스터 플레이어 거리
-        /* ** Vector2 시도해볼 것 / Distance 퍼포먼스 고려하여 호출 간격 조절할 것 ** */
+        StartCoroutine(dt());
+        //float distance = Vector2.Distance(transform.position, target.position); //몬스터 플레이어 거리
         // print(distance);
-        // !monsterStateMachine.Compare(attackState)
-        if (distance <= monster.fieldOfVision && distance > monster.attackRange && !MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack"))
-        {
+        if(distance <= monster.fieldOfVision && distance > monster.attackRange && !MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack")) {
             MonsterAnim.SetBool("moving", true);
             monsterStateMachine.ChangeState(moveToplayerState);
-        }
-        else
-        {
+        } else {
             MonsterAnim.SetBool("moving", false);
             monsterStateMachine.ChangeState(new State("Idle"));
         }
 
         if (distance <= monster.attackRange && !monsterStateMachine.Compare(moveToplayerState))
         {
-
             monsterStateMachine.ChangeState(attackState);
-        }
+        }        
 
-        // else {
-        //     monsterStateMachine.ChangeState(patrolState);
-        // }
-
-        if (monster.nowHp <= 0)
+        if(monster.nowHp <= 0)
         {
             monsterStateMachine.ChangeState(dieState);
         }
     }
-
+    
     void InitialState()
     {
-        moveToplayerState.OnStay += () =>
-        {
-            MoveToTarget();
+        moveToplayerState.OnStay += () => {
+            MoveToTarget();            
         };
-        attackState.OnActive += () =>
-        {
+        attackState.OnActive += () => {
             AttackToTarget();
         };
         // patrolState.OnStay += () => {
         //     patrol();
         // };
-        dieState.OnActive += () =>
-        {
+        dieState.OnActive += () => {
             Die();
         };
     }
@@ -101,7 +94,7 @@ public class MonsterAi : MonoBehaviour
         dir = (dir < 0) ? -1 : 1;
         FaceTarget();
         transform.Translate(new Vector2(dir, 0) * monster.moveSpeed * Time.deltaTime);
-
+        
         // Vector2 frontVec = new Vector2(transform.position.x + dir, transform.position.y);
         // Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
         // RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);
@@ -115,43 +108,48 @@ public class MonsterAi : MonoBehaviour
 
     void AttackToTarget()
     {
-        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
-        if (curTime <= 0)
+        if (!MonsterAnim.GetCurrentAnimatorStateInfo(0).IsName("Monster_Attack"))
         {
-            foreach (Collider2D collider in collider2Ds)
+            FaceTarget();
+        }
+        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position,boxSize,0);        
+            if(curTime <= 0)
             {
-                if (collider.tag == "Player")
+                foreach (Collider2D collider in collider2Ds)
                 {
-                    collider.GetComponent<Player>().OnDamage(1);
+                    if(collider.tag == "Player")
+                    {
+                        collider.GetComponent<Player>().OnDamage(1);
+                    }
                 }
+                MonsterAnim.SetTrigger("attack");
+                curTime = coolTime;
+            } else {
+                curTime -=Time.deltaTime;
             }
-            MonsterAnim.SetTrigger("attack");
-            curTime = coolTime;
-        }
-        else
-        {
-            curTime -= Time.deltaTime;
-        }
     }
-    private void OnDrawGizmos()
-    {
+    private void OnDrawGizmos() {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(pos.position, boxSize);
     }
     void FaceTarget()
     {
-        if (target.position.x - transform.position.x < 0)
+        if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
         {
+            MonsterAnim.SetBool("moving", false);
+            transform.localScale = new Vector2(1.8f,1.8f);
+        }
+
+        if (target.position.x - transform.position.x < 0) {
             transform.localScale = new Vector3(-1.8f, 1.8f, 1);
         }
         else
         {
             transform.localScale = new Vector3(1.8f, 1.8f, 1);
-        }
+        }        
     }
 
-    public void FixedUpdate()
-    {
+    public void FixedUpdate() {
         // Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
         // Debug.DrawRay(frontVec, new Vector3(0,-1,0), new Color(0,1,0));
         // RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector3.down,1,LayerMask.GetMask("Ground"));
@@ -173,7 +171,7 @@ public class MonsterAi : MonoBehaviour
     //     Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
     //     Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
     //     RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);        
-
+        
     //     if (raycast.collider == null) {
     //         Debug.Log("There is no Ground in front of Monster");                        
     //         Turn();
@@ -204,7 +202,7 @@ public class MonsterAi : MonoBehaviour
     // }
     void Idle()
     {
-
+        
     }
     // void Think()
     // {
@@ -214,11 +212,11 @@ public class MonsterAi : MonoBehaviour
     // }
 
     void Die()
-    {
+    {        
         MonsterAnim.SetTrigger("die");
         GetComponent<MonsterAi>().enabled = false;
         GetComponent<Collider2D>().enabled = false;
         Destroy(GetComponent<Rigidbody2D>());
-        Destroy(monster.monster, 2f);
-    }
+        Destroy(monster.monster,2f);
+    }    
 }
