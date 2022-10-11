@@ -55,7 +55,7 @@ public class Player : LivingEntity, IDamageable {
         playerInstance = this.GetComponent<Player>();
 
         if(TryGetComponent<StateMachine>(out playerStateMachine)) {
-            playerStateMachine.SetIntialState(new State("Nothing"));
+            playerStateMachine.SetIntialState(idleState);
         } else {
             Debug.LogError("Player hasn't any 'StateMachine'.");
         }
