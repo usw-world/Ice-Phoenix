@@ -30,9 +30,8 @@ public class Player : LivingEntity, IDamageable {
     [SerializeField] GameObject groundedPlatform;
 
     [Header("Dodge Status")]
-    float dodgeSpeed = 30f;
-    float dodgeDuration = .4f;
-    float doubletabDir = 0;
+    float dodgeSpeed = 27f;
+    float dodgeDuration = .3f;
 
     int dodgeCount = 0;
     int maxDodgeCount = 2;
@@ -88,7 +87,11 @@ public class Player : LivingEntity, IDamageable {
         moveState.OnStay += () => {
             LookAtX(moveDirection.x);
         };
+        dodgeState.OnActive += () => {
+            playerRigidbody.gravityScale = 0;
+        };
         dodgeState.OnInactive += () => {
+            playerRigidbody.gravityScale = 1;
             if(dodgeCoroutine != null)
                 StopCoroutine(dodgeCoroutine);
         };
@@ -96,25 +99,11 @@ public class Player : LivingEntity, IDamageable {
     public void SetDirection(float dirX) {
         moveDirection = Vector2.right * dirX;
     }
-    public void SetDoubleTab(float dirX) {
-        if(doubletabDir < 0 && dirX < 0
-        || doubletabDir > 0 && dirX > 0) 
-            Dodge();
-        else
-            doubletabDir = dirX * .22f;
-    }
-    public void ResetDoubleTab() {
-        if(doubletabDir > 0)
-            doubletabDir = Mathf.Max(0, doubletabDir - Time.deltaTime);
-        else
-            doubletabDir = Mathf.Min(0, doubletabDir + Time.deltaTime);
-    }
     private bool CheckFront() {
         RaycastHit2D hit = Physics2D.BoxCast(frontCheckCollider.bounds.center, frontCheckCollider.bounds.size, 0, transform.forward, .02f, GROUNDABLE_LAYER);
         return !hit;
     }
     public void Jump() {
-        doubletabDir = 0; // Reset dash intent
         if(currentJumpCount < maxJumpCount) {
             playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
             playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
@@ -129,7 +118,6 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     public void DownJump() {
-        doubletabDir = 0; // Reset dash intent
         RaycastHit2D[] inners = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
         foreach(RaycastHit2D inner in inners) {
             Platform targetPlatform = inner.transform.GetComponent<Platform>();
@@ -144,14 +132,14 @@ public class Player : LivingEntity, IDamageable {
     }
     public IEnumerator DodgeCoroutine() {
         playerStateMachine.ChangeState(dodgeState);
-        doubletabDir = 0;
-        float dirX = moveDirection.x==0 ? transform.localScale.x : moveDirection.x;
+        float dirX = moveDirection.x!=0 ? moveDirection.x : transform.localScale.x;
         float offset = 0;
         float v;
-        LookAtX(dirX);
 
         cooldownForDodge = dodgeResetTime;
         dodgeCount --;
+
+        LookAtX(dirX);
         playerRigidbody.velocity = Vector2.zero;
         while(offset < 1) {
             v = Mathf.Lerp(dodgeSpeed * dirX, 0, offset);
@@ -169,7 +157,6 @@ public class Player : LivingEntity, IDamageable {
     void Update() {
         BasicMove();
         CheckBottom();
-        ResetDoubleTab();
         ResetDodgeTime();
     }
     protected void ResetDodgeTime() {
@@ -196,8 +183,8 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     protected void LookAtX(float x) {
-        if(x > 0) playerSprite.flipX = false; // transform.localScale = new Vector3(1, 1, 1);
-        else if (x < 0) playerSprite.flipX = true; // transform.localScale = new Vector3(-1, 1, 1);
+        if(x > 0) transform.localScale = new Vector3(1, 1, 1);
+        else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
     }
     protected void CheckBottom() {
         if(playerStateMachine.Compare(dodgeState))

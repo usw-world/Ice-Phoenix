@@ -36,9 +36,6 @@ public class InputManager : MonoBehaviour {
         } else { // right arrow(<-) or left arrow(->)
             player.SetDirection(keyDirection);
         }
-        if(Input.GetButtonDown("Horizontal")) {
-            player.SetDoubleTab(keyDirection);
-        }
         if(Input.GetButtonDown("Jump")) {
             player.Jump();
         }
@@ -51,7 +48,7 @@ public class InputManager : MonoBehaviour {
         if(Input.GetButtonDown("Basic Attack")) {
             player.BasicAttack();
         }
-        // if(Input.GetButtonDown("Dodge"))
-        //     player.Dodge();
+        if(Input.GetButtonDown("Dodge"))
+            player.Dodge();
     }
 }
