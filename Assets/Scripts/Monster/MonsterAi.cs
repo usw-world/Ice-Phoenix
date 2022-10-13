@@ -28,6 +28,7 @@ public class MonsterAi : MonoBehaviour
     Vector3 monsterPos;
 
     Coroutine setDistanceCoroutine;
+    Coroutine damageCoroutine;
 
     private void Awake()
     {
@@ -50,26 +51,18 @@ public class MonsterAi : MonoBehaviour
     IEnumerator SetDistance()
     {
         distance = Vector2.Distance(transform.position, target.position);
-        print("usoock");
         yield return new WaitForSeconds(.5f);
         setDistanceCoroutine = StartCoroutine(SetDistance());
     }
-    void Update()
+    IEnumerator Damage()
     {
-        if(Input.GetKeyDown(KeyCode.Escape)) {
-            StopCoroutine(setDistanceCoroutine);
-        }
-        //float distance = Vector2.Distance(transform.position, target.position); //몬스터 플레이어 거리
-        // print(distance);
-
+        yield return new WaitForSeconds(.2f);
+    }
+    void Update()
+    {        
         MoveToTarget();
-
         AttackToTarget();
-
-        if(monster.nowHp <= 0)
-        {
-            monsterStateMachine.ChangeState(dieState);
-        }
+        Die();
     }
     
     void InitialState()
@@ -93,7 +86,7 @@ public class MonsterAi : MonoBehaviour
         //     patrol();
         // };
         dieState.OnActive += () => {
-            Die();
+            monsterAnim.SetTrigger("die");
         };
     }
     void MoveToTarget()
@@ -123,27 +116,29 @@ public class MonsterAi : MonoBehaviour
         //     return;
         // }
     }
-
+    void DamageTarget()
+    {
+        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+        foreach (Collider2D collider in collider2Ds)
+        {
+            if (collider.tag == "Player")
+            {
+                collider.GetComponent<Player>().OnDamage(1);
+            }
+        } 
+    }
     void AttackToTarget()
     {
         if(curTime>0) curTime -=Time.deltaTime;
         if (distance <= monster.attackRange && curTime <= 0)
         {
             monsterStateMachine.ChangeState(attackState);
-            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position,boxSize,0);        
             FaceTarget();
-            foreach (Collider2D collider in collider2Ds)
-            {
-                if(collider.tag == "Player")
-                {
-                    collider.GetComponent<Player>().OnDamage(1);
-                }
-            }
+            
             curTime = coolTime;
         }
     }
-    void DragonUsoock() {
-        print("usoock dragon");
+    void ChangeIdle() {
         monsterStateMachine.ChangeState(idleState);
     }
     private void OnDrawGizmos() {
@@ -154,11 +149,6 @@ public class MonsterAi : MonoBehaviour
     {
         if(!monsterStateMachine.Compare(attackState))
         {
-            // if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
-            // {
-            //     MonsterAnim.SetBool("moving", false);
-            //     // return;
-            // }
             if (target.position.x - transform.position.x < 0.1f) {
                 transform.localScale = new Vector3(-1.8f, 1.8f, 1);
             }
@@ -166,21 +156,34 @@ public class MonsterAi : MonoBehaviour
             {
                 transform.localScale = new Vector3(1.8f, 1.8f, 1);
             }
+            // if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
+            // {
+            //     MonsterAnim.SetBool("moving", false);
+            //     // return;
+            // }
         }                
     }
-
-    public void FixedUpdate() {
-        // Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
-        // Debug.DrawRay(frontVec, new Vector3(0,-1,0), new Color(0,1,0));
-        // RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector3.down,1,LayerMask.GetMask("Ground"));
-        // if(raycast.collider == null)
-        // {
-        //     // Debug.Log("There is no Ground in front of Monster");
-        //     nextMove = nextMove*(-1);
-        //     CancelInvoke();
-        //     Invoke("Think",5);
-        // }
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if(col.gameObject.tag == "Player")
+        {
+            monster.nowHp -= 25;
+            Debug.Log(monster.nowHp);
+        }
     }
+
+    //public void FixedUpdate() {
+    // Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
+    // Debug.DrawRay(frontVec, new Vector3(0,-1,0), new Color(0,1,0));
+    // RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector3.down,1,LayerMask.GetMask("Ground"));
+    // if(raycast.collider == null)
+    // {
+    //     // Debug.Log("There is no Ground in front of Monster");
+    //     nextMove = nextMove*(-1);
+    //     CancelInvoke();
+    //     Invoke("Think",5);
+    // }
+    //}
     // void patrol()
     // {
     //     float distance = Vector3.Distance(transform.position, target.position);
@@ -191,7 +194,7 @@ public class MonsterAi : MonoBehaviour
     //     Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
     //     Debug.DrawRay(frontVec, new Vector3(0,-1.005f,0), new Color(0,1,0));
     //     RaycastHit2D raycast = Physics2D.Raycast(frontVec, Vector2.down,1.005f,64);        
-        
+
     //     if (raycast.collider == null) {
     //         Debug.Log("There is no Ground in front of Monster");                        
     //         Turn();
@@ -220,10 +223,6 @@ public class MonsterAi : MonoBehaviour
     //     CancelInvoke();
     //     Invoke("Think",5);
     // }
-    void Idle()
-    {
-        
-    }
     // void Think()
     // {
     //     nextMove = Random.Range(-1,2);        
@@ -232,11 +231,14 @@ public class MonsterAi : MonoBehaviour
     // }
 
     void Die()
-    {        
-        monsterAnim.SetTrigger("die");
-        GetComponent<MonsterAi>().enabled = false;
-        GetComponent<Collider2D>().enabled = false;
-        Destroy(GetComponent<Rigidbody2D>());
-        Destroy(monster.monster,2f);
-    }    
+    {
+        if (monster.nowHp <= 0)
+        {
+            monsterStateMachine.ChangeState(dieState);            
+            GetComponent<MonsterAi>().enabled = false;
+            GetComponent<Collider2D>().enabled = false;
+            Destroy(GetComponent<Rigidbody2D>());
+            Destroy(monster.monster,2f);
+        }
+    }
 }
