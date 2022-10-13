@@ -23,7 +23,7 @@ public class Player : LivingEntity, IDamageable {
     Vector2 moveDirection;
     bool canMove = true;
     bool isGrounding = false;
-    int maxJumpCount = 1;
+    int maxJumpCount = 2;
     int currentJumpCount = 0;
     const int GROUNDABLE_LAYER = 64;
     [SerializeField] BoxCollider2D frontCheckCollider;
