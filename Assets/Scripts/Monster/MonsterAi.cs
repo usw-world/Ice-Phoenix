@@ -10,6 +10,7 @@ public class MonsterAi : MonoBehaviour
     State moveState = new State("Move");
     State dieState = new State("Die");
     State attackState = new State("Attack");
+    State hitState = new State("Hit");
     StateMachine monsterStateMachine;
 
     public Transform target;
@@ -81,6 +82,11 @@ public class MonsterAi : MonoBehaviour
         // };
         dieState.OnActive += () => {
             monsterAnim.SetTrigger("die");
+        };
+
+        hitState.OnActive += () =>
+        {
+            monsterAnim.SetTrigger("monsterHit");
         };
     }
     void MoveToTarget()
@@ -157,27 +163,14 @@ public class MonsterAi : MonoBehaviour
             // }
         }                
     }
-
-
-
-
-    void OnCollisionEnter2D(Collision2D col)
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.gameObject.tag == "Player")
+        if (col.gameObject.tag == "meleeRange")
         {
-            monster.nowHp -= 1;
+            monster.nowHp -= 10;
             Debug.Log(monster.nowHp);
         }
     }
-
-
-
-
-
-
-
-
-
 
     public int damage = 4;
     public float cooltime2;

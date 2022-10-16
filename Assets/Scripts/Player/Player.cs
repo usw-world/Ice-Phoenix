@@ -2,20 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
+using JetBrains.Annotations;
 
 public class Player : LivingEntity, IDamageable {
     static public Player playerInstance;
     public const int DEFAULT_PLAYER_LAYERMASK = 8;
+    public Animator playerAni;
 
     protected State idleState = new State("Idle");
     protected State moveState = new State("Move");
     protected State floatState = new State("Float");
     protected State dodgeState = new State("Dodge");
+    protected State attackState = new State("Attack");
+
     protected State basicState { get {
         if(moveDirection == Vector2.zero) return idleState;
         else return moveState;
     } }
-    StateMachine playerStateMachine;
+    protected StateMachine playerStateMachine;
 
     [Header("Move Status")]
     float moveSpeed = 9f;
@@ -49,12 +53,14 @@ public class Player : LivingEntity, IDamageable {
     [Header("Graphics")]
     SpriteRenderer playerSprite;
 
+    
+
     void Awake() {
-        if(playerInstance != null)
+        if (playerInstance != null)
             Destroy(playerInstance.gameObject);
         playerInstance = this.GetComponent<Player>();
 
-        if(TryGetComponent<StateMachine>(out playerStateMachine)) {
+        if (TryGetComponent<StateMachine>(out playerStateMachine)) {
             playerStateMachine.SetIntialState(idleState);
         } else {
             Debug.LogError("Player hasn't any 'StateMachine'.");
@@ -95,6 +101,12 @@ public class Player : LivingEntity, IDamageable {
             if(dodgeCoroutine != null)
                 StopCoroutine(dodgeCoroutine);
         };
+
+        attackState.OnActive += () =>
+        {
+            playerAni.SetTrigger("MeleeAttack");
+        };
+
     }
     public void SetDirection(float dirX) {
         moveDirection = Vector2.right * dirX;
@@ -153,9 +165,16 @@ public class Player : LivingEntity, IDamageable {
 
         playerStateMachine.ChangeState(basicState);
     }
-    public virtual void BasicAttack(){}
+    public virtual void BasicAttack()
+    {
+        if (playerAni.GetCurrentAnimatorStateInfo(0).IsName("Weapon_MeleeAttack") && playerAni.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f) // 애니메이션 실행되는 중에는 리턴
+            return;
 
+        if (playerStateMachine.Compare(dodgeState)) // dodge 비교
+            return;
 
+        playerStateMachine.ChangeState(attackState);
+    }
     void Update() {
         BasicMove();
         CheckBottom();
