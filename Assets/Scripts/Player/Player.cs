@@ -154,11 +154,15 @@ public class Player : LivingEntity, IDamageable {
         playerStateMachine.ChangeState(basicState);
     }
     public virtual void BasicAttack(){}
+
+
     void Update() {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
     }
+
+
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
             cooldownForDodge -= Time.deltaTime;
@@ -202,8 +206,88 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     
+
+
+    public float speed;
+    bool isHurt;
+    bool isKnockback = false;
+    Color halfA = new Color(1,1,1,0.5f);
+    Color fullA = new Color(1,1,1,1);
+    Vector2 pos;
     public int Hp = 100;
-    public void OnDamage(int damage) {
-        Hp = Hp - damage;
+    
+    public void OnDamage() {
+        Hurt();
     }
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Enemy")
+            {
+                Hurt(collision.GetComponentInParent<MonsterAi>().damage);
+            }
+    }
+    
+    
+    public void Hurt(int damage = 4)
+    {
+        if(!isHurt)
+        {
+            
+            isHurt = true;
+            Hp = Hp - damage;
+            if(Hp <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                float x = transform.position.x - pos.x;
+                if(x < 0)
+                    x = 1;
+                else
+                    x = -1;
+
+                StartCoroutine(Knockback(x));
+                StartCoroutine(HurtRoutine());
+                StartCoroutine(alphablink());
+            }
+        }
+    }
+
+    IEnumerator Knockback(float dir)
+    {
+        isKnockback = true;
+        float ctime = 0;
+        while(ctime < 0.2f)
+        {
+            if(transform.rotation.y == 0)
+                transform.Translate(Vector2.left*speed*Time.deltaTime*dir);
+            else
+                transform.Translate(Vector2.left*speed*Time.deltaTime*dir*-1f);
+            
+            ctime += Time.deltaTime;
+            yield return null;
+        }
+        isKnockback = false;
+    }
+    
+    IEnumerator HurtRoutine()
+    {
+        yield return new WaitForSeconds(5f);
+        isHurt = false;
+    }
+
+    IEnumerator alphablink()
+    {
+        while(isHurt)
+        {
+            yield return new WaitForSeconds(0.1f);
+            playerSprite.color = halfA;
+            yield return new WaitForSeconds(0.1f);
+            playerSprite.color = fullA;
+        }
+    }
+    
+    
 }

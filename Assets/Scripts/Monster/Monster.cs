@@ -39,12 +39,4 @@ public class Monster : MonoBehaviour {
 
     }
 
-    // private void OnCollisionEnter2D(Collision2D col)
-    // {
-    //     if (col.gameObject.CompareTag("Player"))
-    //     {
-    //         col.gameObject.GetComponent<Player>().OnDamage(1);
-    //         Debug.Log("체력감소");
-    //     }
-    // }   
 }

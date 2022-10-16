@@ -58,13 +58,7 @@ public class MonsterAi : MonoBehaviour
     {
         yield return new WaitForSeconds(.2f);
     }
-    void Update()
-    {        
-        MoveToTarget();
-        AttackToTarget();
-        Die();
-    }
-    
+
     void InitialState()
     {
         idleState.OnActive += () => {
@@ -123,7 +117,7 @@ public class MonsterAi : MonoBehaviour
         {
             if (collider.tag == "Player")
             {
-                collider.GetComponent<Player>().OnDamage(1);
+                collider.GetComponent<Player>().OnDamage();
             }
         } 
     }
@@ -163,14 +157,71 @@ public class MonsterAi : MonoBehaviour
             // }
         }                
     }
+
+
+
+
     void OnCollisionEnter2D(Collision2D col)
     {
         if(col.gameObject.tag == "Player")
         {
-            monster.nowHp -= 25;
+            monster.nowHp -= 1;
             Debug.Log(monster.nowHp);
         }
     }
+
+
+
+
+
+
+
+
+
+
+    public int damage = 4;
+    public float cooltime2;
+    private float currenttime;
+    
+    void Update()
+    {        
+        MoveToTarget();
+        AttackToTarget();
+        Die();
+
+        Collider2D[] collider = Physics2D.OverlapBoxAll(pos.position, new Vector2(1f, 1f), 1);
+
+        if(collider != null)
+        {
+            for(int i = 0; i < collider.Length; i++)
+            {
+                if(currenttime <= 0)
+                {
+                    if(collider[i].tag == "Player")
+                    {
+                        currenttime = cooltime2;
+                    }
+                }
+            }
+            currenttime -= Time.deltaTime;
+        }
+    }
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+
 
     //public void FixedUpdate() {
     // Vector2 frontVec = new Vector2(transform.position.x + nextMove, transform.position.y);
