@@ -18,7 +18,7 @@ public class Player : LivingEntity, IDamageable {
     StateMachine playerStateMachine;
 
     [Header("Move Status")]
-    float moveSpeed = 9f;
+    float moveSpeed = 10f;
     float jumpPower = 25f;
     Vector2 moveDirection;
     bool canMove = true;
@@ -48,6 +48,7 @@ public class Player : LivingEntity, IDamageable {
 
     [Header("Graphics")]
     SpriteRenderer playerSprite;
+    Animator playerAnimator;
 
     void Awake() {
         if(playerInstance != null)
@@ -64,11 +65,19 @@ public class Player : LivingEntity, IDamageable {
         frontCheckCollider = frontCheckCollider==null ? GetComponents<BoxCollider2D>()[1] : frontCheckCollider;
 
         playerSprite = GetComponent<SpriteRenderer>();
+
+        playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
     }
     void Start() {
         InitialState();
     }
     void InitialState() {
+        idleState.OnActive += () => {
+            playerAnimator.SetBool("Idle", true);
+        };
+        idleState.OnInactive += () => {
+            playerAnimator.SetBool("Idle", false);
+        };
         floatState.OnActive += () => {
             canMove = false;
             isGrounding = false;
@@ -84,8 +93,14 @@ public class Player : LivingEntity, IDamageable {
             LookAtX(moveDirection.x);
             playerRigidbody.velocity = addingSpeed;
         };
+        moveState.OnActive += () => {
+            playerAnimator.SetBool("Move", true);
+        };
         moveState.OnStay += () => {
             LookAtX(moveDirection.x);
+        };
+        moveState.OnInactive += () => {
+            playerAnimator.SetBool("Move", false);
         };
         dodgeState.OnActive += () => {
             playerRigidbody.gravityScale = 0;
@@ -172,8 +187,9 @@ public class Player : LivingEntity, IDamageable {
 
         if(moveDirection == Vector2.zero) { // Stop Moving
             playerStateMachine.ChangeState(idleState, false);
-            Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f);
-            playerRigidbody.velocity = destSpeed;
+            // Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f);   ┐ 관성 있는
+            // playerRigidbody.velocity = destSpeed;                                                                                ┘ 이동 정지
+            playerRigidbody.velocity *= Vector2.up;
         } else { // Stay Running
             if(!canMove) return;
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
