@@ -610,6 +610,8 @@ MonoBehaviour:
   pos: {fileID: 1763157792}
   boxSize: {x: 4, y: 3}
   monsterAnim: {fileID: 708780722}
+  damage: 4
+  cooltime2: 0
 --- !u!50 &708780716
 Rigidbody2D:
   serializedVersion: 4
@@ -1128,6 +1130,7 @@ MonoBehaviour:
   playerAni: {fileID: 1405466582}
   frontCheckCollider: {fileID: 0}
   groundedPlatform: {fileID: 0}
+  speed: 0
   Hp: 100
   meleeAttackRange: {fileID: 998753587}
 --- !u!95 &1405466582
@@ -1324,6 +1327,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
+      propertyPath: m_UseAutoMass
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7374847808734642918, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
       propertyPath: m_RootOrder
       value: 5

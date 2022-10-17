@@ -40,6 +40,7 @@ public class MonsterAi : MonoBehaviour
         } else {
             Debug.LogError("Monster hasn't any 'StateMachine'.");
         }
+
     }
     void Start()
     {
@@ -91,17 +92,21 @@ public class MonsterAi : MonoBehaviour
     }
     void MoveToTarget()
     {
+        int moveSpeed = 3;
+
         if(monsterStateMachine.Compare(attackState)) return;
         if(distance <= monster.fieldOfVision) {
             monsterStateMachine.ChangeState(moveState);
-            if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f) {
+            if (Mathf.Abs(target.position.x - transform.position.x) < 0.5f)
+            {
                 monsterStateMachine.ChangeState(idleState);
                 return;
             }
             float dir = target.position.x - transform.position.x;
-            dir = (dir < 0) ? -1 : 1;
+            dir = (dir < 0) ? -moveSpeed : moveSpeed;
             FaceTarget();
-            transform.Translate(new Vector2(dir, 0) * monster.moveSpeed * Time.deltaTime);
+            //transform.Translate(new Vector2(dir, 0) * monster.moveSpeed * Time.deltaTime);
+            rigid.velocity = new Vector2(dir, 0);
         } else {
             monsterStateMachine.ChangeState(idleState);
         }
@@ -129,7 +134,7 @@ public class MonsterAi : MonoBehaviour
     }
     void AttackToTarget()
     {
-        if(curTime>0) curTime -=Time.deltaTime;
+        if (curTime>0) curTime -=Time.deltaTime;
         if (distance <= monster.attackRange && curTime <= 0)
         {
             monsterStateMachine.ChangeState(attackState);
@@ -167,9 +172,16 @@ public class MonsterAi : MonoBehaviour
     {
         if (col.gameObject.tag == "meleeRange")
         {
+            monsterStateMachine.ChangeState(hitState);
             monster.nowHp -= 10;
             Debug.Log(monster.nowHp);
         }
+
+    }
+    private void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.tag == "Player") // 플레이어 밀림을 최소화
+            rigid.velocity = Vector2.zero;
     }
 
     public int damage = 4;
@@ -177,9 +189,7 @@ public class MonsterAi : MonoBehaviour
     private float currenttime;
     
     void Update()
-    {        
-        MoveToTarget();
-        AttackToTarget();
+    {
         Die();
 
         Collider2D[] collider = Physics2D.OverlapBoxAll(pos.position, new Vector2(1f, 1f), 1);
@@ -198,17 +208,17 @@ public class MonsterAi : MonoBehaviour
             }
             currenttime -= Time.deltaTime;
         }
+
     }
 
-    
-    
+    private void FixedUpdate()
+    {
+        MoveToTarget();
+        AttackToTarget();
+    }
 
 
 
-
-
-    
-    
 
 
 

@@ -15,6 +15,7 @@ public class Player : LivingEntity, IDamageable {
     protected State dodgeState = new State("Dodge");
     protected State attackState = new State("Attack");
 
+
     protected State basicState { get {
         if(moveDirection == Vector2.zero) return idleState;
         else return moveState;
@@ -53,8 +54,6 @@ public class Player : LivingEntity, IDamageable {
     [Header("Graphics")]
     SpriteRenderer playerSprite;
 
-    
-
     void Awake() {
         if (playerInstance != null)
             Destroy(playerInstance.gameObject);
@@ -70,6 +69,7 @@ public class Player : LivingEntity, IDamageable {
         frontCheckCollider = frontCheckCollider==null ? GetComponents<BoxCollider2D>()[1] : frontCheckCollider;
 
         playerSprite = GetComponent<SpriteRenderer>();
+
     }
     void Start() {
         InitialState();
@@ -246,8 +246,17 @@ public class Player : LivingEntity, IDamageable {
                 Hurt(collision.GetComponentInParent<MonsterAi>().damage);
             }
     }
-    
-    
+
+    private void OnTriggerStay2D(Collider2D collision) 
+    {
+        if (collision.tag == "Monster") // 몬스터 밀림을 최소화
+        {
+            playerRigidbody.angularVelocity = 0f;
+            playerRigidbody.velocity = Vector2.zero;
+        }
+
+    }
+
     public void Hurt(int damage = 4)
     {
         if(!isHurt)
