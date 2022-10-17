@@ -1,21 +1,26 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
+using JetBrains.Annotations; // << ?
+using UnityEngine.UI;
 
 public class Player : LivingEntity, IDamageable {
     static public Player playerInstance;
     public const int DEFAULT_PLAYER_LAYERMASK = 8;
+    public Animator playerAni;
 
     protected State idleState = new State("Idle");
     protected State moveState = new State("Move");
     protected State floatState = new State("Float");
     protected State dodgeState = new State("Dodge");
+    // protected State attackState = new State("Attack");
+    protected State hitState = new State("Hit");
+
     protected State basicState { get {
         if(moveDirection == Vector2.zero) return idleState;
         else return moveState;
     } }
-    StateMachine playerStateMachine;
+    protected StateMachine playerStateMachine;
 
     [Header("Move Status")]
     float moveSpeed = 10f;
@@ -40,22 +45,28 @@ public class Player : LivingEntity, IDamageable {
 
     #region Coroutines
     Coroutine dodgeCoroutine;
+    Coroutine hitCoroutine;
     #endregion
 
     [Header("Physic Attribute")]
-    Rigidbody2D playerRigidbody;
-    BoxCollider2D playerCollider;
+    protected Rigidbody2D playerRigidbody;
+    protected BoxCollider2D playerCollider;
 
     [Header("Graphics")]
-    SpriteRenderer playerSprite;
-    Animator playerAnimator;
+    protected SpriteRenderer playerSprite;
+    protected Animator playerAnimator;
+    protected Color playerOriginColor;
 
-    void Awake() {
-        if(playerInstance != null)
-            Destroy(playerInstance.gameObject);
-        playerInstance = this.GetComponent<Player>();
+    [Header("UI")]
+    [SerializeField] PlayerSideUI playerSideUI;
+    
+    protected override void Awake() {
+        base.Awake();
+        if (Player.playerInstance != null)
+            Destroy(Player.playerInstance.gameObject);
+        Player.playerInstance = this.GetComponent<Player>();
 
-        if(TryGetComponent<StateMachine>(out playerStateMachine)) {
+        if (TryGetComponent<StateMachine>(out playerStateMachine)) {
             playerStateMachine.SetIntialState(idleState);
         } else {
             Debug.LogError("Player hasn't any 'StateMachine'.");
@@ -65,27 +76,36 @@ public class Player : LivingEntity, IDamageable {
         frontCheckCollider = frontCheckCollider==null ? GetComponents<BoxCollider2D>()[1] : frontCheckCollider;
 
         playerSprite = GetComponent<SpriteRenderer>();
-
+        playerOriginColor = playerSprite==null ? Color.white : playerSprite.color;
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
+
+        playerSideUI = playerSideUI==null ? GetComponentInChildren<PlayerSideUI>() : playerSideUI;
     }
-    void Start() {
+    protected override void Start() {
         InitialState();
+        RefreshHPSlider();
     }
-    void InitialState() {
+    protected virtual void InitialState() {
+        #region Idle State >>
         idleState.OnActive += () => {
             playerAnimator.SetBool("Idle", true);
         };
         idleState.OnInactive += () => {
             playerAnimator.SetBool("Idle", false);
         };
+        #endregion << Idle State
+
+        #region Float State >>
         floatState.OnActive += () => {
             canMove = false;
             isGrounding = false;
+            playerAnimator.SetBool("Float", true);
             currentJumpCount ++;
         };
         floatState.OnInactive += () => {
             canMove = true;
             isGrounding = true;
+            playerAnimator.SetBool("Float", false);
         };
         floatState.OnStay += () => {
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
@@ -93,6 +113,9 @@ public class Player : LivingEntity, IDamageable {
             LookAtX(moveDirection.x);
             playerRigidbody.velocity = addingSpeed;
         };
+        #endregion << Float State
+
+        #region Move State >>
         moveState.OnActive += () => {
             playerAnimator.SetBool("Move", true);
         };
@@ -102,6 +125,9 @@ public class Player : LivingEntity, IDamageable {
         moveState.OnInactive += () => {
             playerAnimator.SetBool("Move", false);
         };
+        #endregion << Move State
+
+        #region Dodge State >>
         dodgeState.OnActive += () => {
             playerRigidbody.gravityScale = 0;
         };
@@ -110,6 +136,19 @@ public class Player : LivingEntity, IDamageable {
             if(dodgeCoroutine != null)
                 StopCoroutine(dodgeCoroutine);
         };
+        #endregion << Dodge State
+        
+        #region Hit State >>
+        hitState.OnActive += () => {
+            canMove = false;
+            playerAnimator.SetBool("Hit", true);
+        };
+        hitState.OnInactive += () => {
+            canMove = true;
+            playerAnimator.SetBool("Hit", false);
+            if(hitCoroutine != null) StopCoroutine(hitCoroutine);
+        };
+        #endregion << Hit State
     }
     public void SetDirection(float dirX) {
         moveDirection = Vector2.right * dirX;
@@ -119,7 +158,9 @@ public class Player : LivingEntity, IDamageable {
         return !hit;
     }
     public void Jump() {
-        if(currentJumpCount < maxJumpCount) {
+        if(currentJumpCount < maxJumpCount
+        && !playerStateMachine.Compare(dodgeState)
+        && !playerStateMachine.Compare(hitState)) {
             playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
             playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             playerStateMachine.ChangeState(floatState, true);
@@ -168,12 +209,24 @@ public class Player : LivingEntity, IDamageable {
 
         playerStateMachine.ChangeState(basicState);
     }
-    public virtual void BasicAttack(){}
+    public virtual void BasicAttack()
+    {
+        if(playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Weapon_MeleeAttack") && playerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f)
+            return;
+
+        if(playerStateMachine.Compare(dodgeState)
+        || playerStateMachine.Compare(hitState))
+            return;
+
+        // playerStateMachine.ChangeState(attackState);
+    }
     void Update() {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
     }
+
+
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
             cooldownForDodge -= Time.deltaTime;
@@ -183,31 +236,29 @@ public class Player : LivingEntity, IDamageable {
     protected void BasicMove() {
         if(!isGrounding 
         || !CheckFront()
-        || playerStateMachine.Compare(dodgeState)) return;
+        || playerStateMachine.Compare(floatState)
+        || playerStateMachine.Compare(dodgeState)
+        || playerStateMachine.Compare(hitState)) return;
 
         if(moveDirection == Vector2.zero) { // Stop Moving
             playerStateMachine.ChangeState(idleState, false);
-            // Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f);   ┐ 관성 있는
-            // playerRigidbody.velocity = destSpeed;                                                                                ┘ 이동 정지
+            // Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f);
+            // playerRigidbody.velocity = destSpeed;
             playerRigidbody.velocity *= Vector2.up;
         } else { // Stay Running
-            if(!canMove) return;
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
             Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .15f);
             playerRigidbody.velocity = addingSpeed;
             playerStateMachine.ChangeState(moveState, false);
         }
     }
-    protected void LookAtX(float x) {
-        if(x > 0) transform.localScale = new Vector3(1, 1, 1);
-        else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
-    }
     protected void CheckBottom() {
-        if(playerStateMachine.Compare(dodgeState))
+        if(playerStateMachine.Compare(dodgeState)
+        || playerStateMachine.Compare(hitState))
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
-        if(hit && !(hit.transform.tag == "Platform" && hit.transform.GetComponent<Platform>().isDeactive)) {
+        if(hit && !(hit.transform.tag == "Platform" && hit.transform.GetComponent<Platform>().isInactive)) {
             if(playerRigidbody.velocity.y <= 0) {
                 currentJumpCount = 0;
                 playerStateMachine.ChangeState(basicState, false);
@@ -218,8 +269,35 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     
-    public int Hp = 100;
-    public void OnDamage(int damage) {
-        Hp = Hp - damage;
+    public void OnDamage(float damage, float duration=.25f) {
+        if(isDead) return;
+        hp -= damage;
+        RefreshHPSlider();
+        if(hp <= 0) {
+            Die();
+        } else {
+            if(hitCoroutine != null) StopCoroutine(hitCoroutine);
+            hitCoroutine = StartCoroutine(HitCoroutine(duration));
+        }
+    }
+    void RefreshHPSlider() {
+        if(maxHp != 0)
+            playerSideUI.SetHPSlider(hp / maxHp);
+    }
+    public void OnDamage(float damage, Vector2 force, float duration=.25f) {
+        if(isDead) return;
+        OnDamage(damage, duration);
+        playerRigidbody.velocity = Vector2.zero;
+        playerRigidbody.AddForce(force, ForceMode2D.Force);
+    }
+    protected override void Die() {
+        base.Die();
+    }
+    IEnumerator HitCoroutine(float duration) {
+        if(duration > 0) {
+            playerStateMachine.ChangeState(hitState);
+            yield return new WaitForSeconds(duration);
+            playerStateMachine.ChangeState(basicState);
+        }
     }
 }

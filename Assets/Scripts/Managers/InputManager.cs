@@ -13,9 +13,9 @@ public class InputManager : MonoBehaviour {
             playerObject = GameObject.FindGameObjectWithTag("Player");
             if(playerObject != null) {
                 if(playerObject.TryGetComponent<Player>(out player)) {
-                    Debug.LogWarning($"Input manager found 'Player Object' that has not {player.GetType()} script.");
-                } else {
                     Debug.LogWarning($"Player variable is auto-define by {this.name}. If it's not your purpose check player attribute in {this.name}.");
+                } else {
+                    Debug.LogWarning($"Input manager found 'Player Object' that has not {player.GetType()} script. name:{player.name}");
                 }
             } else {
                 Debug.LogWarning("There isn't any Player Object in current scene.");
