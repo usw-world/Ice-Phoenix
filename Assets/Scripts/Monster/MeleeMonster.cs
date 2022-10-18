@@ -123,11 +123,7 @@ public class MeleeMonster : Monster
         if (col.gameObject.tag == "meleeRange") {
             hp -= 10;
         }
-    }
-
-    public int damage = 4;
-    public float cooltime2;
-    private float currenttime;
+    }   
     
     void Update() {
         MoveToTarget();

@@ -559,10 +559,6 @@ GameObject:
   - component: {fileID: 708780718}
   - component: {fileID: 708780716}
   - component: {fileID: 708780715}
-<<<<<<< Updated upstream
-  - component: {fileID: 708780714}
-=======
->>>>>>> Stashed changes
   - component: {fileID: 708780720}
   - component: {fileID: 708780721}
   - component: {fileID: 708780722}
@@ -573,30 +569,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< Updated upstream
---- !u!114 &708780714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 708780713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00d7d784facc5024bab020e90b809208, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MonsterAnim: {fileID: 708780722}
-  Player: {fileID: 1405466574}
-  monster: {fileID: 708780713}
-  enemyName: none
-  moveSpeed: 5
-  fieldOfVision: 10
-  attackRange: 4
-  maxHp: 100
-  nowHp: 100
-=======
->>>>>>> Stashed changes
 --- !u!114 &708780715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,15 +581,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeee3eadf1c62b544acc64ddc29aac4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< Updated upstream
-  target: {fileID: 610665144}
-  nowMove: 0
-  nextMove: 0
-  coolTime: 1
-  pos: {fileID: 1763157792}
-  boxSize: {x: 4, y: 3}
-  monsterAnim: {fileID: 708780722}
-=======
   isDead: 0
   maxHp: 100
   Hp: 0
@@ -631,7 +594,6 @@ MonoBehaviour:
   coolTime: 1
   attackAreaCenter: {fileID: 0}
   attackArea: {x: 0, y: 0}
->>>>>>> Stashed changes
   damage: 4
   cooltime2: 0
 --- !u!50 &708780716
@@ -1149,19 +1111,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248f89925a493cb4c9b7058b2346a4a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< Updated upstream
-  playerAni: {fileID: 1405466582}
-  frontCheckCollider: {fileID: 0}
-  groundedPlatform: {fileID: 0}
-  speed: 0
-  Hp: 100
-=======
   isDead: 0
   maxHp: 0
   Hp: 100
   frontCheckCollider: {fileID: 0}
   groundedPlatform: {fileID: 0}
->>>>>>> Stashed changes
   meleeAttackRange: {fileID: 998753587}
 --- !u!95 &1405466582
 Animator:
@@ -1357,25 +1311,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-<<<<<<< Updated upstream
-    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
-      propertyPath: m_BodyType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
-      propertyPath: m_Interpolate
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7374847808734642917, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
-      propertyPath: m_UseAutoMass
-      value: 0
-      objectReference: {fileID: 0}
-=======
->>>>>>> Stashed changes
     - target: {fileID: 7374847808734642918, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -1440,10 +1375,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-<<<<<<< Updated upstream
-    m_RemovedComponents:
-    - {fileID: 7374847808734642915, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
-=======
     m_RemovedComponents: []
->>>>>>> Stashed changes
   m_SourcePrefab: {fileID: 100100000, guid: 25581f7bc44970d4e9a5f9fbe2789274, type: 3}
