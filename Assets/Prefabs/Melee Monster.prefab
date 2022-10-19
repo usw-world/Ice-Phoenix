@@ -41,9 +41,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1576915491001812638}
   - component: {fileID: 1576915491001812639}
-  - component: {fileID: 1576915491001812637}
-  - component: {fileID: 1576915491001812634}
   - component: {fileID: 1576915491001812609}
+  - component: {fileID: 1576915491001812634}
+  - component: {fileID: 1576915491001812637}
   - component: {fileID: 1576915491001812608}
   - component: {fileID: 1576915491001812611}
   m_Layer: 7
@@ -121,6 +121,43 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1576915491001812609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576915491001812632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745dd835b5b94854ba46c611eaa5e1e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1576915491001812634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576915491001812632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeee3eadf1c62b544acc64ddc29aac4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotatelessChildren: {fileID: 0}
+  maxHp: 100
+  hp: 0
+  MonsterAnim: {fileID: 1576915491001812611}
+  moveSpeed: 6
+  detectingDistance: 12
+  attackDistance: 6
+  monsterAnimator: {fileID: 0}
+  playerTransform: {fileID: 0}
+  attackDamage: 10
+  coolTime: 1
+  attackAreaCenter: {fileID: 1576915489942258449}
+  attackArea: {x: 4, y: 3}
 --- !u!50 &1576915491001812637
 Rigidbody2D:
   serializedVersion: 4
@@ -142,45 +179,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &1576915491001812634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576915491001812632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeee3eadf1c62b544acc64ddc29aac4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isDead: 0
-  maxHp: 100
-  Hp: 0
-  MonsterAnim: {fileID: 1576915491001812611}
-  moveSpeed: 6
-  detectingDistance: 12
-  attackDistance: 6
-  monsterAnimator: {fileID: 0}
-  playerTransform: {fileID: 0}
-  attackDamage: 10
-  coolTime: 1
-  attackAreaCenter: {fileID: 1576915489942258449}
-  attackArea: {x: 4, y: 3}
-  damage: 4
-  cooltime2: 0
---- !u!114 &1576915491001812609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576915491001812632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 745dd835b5b94854ba46c611eaa5e1e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &1576915491001812608
 BoxCollider2D:
   m_ObjectHideFlags: 0

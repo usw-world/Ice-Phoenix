@@ -24,8 +24,11 @@ public class MeleeMonster : Monster
     Rigidbody2D monsterRigidbody;
     Vector3 monsterPos;
 
+    #region Coroutines
     Coroutine setDistanceCoroutine;
     Coroutine damageCoroutine;
+    Coroutine hitCoroutine;
+    #endregion
 
     protected override void Awake() {
         base.Awake();
@@ -63,7 +66,10 @@ public class MeleeMonster : Monster
             monsterAnimator.SetBool("Move", false);
         };
         attackState.OnActive += () => {
-            monsterAnimator.SetTrigger("Attack");
+            monsterAnimator.SetBool("Attack", true);
+        };
+        attackState.OnInactive += () => {
+            monsterAnimator.SetBool("Attack", false);
         };
         dieState.OnActive += () => {
             monsterAnimator.SetTrigger("Die");
@@ -73,8 +79,9 @@ public class MeleeMonster : Monster
         };
     }
     void MoveToTarget() {
-        if(monsterStateMachine.Compare(attackState)) return;
-        if(distance <= detectingDistance) {
+        if(monsterStateMachine.Compare(attackState)
+        || monsterStateMachine.Compare(hitState)) return;
+        if(distance <= detectingDistance && distance > attackDistance) {
             monsterStateMachine.ChangeState(moveState);
             if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 0.5f) {
                 monsterStateMachine.ChangeState(idleState);
@@ -86,6 +93,7 @@ public class MeleeMonster : Monster
             transform.Translate(new Vector2(dir, 0) * moveSpeed * Time.deltaTime);
         } else {
             monsterStateMachine.ChangeState(idleState);
+            FaceTarget();
         }
     }
     void DamageTarget() {
@@ -97,10 +105,13 @@ public class MeleeMonster : Monster
     }
     void AttackToTarget() {
         if(curTime > 0) curTime -=Time.deltaTime;
-        if(distance <= attackDistance && curTime <= 0) {
-            monsterStateMachine.ChangeState(attackState);
-            FaceTarget();
-            curTime = coolTime;
+        if(distance <= attackDistance
+        && !monsterStateMachine.Compare(hitState)) {
+            if(curTime <= 0) {
+                FaceTarget();
+                monsterStateMachine.ChangeState(attackState);
+                curTime = coolTime;
+            }
         }
     }
     void ChangeIdle() {
@@ -111,34 +122,49 @@ public class MeleeMonster : Monster
         Gizmos.DrawWireCube(attackAreaCenter.position, attackArea);
     }
     void FaceTarget() {
-        if(!monsterStateMachine.Compare(attackState)) {
-            if(playerTransform.position.x - transform.position.x < 0.1f) {
-                transform.localScale = new Vector3(-1.8f, 1.8f, 1);
+        if(!monsterStateMachine.Compare(attackState)
+        && !monsterStateMachine.Compare(hitState)) {
+            if(playerTransform.position.x - transform.position.x < 0) {
+                transform.localScale = new Vector3(-1f, 1f, 1);
             } else {
-                transform.localScale = new Vector3(1.8f, 1.8f, 1);
+                transform.localScale = new Vector3(1f, 1f, 1);
             }
         }
     }
-    private void OnTriggerEnter2D(Collider2D col) {
-        if (col.gameObject.tag == "meleeRange") {
-            hp -= 10;
-        }
-    }   
     
     void Update() {
         MoveToTarget();
         AttackToTarget();
-        Die();
+    }
+
+    public override void OnDamage(float damage, float duration=0) {
+        base.OnDamage(damage, duration);
+        if (hp <= 0) {
+            Die();
+            return;
+        }
+    }
+    public override void OnDamage(float damage, Vector2 force, float duration=0) {
+        monsterRigidbody.AddForce(force);
+        OnDamage(damage, duration);
+        if(!isDead) {
+            if(hitCoroutine != null)
+                StopCoroutine(hitCoroutine);
+            hitCoroutine = StartCoroutine(HitCoroutine(force, duration));
+        }
+    }
+    private IEnumerator HitCoroutine(Vector2 force, float duration) {
+        if(duration > 0) {
+            monsterStateMachine.ChangeState(hitState);
+            yield return new WaitForSeconds(duration);
+            monsterStateMachine.ChangeState(idleState);
+        }
     }
 
     protected override void Die() {
-        if (hp <= 0)
-        {
-            monsterStateMachine.ChangeState(dieState);
-            GetComponent<MeleeMonster>().enabled = false;
-            GetComponent<Collider2D>().enabled = false;
-            Destroy(GetComponent<Rigidbody2D>());
-            Destroy(gameObject, 2f);
-        }
+        base.Die();
+        monsterStateMachine.ChangeState(dieState);
+        GetComponent<MeleeMonster>().enabled = false;
+        Destroy(gameObject, 2f);
     }
 }

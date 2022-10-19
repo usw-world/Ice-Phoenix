@@ -44,8 +44,9 @@ public class Player : LivingEntity, IDamageable {
     float dodgeResetTime = 1f;
 
     #region Coroutines
-    Coroutine dodgeCoroutine;
-    Coroutine hitCoroutine;
+    protected Coroutine dodgeCoroutine;
+    protected Coroutine hitCoroutine;
+    protected Coroutine basicAttackCoroutine;
     #endregion
 
     [Header("Physic Attribute")]
@@ -213,7 +214,7 @@ public class Player : LivingEntity, IDamageable {
         playerStateMachine.ChangeState(basicState);
     }
     public virtual void BasicAttack() {}
-    void Update() {
+    protected virtual void Update() {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
@@ -264,6 +265,10 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     
+    void RefreshHPSlider() {
+        if(maxHp != 0)
+            playerSideUI.SetHPSlider(hp / maxHp);
+    }
     public void OnDamage(float damage, float duration=.25f) {
         if(isDead) return;
         hp -= damage;
@@ -274,10 +279,6 @@ public class Player : LivingEntity, IDamageable {
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitCoroutine(duration));
         }
-    }
-    void RefreshHPSlider() {
-        if(maxHp != 0)
-            playerSideUI.SetHPSlider(hp / maxHp);
     }
     public void OnDamage(float damage, Vector2 force, float duration=.25f) {
         if(isDead) return;
