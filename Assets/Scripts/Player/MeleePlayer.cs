@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class MeleePlayer : Player {
     bool isAttackState;
-    protected State attackState = new State("Attack");
 
-    [SerializeField]
-    BoxCollider2D meleeAttackRange;
+    [SerializeField] BoxCollider2D meleeAttackRange;
 
     protected override void Awake() {
         base.Awake();
@@ -20,17 +18,24 @@ public class MeleePlayer : Player {
         base.InitialState();
         #region Attack State
         attackState.OnActive += () => {
-            playerAnimator.SetTrigger("MeleeAttack");
+            playerAnimator.SetBool("Melee Attack 01", true);
+        };
+        attackState.OnInactive += () => {
+            playerAnimator.SetBool("Melee Attack 01", false);
         };
         #endregion Attack State
     }
-    public override void BasicAttack()
-    {
+    public override void BasicAttack() {
         base.BasicAttack();
-
-        if (playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Weapon_MeleeAttack")) // 공격할 때 잠깐 공격 범위가 활성화
-            meleeAttackRange.enabled = false;
-        else
-            meleeAttackRange.enabled = true;
+        if(playerStateMachine.Compare(dodgeState)
+        || playerStateMachine.Compare(hitState)
+        || playerStateMachine.Compare(attackState))
+            return;
+        playerStateMachine.ChangeState(attackState);
+        StartCoroutine(CTemporary());
+    }
+    public IEnumerator CTemporary() {
+        yield return new WaitForSeconds(.3f);
+        playerStateMachine.ChangeState(basicState);
     }
 }

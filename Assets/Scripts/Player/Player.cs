@@ -13,7 +13,7 @@ public class Player : LivingEntity, IDamageable {
     protected State moveState = new State("Move");
     protected State floatState = new State("Float");
     protected State dodgeState = new State("Dodge");
-    // protected State attackState = new State("Attack");
+    protected State attackState = new State("Attack");
     protected State hitState = new State("Hit");
 
     protected State basicState { get {
@@ -35,7 +35,7 @@ public class Player : LivingEntity, IDamageable {
     [SerializeField] GameObject groundedPlatform;
 
     [Header("Dodge Status")]
-    float dodgeSpeed = 27f;
+    float dodgeSpeed = 33f;
     float dodgeDuration = .3f;
 
     int dodgeCount = 0;
@@ -130,9 +130,11 @@ public class Player : LivingEntity, IDamageable {
         #region Dodge State >>
         dodgeState.OnActive += () => {
             playerRigidbody.gravityScale = 0;
+            playerAnimator.SetBool("Dodge", true);
         };
         dodgeState.OnInactive += () => {
             playerRigidbody.gravityScale = 1;
+            playerAnimator.SetBool("Dodge", false);
             if(dodgeCoroutine != null)
                 StopCoroutine(dodgeCoroutine);
         };
@@ -182,7 +184,8 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     public void Dodge() {
-        if(dodgeCount <= 0) return;
+        if(dodgeCount <= 0
+        || playerStateMachine.Compare(hitState)) return;
         if(dodgeCoroutine != null) StopCoroutine(dodgeCoroutine);
         dodgeCoroutine = StartCoroutine(DodgeCoroutine());
     }
@@ -209,17 +212,7 @@ public class Player : LivingEntity, IDamageable {
 
         playerStateMachine.ChangeState(basicState);
     }
-    public virtual void BasicAttack()
-    {
-        if(playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Weapon_MeleeAttack") && playerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f)
-            return;
-
-        if(playerStateMachine.Compare(dodgeState)
-        || playerStateMachine.Compare(hitState))
-            return;
-
-        // playerStateMachine.ChangeState(attackState);
-    }
+    public virtual void BasicAttack() {}
     void Update() {
         BasicMove();
         CheckBottom();
@@ -238,7 +231,8 @@ public class Player : LivingEntity, IDamageable {
         || !CheckFront()
         || playerStateMachine.Compare(floatState)
         || playerStateMachine.Compare(dodgeState)
-        || playerStateMachine.Compare(hitState)) return;
+        || playerStateMachine.Compare(hitState)
+        || playerStateMachine.Compare(attackState)) return;
 
         if(moveDirection == Vector2.zero) { // Stop Moving
             playerStateMachine.ChangeState(idleState, false);
@@ -254,7 +248,8 @@ public class Player : LivingEntity, IDamageable {
     }
     protected void CheckBottom() {
         if(playerStateMachine.Compare(dodgeState)
-        || playerStateMachine.Compare(hitState))
+        || playerStateMachine.Compare(hitState)
+        || playerStateMachine.Compare(attackState))
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
