@@ -23,10 +23,10 @@ public class MeleePlayer : Player {
         base.InitialState();
         #region Attack State
         attackState.OnActive += (nextState) => {
-            playerAnimator.SetBool("Melee Attack 01", true);
+            playerAnimator.SetBool("Melee Attack", true);
         };
         attackState.OnInactive += (prevState) => {
-            playerAnimator.SetBool("Melee Attack 01", false);
+            playerAnimator.SetBool("Melee Attack", false);
         };
         #endregion Attack State
     }
