@@ -4,17 +4,23 @@ using UnityEngine;
 
 namespace GameObjectState {
     public class State {
-        public delegate void voidEvent();
+        public delegate void ChangeEvent();
+        public delegate void ChangeEventWithState(State state = null);
         string stateName;
+        public string stateTag { get; private set; } = null;
 
         public State(string stateName) {
             this.stateName = stateName;
         }
+        public State(string stateName, string stateTag) {
+            this.stateName = stateName;
+            this.stateTag = stateTag;
+        }
 
-        public voidEvent OnActive;
-        public voidEvent OnStay;
-        public voidEvent OnStayFixed;
-        public voidEvent OnInactive;
+        public ChangeEventWithState OnActive;
+        public ChangeEvent OnStay;
+        public ChangeEvent OnStayFixed;
+        public ChangeEventWithState OnInactive;
 
         public override string ToString() {
             return stateName;

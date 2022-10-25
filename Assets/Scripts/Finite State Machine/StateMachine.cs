@@ -24,8 +24,8 @@ namespace GameObjectState {
             if(currentState == null) {
                 Debug.LogError($"StateMachine on '{gameObject.name}' has not any 'currentState'. Please set initial 'currentState' with SetInitialState(State state).");
             } else {
-                if(currentState.OnInactive != null) currentState.OnInactive();
-                if(nextState.OnActive != null) nextState.OnActive();
+                if(currentState.OnInactive != null) currentState.OnInactive(nextState);
+                if(nextState.OnActive != null) nextState.OnActive(currentState);
                 currentState = nextState;
             }
         }

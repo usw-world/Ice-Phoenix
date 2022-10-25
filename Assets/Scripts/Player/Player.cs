@@ -82,28 +82,29 @@ public class Player : LivingEntity, IDamageable {
 
         playerSideUI = playerSideUI==null ? GetComponentInChildren<PlayerSideUI>() : playerSideUI;
     }
+
     protected override void Start() {
         InitialState();
         RefreshHPSlider();
     }
     protected virtual void InitialState() {
         #region Idle State >>
-        idleState.OnActive += () => {
+        idleState.OnActive += (nextState) => {
             playerAnimator.SetBool("Idle", true);
         };
-        idleState.OnInactive += () => {
+        idleState.OnInactive += (prevState) => {
             playerAnimator.SetBool("Idle", false);
         };
         #endregion << Idle State
 
         #region Float State >>
-        floatState.OnActive += () => {
+        floatState.OnActive += (nextState) => {
             canMove = false;
             isGrounding = false;
             playerAnimator.SetBool("Float", true);
             currentJumpCount ++;
         };
-        floatState.OnInactive += () => {
+        floatState.OnInactive += (prevState) => {
             canMove = true;
             isGrounding = true;
             playerAnimator.SetBool("Float", false);
@@ -117,23 +118,23 @@ public class Player : LivingEntity, IDamageable {
         #endregion << Float State
 
         #region Move State >>
-        moveState.OnActive += () => {
+        moveState.OnActive += (nextState) => {
             playerAnimator.SetBool("Move", true);
         };
         moveState.OnStay += () => {
             LookAtX(moveDirection.x);
         };
-        moveState.OnInactive += () => {
+        moveState.OnInactive += (prevState) => {
             playerAnimator.SetBool("Move", false);
         };
         #endregion << Move State
 
         #region Dodge State >>
-        dodgeState.OnActive += () => {
+        dodgeState.OnActive += (nextState) => {
             playerRigidbody.gravityScale = 0;
             playerAnimator.SetBool("Dodge", true);
         };
-        dodgeState.OnInactive += () => {
+        dodgeState.OnInactive += (prevState) => {
             playerRigidbody.gravityScale = 1;
             playerAnimator.SetBool("Dodge", false);
             if(dodgeCoroutine != null)
@@ -142,11 +143,11 @@ public class Player : LivingEntity, IDamageable {
         #endregion << Dodge State
         
         #region Hit State >>
-        hitState.OnActive += () => {
+        hitState.OnActive += (nextState) => {
             canMove = false;
             playerAnimator.SetBool("Hit", true);
         };
-        hitState.OnInactive += () => {
+        hitState.OnInactive += (prevState) => {
             canMove = true;
             playerAnimator.SetBool("Hit", false);
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);

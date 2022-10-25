@@ -22,10 +22,10 @@ public class MeleePlayer : Player {
     protected override void InitialState() {
         base.InitialState();
         #region Attack State
-        attackState.OnActive += () => {
+        attackState.OnActive += (nextState) => {
             playerAnimator.SetBool("Melee Attack 01", true);
         };
-        attackState.OnInactive += () => {
+        attackState.OnInactive += (prevState) => {
             playerAnimator.SetBool("Melee Attack 01", false);
         };
         #endregion Attack State
@@ -55,7 +55,7 @@ public class MeleePlayer : Player {
         }
     }
     void OnDrawGizmos() {
-        if(attackRangeCenter.position != null
+        if(attackRangeCenter != null
         && attackRangeBounds != null) {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(attackRangeCenter.position, attackRangeBounds);

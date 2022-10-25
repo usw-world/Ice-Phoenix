@@ -53,28 +53,28 @@ public class MeleeMonster : Monster
     }
 
     void InitialState() {
-        idleState.OnActive += () => {
+        idleState.OnActive += (nextState) => {
             monsterAnimator.SetBool("Idle", true);
         };
-        idleState.OnInactive += () => {
+        idleState.OnInactive += (prevState) => {
             monsterAnimator.SetBool("Idle", false);
         };
-        moveState.OnActive += () => {
+        moveState.OnActive += (nextState) => {
             monsterAnimator.SetBool("Move", true);
         };
-        moveState.OnInactive += () => {
+        moveState.OnInactive += (prevState) => {
             monsterAnimator.SetBool("Move", false);
         };
-        attackState.OnActive += () => {
+        attackState.OnActive += (nextState) => {
             monsterAnimator.SetBool("Attack", true);
         };
-        attackState.OnInactive += () => {
+        attackState.OnInactive += (prevState) => {
             monsterAnimator.SetBool("Attack", false);
         };
-        dieState.OnActive += () => {
+        dieState.OnActive += (nextState) => {
             monsterAnimator.SetTrigger("Die");
         };
-        hitState.OnActive += () => {
+        hitState.OnActive += (prevState) => {
             monsterAnimator.SetTrigger("Hit");
         };
     }
