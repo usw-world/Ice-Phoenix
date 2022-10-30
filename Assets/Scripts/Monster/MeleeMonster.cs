@@ -125,19 +125,21 @@ public class MeleeMonster : Monster
         if(!monsterStateMachine.Compare(attackState)
         && !monsterStateMachine.Compare(hitState)) {
             if(playerTransform.position.x - transform.position.x < 0) {
-                transform.localScale = new Vector3(-1f, 1f, 1);
+                LookAtX(-1);
             } else {
-                transform.localScale = new Vector3(1f, 1f, 1);
+                LookAtX(1);
             }
         }
     }
     
-    void Update() {
+    protected override void Update() {
+        base.Update();
         MoveToTarget();
         AttackToTarget();
     }
 
     public override void OnDamage(float damage, float duration=0) {
+        if(isDead) return;
         base.OnDamage(damage, duration);
         if (hp <= 0) {
             Die();
@@ -145,6 +147,7 @@ public class MeleeMonster : Monster
         }
     }
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
+        if(isDead) return;
         monsterRigidbody.AddForce(force);
         OnDamage(damage, duration);
         if(!isDead) {

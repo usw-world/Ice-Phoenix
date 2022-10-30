@@ -25,6 +25,12 @@ namespace GameObjectState {
         public override string ToString() {
             return stateName;
         }
+        public bool Compare(State state) {
+            return this == state;
+        }
+        public bool Compare(string stateTag) {
+            return this.stateTag == stateTag;
+        }
         /* 
             Usage Example >>
 

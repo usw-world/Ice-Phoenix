@@ -1,65 +1,74 @@
 using System.Collections;
 using UnityEngine;
 using GameObjectState;
-using JetBrains.Annotations; // << ?
 using UnityEngine.UI;
 
 public class Player : LivingEntity, IDamageable {
-    static public Player playerInstance;
     public const int DEFAULT_PLAYER_LAYERMASK = 8;
+    public const string ATTACK_STATE_TAG = "tag:Attack";
+    public const string JUMP_ATTACK_STATE_TAG = "tag:Jump Attack";
+
+    static public Player playerInstance;
     public Animator playerAni;
 
+    #region States (and State Machine)
+    protected StateMachine playerStateMachine;
     protected State idleState = new State("Idle");
     protected State moveState = new State("Move");
     protected State floatState = new State("Float");
     protected State dodgeState = new State("Dodge");
-    protected State attackState = new State("Attack");
     protected State hitState = new State("Hit");
-
     protected State basicState { get {
         if(moveDirection == Vector2.zero) return idleState;
         else return moveState;
     } }
-    protected StateMachine playerStateMachine;
-
+    #endregion
+    #region Move
     [Header("Move Status")]
-    float moveSpeed = 10f;
-    float jumpPower = 25f;
-    Vector2 moveDirection;
-    bool canMove = true;
+    protected float moveSpeed = 10f;
+    protected float jumpPower = 25f;
+    protected Vector2 moveDirection;
     bool isGrounding = false;
     int maxJumpCount = 2;
     int currentJumpCount = 0;
     const int GROUNDABLE_LAYER = 64;
     [SerializeField] BoxCollider2D frontCheckCollider;
     [SerializeField] GameObject groundedPlatform;
-
+    #endregion Move
+    #region Attack
+    protected float attackDamage = 25f;
+    protected float attackForce = 100f;
+    protected float attackSpeed = 1f;
+    protected bool isAfterAttack = false;
+    #endregion Attack
+    #region Dodge
     [Header("Dodge Status")]
     float dodgeSpeed = 33f;
     float dodgeDuration = .3f;
-
     int dodgeCount = 0;
     int maxDodgeCount = 2;
     float cooldownForDodge = 0;
     float dodgeResetTime = 1f;
-
+    #endregion Dodge
     #region Coroutines
     protected Coroutine dodgeCoroutine;
     protected Coroutine hitCoroutine;
-    protected Coroutine basicAttackCoroutine;
     #endregion
-
+    #region Physics
     [Header("Physic Attribute")]
     protected Rigidbody2D playerRigidbody;
     protected BoxCollider2D playerCollider;
-
+    #endregion Physics
+    #region Graphics
     [Header("Graphics")]
     protected SpriteRenderer playerSprite;
     protected Animator playerAnimator;
     protected Color playerOriginColor;
-
+    #endregion Graphics
+    #region UI
     [Header("UI")]
-    [SerializeField] PlayerSideUI playerSideUI;
+    [SerializeField] SideUI playerSideUI;
+    #endregion UI
     
     protected override void Awake() {
         base.Awake();
@@ -80,32 +89,30 @@ public class Player : LivingEntity, IDamageable {
         playerOriginColor = playerSprite==null ? Color.white : playerSprite.color;
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
 
-        playerSideUI = playerSideUI==null ? GetComponentInChildren<PlayerSideUI>() : playerSideUI;
+        playerSideUI = playerSideUI==null ? GetComponentInChildren<SideUI>() : playerSideUI;
     }
-
     protected override void Start() {
         InitialState();
-        RefreshHPSlider();
+        UpdateHPSlider();
     }
     protected virtual void InitialState() {
         #region Idle State >>
-        idleState.OnActive += (nextState) => {
+        idleState.OnActive += (prevState) => {
             playerAnimator.SetBool("Idle", true);
         };
-        idleState.OnInactive += (prevState) => {
+        idleState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Idle", false);
         };
         #endregion << Idle State
 
         #region Float State >>
-        floatState.OnActive += (nextState) => {
-            canMove = false;
+        floatState.OnActive += (prevState) => {
             isGrounding = false;
-            playerAnimator.SetBool("Float", true);
+            if(prevState.Compare(floatState)) playerAnimator.SetTrigger("Double Jump");
+            else playerAnimator.SetBool("Float", true);
             currentJumpCount ++;
         };
-        floatState.OnInactive += (prevState) => {
-            canMove = true;
+        floatState.OnInactive += (nextState) => {
             isGrounding = true;
             playerAnimator.SetBool("Float", false);
         };
@@ -118,23 +125,23 @@ public class Player : LivingEntity, IDamageable {
         #endregion << Float State
 
         #region Move State >>
-        moveState.OnActive += (nextState) => {
+        moveState.OnActive += (prevState) => {
             playerAnimator.SetBool("Move", true);
         };
         moveState.OnStay += () => {
             LookAtX(moveDirection.x);
         };
-        moveState.OnInactive += (prevState) => {
+        moveState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Move", false);
         };
         #endregion << Move State
 
         #region Dodge State >>
-        dodgeState.OnActive += (nextState) => {
+        dodgeState.OnActive += (prevState) => {
             playerRigidbody.gravityScale = 0;
             playerAnimator.SetBool("Dodge", true);
         };
-        dodgeState.OnInactive += (prevState) => {
+        dodgeState.OnInactive += (nextState) => {
             playerRigidbody.gravityScale = 1;
             playerAnimator.SetBool("Dodge", false);
             if(dodgeCoroutine != null)
@@ -143,12 +150,10 @@ public class Player : LivingEntity, IDamageable {
         #endregion << Dodge State
         
         #region Hit State >>
-        hitState.OnActive += (nextState) => {
-            canMove = false;
+        hitState.OnActive += (prevState) => {
             playerAnimator.SetBool("Hit", true);
         };
-        hitState.OnInactive += (prevState) => {
-            canMove = true;
+        hitState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Hit", false);
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
         };
@@ -187,7 +192,8 @@ public class Player : LivingEntity, IDamageable {
     }
     public void Dodge() {
         if(dodgeCount <= 0
-        || playerStateMachine.Compare(hitState)) return;
+        || playerStateMachine.Compare(hitState)
+        || playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG)) return;
         if(dodgeCoroutine != null) StopCoroutine(dodgeCoroutine);
         dodgeCoroutine = StartCoroutine(DodgeCoroutine());
     }
@@ -214,14 +220,13 @@ public class Player : LivingEntity, IDamageable {
 
         playerStateMachine.ChangeState(basicState);
     }
-    public virtual void BasicAttack() {}
+    public virtual void Attack() {}
+    public virtual void JumpAttack() {}
     protected virtual void Update() {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
     }
-
-
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
             cooldownForDodge -= Time.deltaTime;
@@ -234,12 +239,16 @@ public class Player : LivingEntity, IDamageable {
         || playerStateMachine.Compare(floatState)
         || playerStateMachine.Compare(dodgeState)
         || playerStateMachine.Compare(hitState)
-        || playerStateMachine.Compare(attackState)) return;
+        || playerStateMachine.Compare(ATTACK_STATE_TAG) && !isAfterAttack
+        || playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG)) return;
 
         if(moveDirection == Vector2.zero) { // Stop Moving
+            if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return; // This code keep 'delay motion after attack' when Player hasn't movement intention.
             playerStateMachine.ChangeState(idleState, false);
-            // Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f);
-            // playerRigidbody.velocity = destSpeed;
+            // ┌━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┐
+            // │ Vector2 destSpeed = Vector2.Lerp((1 - Time.deltaTime) * playerRigidbody.velocity, playerRigidbody.velocity, .02f); │
+            // │ playerRigidbody.velocity = destSpeed;                                                                              ┣ Inertia Movement
+            // └━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┘
             playerRigidbody.velocity *= Vector2.up;
         } else { // Stay Running
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
@@ -251,7 +260,7 @@ public class Player : LivingEntity, IDamageable {
     protected void CheckBottom() {
         if(playerStateMachine.Compare(dodgeState)
         || playerStateMachine.Compare(hitState)
-        || playerStateMachine.Compare(attackState))
+        || playerStateMachine.Compare(ATTACK_STATE_TAG))
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
@@ -262,18 +271,18 @@ public class Player : LivingEntity, IDamageable {
                 groundedPlatform = hit.transform.gameObject;
             }
         } else {
-            playerStateMachine.ChangeState(floatState, false);
+            if(!playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG))
+                playerStateMachine.ChangeState(floatState, false);
         }
     }
-    
-    void RefreshHPSlider() {
+    void UpdateHPSlider() {
         if(maxHp != 0)
-            playerSideUI.SetHPSlider(hp / maxHp);
+            playerSideUI.SetHP(hp / maxHp);
     }
     public void OnDamage(float damage, float duration=.25f) {
         if(isDead) return;
         hp -= damage;
-        RefreshHPSlider();
+        UpdateHPSlider();
         if(hp <= 0) {
             Die();
         } else {

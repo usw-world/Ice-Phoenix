@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fb1f4646fa4c45d488a1a2a53dc62219
+guid: e74aa3dd3a660444ea952ac6fa85b973
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -104,13 +104,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: player_float_sprite_0
+      name: player_jumpattack_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 128
-        height: 128
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,41 +118,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d8e87123d4eec24ead14a26cafccdb2
-      internalID: 1566477662
+      spriteID: 85b4bbdf37af02b4db605c4ed071495f
+      internalID: -1473292537
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_float_sprite_1
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 128
-        height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8b5b985e7610dc740b4137c5da717ce5
-      internalID: -1593072886
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_float_sprite_2
+      name: player_jumpattack_1
       rect:
         serializedVersion: 2
         x: 256
         y: 0
-        width: 128
-        height: 128
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -160,8 +139,113 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4615034620ff81241a8ac09293eacd48
-      internalID: 152770314
+      spriteID: f6425d33b80f9814b89e14745a3bec9f
+      internalID: 1476234754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpattack_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9244bf83da57fc344872576be7aceb95
+      internalID: 427409362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpattack_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18aab9f67416c1f4fb2614096502c6ad
+      internalID: -1856903025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpattack_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6dfacd8b61f44e449ad52f6542335b10
+      internalID: 313335081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpattack_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6d5eb61b59b5cc4485d3d82909c767a
+      internalID: 220698079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpattack_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0dbb3161d6dcff64187d83e09112ebdb
+      internalID: 136611041
       vertices: []
       indices: 
       edges: []
@@ -177,9 +261,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      player_float_sprite_2: 152770314
-      player_float_sprite_0: 1566477662
-      player_float_sprite_1: -1593072886
+      player_jumpattack_1: 1476234754
+      player_jumpattack_0: -1473292537
+      player_jumpattack_3: -1856903025
+      player_jumpattack_6: 136611041
+      player_jumpattack_5: 220698079
+      player_jumpattack_2: 427409362
+      player_jumpattack_4: 313335081
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

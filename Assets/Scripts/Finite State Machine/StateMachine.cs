@@ -32,6 +32,9 @@ namespace GameObjectState {
         public bool Compare(State target) {
             return currentState == target;
         }
+        public bool Compare(string tag) {
+            return currentState.stateTag == tag;
+        }
         private void Update() {
             if(currentState != null && currentState.OnStay != null) {
                 currentState.OnStay();

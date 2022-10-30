@@ -46,7 +46,7 @@ public class InputManager : MonoBehaviour {
             player.DownJump();
         }
         if(Input.GetButtonDown("Basic Attack")) {
-            player.BasicAttack();
+            player.Attack();
         }
         if(Input.GetButtonDown("Dodge"))
             player.Dodge();
