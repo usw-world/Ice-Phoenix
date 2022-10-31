@@ -37,6 +37,7 @@ public class MeleePlayer : Player {
         #region Attack State
         attackState01.OnActive += (prevState) => {
             playerAnimator.SetBool("Melee Attack 01", true);
+            playerRigidbody.velocity = new Vector2(0, playerRigidbody.velocity.y);
         };
         attackState01.OnInactive += (State nextState) => {
             playerAnimator.SetBool("Melee Attack 01", false);
@@ -67,6 +68,7 @@ public class MeleePlayer : Player {
             isAfterAttack = false;
             attackingPreInput = false;
             comboCount = 0;
+            canMove = true;
         }
         #endregion Attack State
 
@@ -106,36 +108,47 @@ public class MeleePlayer : Player {
         comboCount++;
         isAfterAttack = false;
         attackingPreInput = false;
+        canMove = false;
+        Vector2 slideforce = new Vector2(transform.localScale.x + moveDirection.x, 0);
         switch(comboCount) {
             case 1:
                 playerStateMachine.ChangeState(attackState01);
+                slideforce *= 3;
                 break;
             case 2:
                 playerStateMachine.ChangeState(attackState02);
+                slideforce *= 3;
                 break;
             case 3:
                 playerStateMachine.ChangeState(attackState03);
+                slideforce *= 5;
                 break;
         }
+        playerRigidbody.AddForce(slideforce, ForceMode2D.Impulse);
     }
     void AnimationEvent_Attack(int index) {
         Collider2D[] inners = Physics2D.OverlapBoxAll(attackRange[index].position, attackRange[index].localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
         float damage = attackDamage;
         float force = attackForce;
+        // Vector2 slideforce = new Vector2(moveDirection.x, 0);
         switch(index) {
             case 0:
                 damage *= 1f;
                 force *= 2f;
+                // slideforce *= 5;
                 break;
             case 1:
                 damage *= 1.2f;
                 force *= 2f;
+                // slideforce *= 5;
                 break;
             case 2:
                 damage *= 1.5f;
                 force *= 5f;
+                // slideforce *= 12;
                 break;
         }
+        // playerRigidbody.AddForce(slideforce, ForceMode2D.Impulse);
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(inner.TryGetComponent<IDamageable>(out target)) {
@@ -152,6 +165,9 @@ public class MeleePlayer : Player {
         } else {
             isAfterAttack = true;
         }
+    }
+    void AnimationEvent_CanMove() {
+        canMove = true;
     }
     void AnimationEvent_EndAttack() {
         playerStateMachine.ChangeState(basicState);
