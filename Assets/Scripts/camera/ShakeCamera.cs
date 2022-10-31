@@ -5,14 +5,14 @@ using Cinemachine;
 
 public class ShakeCamera : MonoBehaviour
 {
-    public static ShakeCamera Instance{ get; private set; }
+    // public static ShakeCamera Instance{ get; private set; }
     private CinemachineVirtualCamera cinemachineVirtualCamera;
     private float shakeTimer;
     private void Awake()
     {
-        Instance = this;
+        // Instance = this;
         cinemachineVirtualCamera = GetComponent<CinemachineVirtualCamera>();
-        ShakeCamera.Instance.Shake(0f,0f);
+        // ShakeCamera.Instance.Shake(0f,0f);
     }
 
     public void Shake(float intensity, float time)
@@ -28,7 +28,8 @@ public class ShakeCamera : MonoBehaviour
     {
         if(Input.GetKeyDown("c"))
         {
-            ShakeCamera.Instance.Shake(5f,0.1f);
+            // ShakeCamera.Instance.Shake(5f,0.1f);
+            Shake(5f,0.1f);
         }
         if(shakeTimer > 0) {
             shakeTimer -= Time.deltaTime;
@@ -39,5 +40,12 @@ public class ShakeCamera : MonoBehaviour
                 cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0f;                
             }
         }
+    }
+    private void OnEnable()
+    {
+    	CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
+            cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0f;
     }
 }
