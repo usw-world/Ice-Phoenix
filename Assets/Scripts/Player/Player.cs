@@ -70,7 +70,9 @@ public class Player : LivingEntity, IDamageable {
     [Header("UI")]
     [SerializeField] SideUI playerSideUI;
     #endregion UI
-    
+    #region ActionEvent
+    public delegate void DodgeEvent(Vector2 direction);
+    #endregion ActionEvent
     protected override void Awake() {
         base.Awake();
         if (Player.playerInstance != null)
