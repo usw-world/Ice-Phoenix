@@ -20,6 +20,8 @@ public class MeleeMonster : Monster
     public Vector2 attackArea;
     float distance;
 
+    public GameObject DamageEffect; //2022-11-04추가
+
     SpriteRenderer rend;
     Rigidbody2D monsterRigidbody;
     Vector3 monsterPos;
@@ -145,6 +147,9 @@ public class MeleeMonster : Monster
             Die();
             return;
         }
+
+        if(DamageEffect!=null)          //2022-11-04추가
+        Instantiate(DamageEffect,new Vector2(transform.position.x, transform.position.y),Quaternion.identity);//2022-11-04추가
     }
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
         if(isDead) return;
@@ -169,5 +174,8 @@ public class MeleeMonster : Monster
         monsterStateMachine.ChangeState(dieState);
         GetComponent<MeleeMonster>().enabled = false;
         Destroy(gameObject, 2f);
+        
+        if(DamageEffect!=null)          //2022-11-04추가
+        Instantiate(DamageEffect,new Vector2(transform.position.x, transform.position.y),Quaternion.identity);//2022-11-04추가
     }
 }
