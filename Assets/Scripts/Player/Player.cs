@@ -187,6 +187,8 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     public void DownJump() {
+        if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return;
+        
         RaycastHit2D[] inners = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
         foreach(RaycastHit2D inner in inners) {
             Platform targetPlatform = inner.transform.GetComponent<Platform>();
@@ -264,12 +266,13 @@ public class Player : LivingEntity, IDamageable {
     protected void CheckBottom() {
         if(playerStateMachine.Compare(dodgeState)
         || playerStateMachine.Compare(hitState)
-        || playerStateMachine.Compare(ATTACK_STATE_TAG))
+        /* || playerStateMachine.Compare(ATTACK_STATE_TAG) */)
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
         if(hit && !(hit.transform.tag == "Platform" && hit.transform.GetComponent<Platform>().isInactive)) {
             if(playerRigidbody.velocity.y <= 0) {
+                if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return;
                 currentJumpCount = 0;
                 playerStateMachine.ChangeState(basicState, false);
                 groundedPlatform = hit.transform.gameObject;

@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Pool {
     public class ParticlePooler2D : Pooler<GameObject> {
-
         private void Start() {}
         private void Update() {
             if(Input.GetMouseButtonDown(0)) {
@@ -13,16 +12,21 @@ namespace Pool {
         }
         protected override void InitializePool() {
             poolingQueue = new Queue<GameObject>();
-            
-            for(int i=0; i<amount; i++) {
+            Generate(amount);
+        }
+        protected override void Generate(int count) {
+            for(int i=0; i<count; i++) {
                 GameObject particle = Instantiate(targetInstance, parentObject);
                 particle.SetActive(false);
                 poolingQueue.Enqueue(particle);
             }
-            poolingObjects = poolingQueue.ToArray();
         }
         protected override GameObject Call(Vector2 point, Transform parent=null) {
-            GameObject target = poolingQueue.Dequeue();
+            GameObject target;
+            if(poolingQueue.Count <= 0) {
+                Generate(reszieAmount);
+            }
+            target = poolingQueue.Dequeue();
             target.transform.SetParent(parent);
             target.SetActive(true);
             return target;

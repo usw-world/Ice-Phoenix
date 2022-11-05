@@ -20,8 +20,6 @@ public class MeleeMonster : Monster
     public Vector2 attackArea;
     float distance;
 
-    public GameObject DamageEffect; //2022-11-04추가
-
     SpriteRenderer rend;
     Rigidbody2D monsterRigidbody;
     Vector3 monsterPos;
@@ -32,6 +30,8 @@ public class MeleeMonster : Monster
     Coroutine hitCoroutine;
     #endregion
 
+    [SerializeField] ParticleManager particleManager;
+
     protected override void Awake() {
         base.Awake();
         monsterRigidbody = GetComponent<Rigidbody2D>();
@@ -41,8 +41,21 @@ public class MeleeMonster : Monster
             Debug.LogError("Monster hasn't any 'StateMachine'.");
         }
         playerTransform = playerTransform==null ? GameObject.FindGameObjectWithTag("Player").transform : playerTransform;
+        if(particleManager == null) {
+            GameObject pgobj = GameObject.Find("Particle Manager");
+            if(pgobj == null)
+                Debug.LogWarning($"Particle Manager Script is null in {this.gameObject.name}");
+            else
+                particleManager = pgobj.GetComponent<ParticleManager>();
+        }
     }
+    string _temporary_particle_name = "enemy_blood";
+    string _temporary_particle_name2 = "enemy_attack";
+    [SerializeField] GameObject _damageEffect;
     protected override void Start() {
+        particleManager.InitializeParticle(_temporary_particle_name, _damageEffect);
+        particleManager.InitializeParticle(_temporary_particle_name2, _damageEffect);
+
         base.Start();
         InitialState();
         rend = GetComponent<SpriteRenderer>();
@@ -148,8 +161,8 @@ public class MeleeMonster : Monster
             return;
         }
 
-        if(DamageEffect!=null)          //2022-11-04추가
-        Instantiate(DamageEffect,new Vector2(transform.position.x, transform.position.y),Quaternion.identity);//2022-11-04추가
+        GameObject particle = particleManager.Generate(_temporary_particle_name, this.transform.position);
+        particleManager.Release(particle, 1);
     }
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
         if(isDead) return;
@@ -174,8 +187,5 @@ public class MeleeMonster : Monster
         monsterStateMachine.ChangeState(dieState);
         GetComponent<MeleeMonster>().enabled = false;
         Destroy(gameObject, 2f);
-        
-        if(DamageEffect!=null)          //2022-11-04추가
-        Instantiate(DamageEffect,new Vector2(transform.position.x, transform.position.y),Quaternion.identity);//2022-11-04추가
     }
 }
