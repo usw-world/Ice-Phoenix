@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace Ability {
+namespace AbilitySystem {
     public class AbilityManager : MonoBehaviour {
+        [SerializeField] Canvas abilityUICanvas;
         Player player;
         private void Start() {
             if(player == null) {

@@ -49,12 +49,8 @@ public class MeleeMonster : Monster
                 particleManager = pgobj.GetComponent<ParticleManager>();
         }
     }
-    string _temporary_particle_name = "enemy_blood";
-    string _temporary_particle_name2 = "enemy_attack";
     [SerializeField] GameObject _damageEffect;
     protected override void Start() {
-        particleManager.InitializeParticle(_temporary_particle_name, _damageEffect);
-        particleManager.InitializeParticle(_temporary_particle_name2, _damageEffect);
 
         base.Start();
         InitialState();
@@ -160,9 +156,6 @@ public class MeleeMonster : Monster
             Die();
             return;
         }
-
-        GameObject particle = particleManager.Generate(_temporary_particle_name, this.transform.position);
-        particleManager.Release(particle, 1);
     }
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
         if(isDead) return;

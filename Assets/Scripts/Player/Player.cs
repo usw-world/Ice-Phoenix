@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using GameObjectState;
 using UnityEngine.UI;
+using AbilitySystem;
 
 public class Player : LivingEntity, IDamageable {
     public const int DEFAULT_PLAYER_LAYERMASK = 8;
@@ -73,6 +74,10 @@ public class Player : LivingEntity, IDamageable {
     #region ActionEvent
     public delegate void DodgeEvent(Vector2 direction);
     #endregion ActionEvent
+    #region Ability
+    AbilityManager abilityManager;
+    #endregion Ability
+
     protected override void Awake() {
         base.Awake();
         if (Player.playerInstance != null)
@@ -270,7 +275,7 @@ public class Player : LivingEntity, IDamageable {
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
-        if(hit && !(hit.transform.tag == "Platform" && hit.transform.GetComponent<Platform>().isInactive)) {
+        if(hit && !(hit.transform.tag == "Platform" && hit.transform.position.y + hit.transform.localScale.y/2 >= hit.point.y)) {
             if(playerRigidbody.velocity.y <= 0) {
                 if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return;
                 currentJumpCount = 0;
