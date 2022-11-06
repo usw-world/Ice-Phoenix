@@ -1,27 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pool;
 
 public class ParticleManager : MonoBehaviour {
-    // [SerializeField] GameObject damageEffect; //2022-11-04추가
-    Dictionary<string, GameObject> particleMap = new Dictionary<string, GameObject>();
+    Dictionary<string, ParticlePool> particleMap = new Dictionary<string, ParticlePool>();
 
     public void Start() {}
-    public void InitializeParticle(string particleName, GameObject particle) {
-        particleMap.Add(particleName, particle);
+    public void InitializeParticle(string particleName, GameObject particle, int amount=10, int resizeAmount=5) {
+        ParticlePool pool = new ParticlePool(particleName, particle, amount, resizeAmount);
+        for(int i=0; i<amount; i++) {
+            pool.InPool(Instantiate(particle, transform), transform);
+        }
+        particleMap.Add(particleName, pool);
     }
-    public GameObject Generate(string target, Vector2 point) {
-        if(particleMap[target] != null)          //2022-11-04추가
-            return Instantiate(particleMap[target], new Vector2(point.x, point.y), Quaternion.identity);//2022-11-04추가
-        return null;
+    public GameObject Call(string particleName, Vector2 point, Transform parent=null) {
+        ParticlePool pool = particleMap[particleName];
+        if(pool.Count <= 0) {
+            RestorePool(pool);
+        }
+        GameObject particle = particleMap[particleName].OutPool(point, parent);
+        particle.AddComponent<PoolingData>();
+        particle.GetComponent<PoolingData>().poolName = particleName;
+        return particle;
     }
-    public GameObject Generate(string target, Vector2 point, Quaternion rotation) {
-        if(particleMap[target] != null)
-            return Instantiate(particleMap[target], new Vector2(point.x, point.y), rotation);
-        return null;
+    public GameObject Call(string particleName, Vector2 point, int second, Transform parent=null) {
+        GameObject particle = Call(particleName, point, parent);
+        Release(particle, second);
+        return particle;
+    }
+    public void RestorePool(ParticlePool pool) {
+        for(int i=0; i<pool.resizeAmount; i++) {
+            pool.InPool(Instantiate(pool.poolingObject, transform), transform);
+        }
     }
     public void Release(GameObject target) {
-        Destroy(target);
+        PoolingData data = target.GetComponent<PoolingData>();
+        if(data != null) {
+            particleMap[data.poolName].InPool(target, transform);
+        } else {
+            Debug.LogWarning("Object that incomming into Pool is not 'Pooling Object'.");
+        }
     }
     public void Release(GameObject target, float second) {
         StartCoroutine(Utility.CoroutineTask(() => {
