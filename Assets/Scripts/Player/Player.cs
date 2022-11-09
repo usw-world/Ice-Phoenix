@@ -27,7 +27,7 @@ public class Player : LivingEntity, IDamageable {
     #region Move
     [Header("Move Status")]
     protected float moveSpeed = 10f;
-    protected float jumpPower = 25f;
+    protected float jumpPower = 19f;
     protected Vector2 moveDirection;
     protected bool canMove = true;
     bool isGrounding = false;
@@ -175,14 +175,14 @@ public class Player : LivingEntity, IDamageable {
         return !hit;
     }
     public void Jump() {
-        if(currentJumpCount < maxJumpCount
-        && !playerStateMachine.Compare(dodgeState)
-        && !playerStateMachine.Compare(hitState)
-        && !playerStateMachine.Compare(ATTACK_STATE_TAG)) {
-            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
-            playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-            playerStateMachine.ChangeState(floatState, true);
-        }
+        if(currentJumpCount >= maxJumpCount
+        || playerStateMachine.Compare(dodgeState)
+        || playerStateMachine.Compare(hitState)
+        || playerStateMachine.Compare(ATTACK_STATE_TAG) && !canMove)
+            return;
+        playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
+        playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        playerStateMachine.ChangeState(floatState, true);
     }
     public void StopJump() {
         if(playerRigidbody.velocity.y > 0) {
