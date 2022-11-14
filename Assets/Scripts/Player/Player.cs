@@ -12,8 +12,6 @@ public class Player : LivingEntity, IDamageable {
     static public Player playerInstance;
     public Animator playerAni;
 
-    
-
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
     protected State idleState = new State("Idle");
@@ -36,7 +34,6 @@ public class Player : LivingEntity, IDamageable {
     int maxJumpCount = 2;
     int currentJumpCount = 0;
     const int GROUNDABLE_LAYER = 64;
-    [SerializeField] BoxCollider2D frontCheckCollider;
     [SerializeField] GameObject groundedPlatform;
     #endregion Move
     #region Attack
@@ -46,8 +43,12 @@ public class Player : LivingEntity, IDamageable {
     protected float attackDamage {
         get {
             float coef = 1;
-            foreach(AttackDamageCoef c in damageCoefs.GetInvocationList())
-                coef += c();
+            if(damageCoefs == null)
+                return coef;
+            AttackDamageCoef[] coefficient = (AttackDamageCoef[]) damageCoefs.GetInvocationList();
+            for(int i=0; i<damageCoefs.GetInvocationList().Length; i++) {
+                coef += coefficient[i]();
+            }
             return defaultDamage * coef;
         }
     }
@@ -103,7 +104,6 @@ public class Player : LivingEntity, IDamageable {
         }
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponents<BoxCollider2D>()[0];
-        frontCheckCollider = frontCheckCollider==null ? GetComponents<BoxCollider2D>()[1] : frontCheckCollider;
 
         playerSprite = GetComponent<SpriteRenderer>();
         playerOriginColor = playerSprite==null ? Color.white : playerSprite.color;
@@ -138,9 +138,10 @@ public class Player : LivingEntity, IDamageable {
             playerAnimator.SetBool("Float", false);
         };
         floatState.OnStay += () => {
+            LookAtX(moveDirection.x);
+            if(!CheckFront()) return;
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
             Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .05f);
-            LookAtX(moveDirection.x);
             playerRigidbody.velocity = addingSpeed;
         };
         #endregion << Float State
@@ -184,8 +185,14 @@ public class Player : LivingEntity, IDamageable {
         moveDirection = Vector2.right * dirX;
     }
     private bool CheckFront() {
-        RaycastHit2D hit = Physics2D.BoxCast(frontCheckCollider.bounds.center, frontCheckCollider.bounds.size, 0, transform.forward, .02f, GROUNDABLE_LAYER);
-        return !hit;
+        RaycastHit2D[] hit = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), .02f, GROUNDABLE_LAYER);
+        for(int i=0; i<hit.Length; i++) {
+            Platform p = hit[i].transform.GetComponent<Platform>();
+            if(hit[i].transform.tag == "Ground") {
+                return false;
+            }
+        }
+        return true; 
     }
     public void Jump() {
         if(currentJumpCount >= maxJumpCount

@@ -13,7 +13,7 @@ public class AbilityFury : Ability {
     float[] increasingPercents = {15, 40, 65};
 
     public override void OnGetAbility() {
-
+        
     }
     protected override void Start() {
         base.Start();
