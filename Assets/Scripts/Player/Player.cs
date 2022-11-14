@@ -12,6 +12,8 @@ public class Player : LivingEntity, IDamageable {
     static public Player playerInstance;
     public Animator playerAni;
 
+    
+
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
     protected State idleState = new State("Idle");
@@ -38,7 +40,17 @@ public class Player : LivingEntity, IDamageable {
     [SerializeField] GameObject groundedPlatform;
     #endregion Move
     #region Attack
-    protected float attackDamage = 25f;
+    protected float defaultDamage = 10f;
+    delegate float AttackDamageCoef();
+    AttackDamageCoef damageCoefs;
+    protected float attackDamage {
+        get {
+            float coef = 1;
+            foreach(AttackDamageCoef c in damageCoefs.GetInvocationList())
+                coef += c();
+            return defaultDamage * coef;
+        }
+    }
     protected float attackForce = 100f;
     protected float attackSpeed = 1f;
     protected bool isAfterAttack = false;
@@ -102,6 +114,7 @@ public class Player : LivingEntity, IDamageable {
     protected override void Start() {
         InitialState();
         UpdateHPSlider();
+        print(attackDamage);
     }
     protected virtual void InitialState() {
         #region Idle State >>

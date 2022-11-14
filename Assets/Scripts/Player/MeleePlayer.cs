@@ -31,7 +31,7 @@ public class MeleePlayer : Player {
     }
     protected override void Update() {
         base.Update();
-        // print(playerStateMachine.currentState);
+        print(playerStateMachine.currentState);
     }
     protected override void InitialState() {
         base.InitialState();
@@ -124,7 +124,7 @@ public class MeleePlayer : Player {
     }
     void AnimationEvent_Attack(int index) {
         Collider2D[] inners = Physics2D.OverlapBoxAll(attackRange[index].position, attackRange[index].localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
-        float damage = attackDamage;
+        float damage = defaultDamage;
         float force = attackForce;
         Vector2 slideforce = new Vector2(transform.localScale.x + moveDirection.x, 0);
         switch(index) {
@@ -149,7 +149,7 @@ public class MeleePlayer : Player {
             IDamageable target;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
-                    attackDamage,
+                    defaultDamage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
                     .5f);
             }
@@ -178,13 +178,13 @@ public class MeleePlayer : Player {
     }
     void AnimationEvent_JumpAttack() {
         Collider2D[] inners = Physics2D.OverlapBoxAll(jumpAttackRange.position, jumpAttackRange.localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
-        float damage = attackDamage * .8f;
+        float damage = defaultDamage * .8f;
         float force = attackForce * .6f;
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
-                    attackDamage,
+                    defaultDamage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
                     .5f);
             }

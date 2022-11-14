@@ -8,21 +8,26 @@ namespace AbilitySystem {
         [SerializeField] Image abilityImage;
         List<Ability> preAbility;
         bool isUnlock = false;
-
-        [SerializeField] Dictionary<string, GameObject> map;
         
         protected abstract int maxLevel { get; }
-        protected int a = 0;
-        [SerializeField] protected int currentLevel = 0;
-        protected virtual void Start() {}
-
-        protected class ValueOnLevel<T> {
-            private List<T> values = new List<T>();
-            public T this[int key] {
-                get {
-                    return values[key];
-                }
+        protected int currentLevel = 1;
+        public int level {
+            get {
+                return currentLevel<0 
+                    ? 0 
+                    : currentLevel>maxLevel 
+                        ? maxLevel 
+                        : currentLevel;
+            }
+            protected set {
+                currentLevel = value<0 
+                    ? 0 
+                    : value>maxLevel 
+                        ? maxLevel 
+                        : value;
             }
         }
+        protected virtual void Start() {}
+        public abstract void OnGetAbility();
     }
 }

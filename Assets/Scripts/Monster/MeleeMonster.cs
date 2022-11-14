@@ -41,6 +41,7 @@ public class MeleeMonster : Monster
             Debug.LogError("Monster hasn't any 'StateMachine'.");
         }
         playerTransform = playerTransform==null ? GameObject.FindGameObjectWithTag("Player").transform : playerTransform;
+        
         if(particleManager == null) {
             GameObject pgobj = GameObject.Find("Particle Manager");
             if(pgobj == null)
