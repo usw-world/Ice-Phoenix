@@ -31,7 +31,7 @@ public class MeleePlayer : Player {
     }
     protected override void Update() {
         base.Update();
-        print(playerStateMachine.currentState);
+        // print(playerStateMachine.currentState);
     }
     protected override void InitialState() {
         base.InitialState();
