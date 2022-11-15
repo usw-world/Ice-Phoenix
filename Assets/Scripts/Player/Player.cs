@@ -24,6 +24,13 @@ public class Player : LivingEntity, IDamageable {
         else return moveState;
     } }
     #endregion
+    #region LivingEntity
+    public float hpRatio {
+        get {
+            return this.hp / this.maxHp;
+        }
+    }
+    #endregion
     #region Move
     [Header("Move Status")]
     protected float moveSpeed = 10f;
@@ -38,13 +45,13 @@ public class Player : LivingEntity, IDamageable {
     #endregion Move
     #region Attack
     protected float defaultDamage = 10f;
-    delegate float AttackDamageCoef();
-    AttackDamageCoef damageCoefs;
+    public delegate float AttackDamageCoef();
+    public AttackDamageCoef damageCoefs;
     protected float attackDamage {
         get {
+            if(damageCoefs == null) return 1;
+            
             float coef = 1;
-            if(damageCoefs == null)
-                return coef;
             AttackDamageCoef[] coefficient = (AttackDamageCoef[]) damageCoefs.GetInvocationList();
             for(int i=0; i<damageCoefs.GetInvocationList().Length; i++) {
                 coef += coefficient[i]();
