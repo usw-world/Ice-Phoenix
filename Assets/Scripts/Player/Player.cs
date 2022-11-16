@@ -10,7 +10,6 @@ public class Player : LivingEntity, IDamageable {
     public const string JUMP_ATTACK_STATE_TAG = "tag:Jump Attack";
 
     static public Player playerInstance;
-    public Animator playerAni;
 
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
@@ -34,7 +33,7 @@ public class Player : LivingEntity, IDamageable {
     #region Move
     [Header("Move Status")]
     protected float moveSpeed = 10f;
-    protected float jumpPower = 19f;
+    protected float jumpPower = 22f;
     protected Vector2 moveDirection;
     protected bool canMove = true;
     bool isGrounding = false;
@@ -157,9 +156,6 @@ public class Player : LivingEntity, IDamageable {
         moveState.OnActive += (prevState) => {
             playerAnimator.SetBool("Move", true);
         };
-        moveState.OnStay += () => {
-            LookAtX(moveDirection.x);
-        };
         moveState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Move", false);
         };
@@ -264,6 +260,7 @@ public class Player : LivingEntity, IDamageable {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
+        print(playerStateMachine.currentState);
     }
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
@@ -273,7 +270,6 @@ public class Player : LivingEntity, IDamageable {
     }
     protected void BasicMove() {
         if(!isGrounding 
-        || !CheckFront()
         || playerStateMachine.Compare(floatState)
         || playerStateMachine.Compare(dodgeState)
         || playerStateMachine.Compare(hitState)
@@ -289,10 +285,13 @@ public class Player : LivingEntity, IDamageable {
             // └━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┘
             playerRigidbody.velocity *= Vector2.up;
         } else { // Stay Running
-            Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
-            Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .15f);
-            playerRigidbody.velocity = addingSpeed;
-            playerStateMachine.ChangeState(moveState, false);
+            LookAtX(moveDirection.x);
+            if(CheckFront()) {
+                Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
+                Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .15f);
+                playerRigidbody.velocity = addingSpeed;
+                playerStateMachine.ChangeState(moveState, false);
+            }
         }
     }
     protected void CheckBottom() {
