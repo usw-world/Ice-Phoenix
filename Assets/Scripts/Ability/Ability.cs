@@ -27,7 +27,7 @@ namespace AbilitySystem {
                         : value;
             }
         }
-        protected virtual void Start() {}
         public abstract void OnGetAbility();
+        public abstract void OnReleaseAbility();
     }
 }

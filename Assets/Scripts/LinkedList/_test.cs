@@ -7,7 +7,7 @@ public class _test : MonoBehaviour
     ChangeableList<double> doubleList;
     void Start()
     {
-        doubleList = new ChangeableList<double>(1);
+        // doubleList = new ChangeableList<double>(1);
         doubleList.SetConditionFunc(ConditionFunc);
 
         doubleList.AddAfterCheck(2);

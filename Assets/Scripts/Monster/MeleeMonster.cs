@@ -43,11 +43,7 @@ public class MeleeMonster : Monster
         playerTransform = playerTransform==null ? GameObject.FindGameObjectWithTag("Player").transform : playerTransform;
         
         if(particleManager == null) {
-            GameObject pgobj = GameObject.Find("Particle Manager");
-            if(pgobj == null)
-                Debug.LogWarning($"Particle Manager Script is null in {this.gameObject.name}");
-            else
-                particleManager = pgobj.GetComponent<ParticleManager>();
+            Debug.LogWarning($"Particle Manager Script is null in {this.gameObject.name}");
         }
     }
     [SerializeField] GameObject _damageEffect;
@@ -159,6 +155,7 @@ public class MeleeMonster : Monster
         }
     }
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
+        print(damage);
         if(isDead) return;
         monsterRigidbody.AddForce(force);
         OnDamage(damage, duration);
