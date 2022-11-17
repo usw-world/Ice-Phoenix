@@ -2,6 +2,7 @@ using GameObjectState;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AbilitySystem;
 
 public class MeleePlayer : Player {
     [Header("Basic Attack Range")]
@@ -9,6 +10,8 @@ public class MeleePlayer : Player {
     [SerializeField] bool DEBUG_JUMP_ATTACK_RANGE;
     [SerializeField] Transform[] attackRange;
     [SerializeField] Transform jumpAttackRange;
+
+    [SerializeField] AbilityFury _test_ability;
 
     #region Melee Attack
     protected State attackState01 = new State("Attack 01", ATTACK_STATE_TAG);
@@ -28,6 +31,7 @@ public class MeleePlayer : Player {
     }
     protected override void Start() {
         base.Start();
+        abilityManager.AddAbility(_test_ability);
     }
     protected override void Update() {
         base.Update();
@@ -123,7 +127,7 @@ public class MeleePlayer : Player {
     }
     void AnimationEvent_Attack(int index) {
         Collider2D[] inners = Physics2D.OverlapBoxAll(attackRange[index].position, attackRange[index].localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
-        float damage = defaultDamage;
+        float damage = attackDamage;
         float force = attackForce;
         Vector2 slideforce = new Vector2(transform.localScale.x + moveDirection.x, 0);
         switch(index) {
@@ -148,7 +152,7 @@ public class MeleePlayer : Player {
             IDamageable target;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
-                    defaultDamage,
+                    damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
                     .5f);
             }
@@ -177,13 +181,13 @@ public class MeleePlayer : Player {
     }
     void AnimationEvent_JumpAttack() {
         Collider2D[] inners = Physics2D.OverlapBoxAll(jumpAttackRange.position, jumpAttackRange.localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
-        float damage = defaultDamage * .8f;
+        float damage = attackDamage * .8f;
         float force = attackForce * .6f;
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
-                    defaultDamage,
+                    damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
                     .5f);
             }

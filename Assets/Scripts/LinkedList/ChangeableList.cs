@@ -23,10 +23,10 @@ public class ChangeableList<T> : CmpLinkedList.LinkedList<T>, IComparable<T>
         }
     }
 
-    public ChangeableList(T item)
-    {
-        if (item != null)
-            InsertHeadNode(item);
+    public ChangeableList(Func<T, bool> condition) {
+        FuncWithContidion += condition;
+        FuncWithContidion += condition;
+        FuncWithContidion += condition;
     }
 
 }

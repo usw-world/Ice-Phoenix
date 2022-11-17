@@ -11,7 +11,7 @@ public class _MapTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mapList = new ChangeableList<GameObject>(prefabMaps[0]); // 생성자는 리스트의 Head를 지정
+        // mapList = new ChangeableList<GameObject>(prefabMaps[0]); // 생성자는 리스트의 Head를 지정
         mapList.SetConditionFunc(ConditionFunc);
         InitialMapList();
         InitialMapInGame();

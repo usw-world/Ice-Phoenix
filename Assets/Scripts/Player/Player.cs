@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using GameObjectState;
@@ -43,7 +44,7 @@ public class Player : LivingEntity, IDamageable {
     [SerializeField] GameObject groundedPlatform;
     #endregion Move
     #region Attack
-    protected float defaultDamage = 10f;
+    private float defaultDamage = 10f;
     public delegate float AttackDamageCoef();
     public AttackDamageCoef damageCoefs;
     protected float attackDamage {
@@ -51,9 +52,11 @@ public class Player : LivingEntity, IDamageable {
             if(damageCoefs == null) return 1;
             
             float coef = 1;
-            AttackDamageCoef[] coefficient = (AttackDamageCoef[]) damageCoefs.GetInvocationList();
-            for(int i=0; i<damageCoefs.GetInvocationList().Length; i++) {
-                coef += coefficient[i]();
+            Delegate[] coefficient = damageCoefs.GetInvocationList();
+            // coefficient
+            // for(int i=0; i<damageCoefs.GetInvocationList().Length; i++) {
+            foreach(AttackDamageCoef f in damageCoefs.GetInvocationList()) {
+                coef += f();
             }
             return defaultDamage * coef;
         }
@@ -94,7 +97,7 @@ public class Player : LivingEntity, IDamageable {
     public delegate void DodgeEvent(Vector2 direction);
     #endregion ActionEvent
     #region Ability
-    AbilityManager abilityManager;
+    protected AbilityManager abilityManager;
     #endregion Ability
 
     protected override void Awake() {
@@ -116,11 +119,12 @@ public class Player : LivingEntity, IDamageable {
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
 
         playerSideUI = playerSideUI==null ? GetComponentInChildren<SideUI>() : playerSideUI;
+        
+        abilityManager = abilityManager==null ? GetComponentInChildren<AbilityManager>() : abilityManager;
     }
     protected override void Start() {
         InitialState();
         UpdateHPSlider();
-        print(attackDamage);
     }
     protected virtual void InitialState() {
         #region Idle State >>
@@ -260,7 +264,6 @@ public class Player : LivingEntity, IDamageable {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
-        print(playerStateMachine.currentState);
     }
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
