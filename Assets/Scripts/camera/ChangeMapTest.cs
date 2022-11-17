@@ -13,6 +13,10 @@ public class ChangeMapTest : MonoBehaviour
     public GameObject ScdRoom;
     public GameObject TrdRoom;
 
+    public GameObject FstRoomSpawnZone;
+    public GameObject ScdRoomSpawnZone;
+    public GameObject TrdRoomSpawnZone;
+
     public GameObject Location1;
     public GameObject Location2;
     public GameObject Location3;
@@ -39,22 +43,24 @@ public class ChangeMapTest : MonoBehaviour
         for (int i = 0; i < map.Length; i++) {
             print(map[i]);
         }
-        // Player.transform.position = MainRoomSpawn.transform.position;
+
         map[0].transform.position = Location1.transform.position;
         map[1].transform.position = Location2.transform.position;
         map[2].transform.position = Location3.transform.position;
-    }
-
-    void Update()
-    {
 
     }
-    //2,1,3
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("PortalMain"))
+        if(other.tag == "MainPortal")
         {
-            Player.transform.position = map[0].transform.GetChild(1).position;
+            if(map[0] == FstRoom) {
+                Player.transform.position = FstRoomSpawnZone.transform.position;
+            } else if(map[0] == ScdRoom) {
+                Player.transform.position = ScdRoomSpawnZone.transform.position;
+            } else if(map[0] == TrdRoom) {
+                Player.transform.position = TrdRoomSpawnZone.transform.position;
+            }
         }
     }
 }
