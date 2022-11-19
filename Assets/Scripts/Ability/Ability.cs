@@ -10,7 +10,7 @@ namespace AbilitySystem {
         bool isUnlock = false;
         
         protected abstract int maxLevel { get; }
-        protected int currentLevel = 1;
+        [SerializeField] protected int currentLevel = 0;
         public int level {
             get {
                 return currentLevel<0 

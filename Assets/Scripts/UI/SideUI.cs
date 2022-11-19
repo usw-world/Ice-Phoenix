@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class SideUI : UI {
     [SerializeField] Slider hpSlider;
-    void Awake() {
+    protected override void Awake() {
+        base.Awake();
+
         if(hpSlider == null) Debug.LogWarning($"Hp Slider of {this.gameObject.name} is null.");
     }
-    public void SetHP(float value) {
+    public void UpdateHPSlider(LivingEntity target) {
         if(hpSlider != null)
-            hpSlider.value = value;
+            hpSlider.value = target.hpRatio;
     }
 }

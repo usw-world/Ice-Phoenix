@@ -17,17 +17,21 @@ public class Monster : LivingEntity, IDamageable {
         base.Awake();
         monsterAnimator = GetComponent<Animator>();
         if(monsterSideUI != null) {
-            monsterSideUI.SetHP(hp / maxHp);
+            monsterSideUI.UpdateHPSlider(this);
         } else {
             Debug.LogWarning($"There is any Side UI in {this.gameObject.name}");
         }
     }
     protected virtual void Update() {}
 
+    private float IncreasHP(float amount) {
+        float nextHp = SetHP(hp + amount);
+        return hp;
+    }
     public virtual void OnDamage(float damage, float duration=.25f) {
-        hp -= damage;
+        IncreasHP(-damage);
         if(monsterSideUI != null)
-            monsterSideUI.SetHP(hp / maxHp);
+            monsterSideUI.UpdateHPSlider(this);
     }
     public virtual void OnDamage(float damage, Vector2 force, float duration=.25f) {
         OnDamage(damage, duration);

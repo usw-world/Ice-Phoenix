@@ -155,7 +155,6 @@ public class MeleeMonster : Monster
         }
     }
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
-        print(damage);
         if(isDead) return;
         monsterRigidbody.AddForce(force);
         OnDamage(damage, duration);

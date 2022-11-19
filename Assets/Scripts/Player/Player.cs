@@ -11,6 +11,7 @@ public class Player : LivingEntity, IDamageable {
     public const string JUMP_ATTACK_STATE_TAG = "tag:Jump Attack";
 
     static public Player playerInstance;
+    public delegate float Coefficients();
 
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
@@ -24,16 +25,26 @@ public class Player : LivingEntity, IDamageable {
         else return moveState;
     } }
     #endregion
-    #region LivingEntity
-    public float hpRatio {
-        get {
-            return this.hp / this.maxHp;
-        }
-    }
-    #endregion
     #region Move
     [Header("Move Status")]
-    protected float moveSpeed = 10f;
+    public Coefficients moveSpeedAttribute;
+    protected float defaultMoveSpeed = 10f;
+    protected float moveSpeedCoef {
+        get {
+            float coef = 1;
+            coef += adaptationManager.points[(int)Adaptation.Type.Movement] * .015f;
+            if(moveSpeedAttribute != null) {
+                Delegate[] coefficients = moveSpeedAttribute.GetInvocationList();
+                for (int i=0; i<coefficients.Length; i++) {
+                    coef += ((Coefficients) coefficients[i])();
+                }
+            }
+            return coef;
+        }
+    }
+    protected float moveSpeed {
+        get { return defaultMoveSpeed * moveSpeedCoef; }
+    }
     protected float jumpPower = 22f;
     protected Vector2 moveDirection;
     protected bool canMove = true;
@@ -45,30 +56,66 @@ public class Player : LivingEntity, IDamageable {
     #endregion Move
     #region Attack
     private float defaultDamage = 10f;
-    public delegate float AttackDamageCoef();
-    public AttackDamageCoef damageCoefs;
+    public Coefficients damageCoefs;
     protected float attackDamage {
         get {
-            if(damageCoefs == null) return 1;
-            
             float coef = 1;
-            Delegate[] coefficient = damageCoefs.GetInvocationList();
-            // coefficient
-            // for(int i=0; i<damageCoefs.GetInvocationList().Length; i++) {
-            foreach(AttackDamageCoef f in damageCoefs.GetInvocationList()) {
-                coef += f();
+            int power = adaptationManager.points[(int)Adaptation.Type.Power];
+            coef += power * .02f;
+            if(damageCoefs != null) {
+                Delegate[] coefficients = damageCoefs.GetInvocationList();
+                for(int i=0; i<coefficients.Length; i++) {
+                    coef += ((Coefficients) coefficients[i])();
+                }
             }
             return defaultDamage * coef;
         }
     }
     protected float attackForce = 100f;
-    protected float attackSpeed = 1f;
+    protected float defaultAttackSpeed = 1f;
+    public Coefficients attackSpeedCoefs;
+    protected float attackSpeed {
+        get {
+            float coef = 1;
+            int fast = adaptationManager.points[(int)Adaptation.Type.Fast];
+            coef += fast * .02f;
+            if(attackSpeedCoefs != null) { 
+                Delegate[] coefficients = attackSpeedCoefs.GetInvocationList();
+                for(int i=0; i<coefficients.Length; i++) {
+                    coef += ((Coefficients) coefficients[i])();
+                }
+            }
+            return defaultAttackSpeed * coef;
+        }
+    }
     protected bool isAfterAttack = false;
     #endregion Attack
+    #region Defence
+    float defaultArmor = 1;
+    public Coefficients armorCoefficients;
+    float armor {
+        get {
+            float coef = 0;
+            int strong = adaptationManager.points[(int)Adaptation.Type.Strong];
+            Delegate[] coefficient = armorCoefficients.GetInvocationList();
+            for(int i=0; i<coefficient.Length; i++) {
+                coef += ((Coefficients) coefficient[i])();
+            }
+            return (defaultArmor * coef) + (strong * .01f);
+        }
+    }
+    #endregion Defence
     #region Dodge
     [Header("Dodge Status")]
     float dodgeSpeed = 33f;
     float dodgeDuration = .3f;
+    float dodgeCoef {
+        get {
+            float coef = 1;
+            float movement = adaptationManager.points[(int)Adaptation.Type.Movement];
+            return coef + (movement * 0.01f);
+        }
+    }
     int dodgeCount = 0;
     int maxDodgeCount = 2;
     float cooldownForDodge = 0;
@@ -97,8 +144,14 @@ public class Player : LivingEntity, IDamageable {
     public delegate void DodgeEvent(Vector2 direction);
     #endregion ActionEvent
     #region Ability
-    protected AbilityManager abilityManager;
+    public float abilityCoef {
+        get { return 1 + (adaptationManager.points[(int)Adaptation.Type.Ability] * 0.03f); }
+    }
+    [SerializeField] protected AbilityManager abilityManager;
     #endregion Ability
+    #region Adaptation
+    [SerializeField] protected Adaptation adaptationManager;
+    #endregion Adaptation
 
     protected override void Awake() {
         base.Awake();
@@ -121,10 +174,12 @@ public class Player : LivingEntity, IDamageable {
         playerSideUI = playerSideUI==null ? GetComponentInChildren<SideUI>() : playerSideUI;
         
         abilityManager = abilityManager==null ? GetComponentInChildren<AbilityManager>() : abilityManager;
+
+        adaptationManager = adaptationManager==null ? GetComponentInChildren<Adaptation>() : adaptationManager;
     }
     protected override void Start() {
         InitialState();
-        UpdateHPSlider();
+        playerSideUI.UpdateHPSlider(this);
     }
     protected virtual void InitialState() {
         #region Idle State >>
@@ -159,9 +214,11 @@ public class Player : LivingEntity, IDamageable {
         #region Move State >>
         moveState.OnActive += (prevState) => {
             playerAnimator.SetBool("Move", true);
+            playerAnimator.speed = moveSpeedCoef;
         };
         moveState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Move", false);
+            playerAnimator.speed = 1;
         };
         #endregion << Move State
 
@@ -191,8 +248,8 @@ public class Player : LivingEntity, IDamageable {
     public void SetDirection(float dirX) {
         moveDirection = Vector2.right * dirX;
     }
-    private bool CheckFront() {
-        RaycastHit2D[] hit = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), .02f, GROUNDABLE_LAYER);
+    protected bool CheckFront() {
+        RaycastHit2D[] hit = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, new Vector2(moveDirection.x, 0), .02f, GROUNDABLE_LAYER);
         for(int i=0; i<hit.Length; i++) {
             Platform p = hit[i].transform.GetComponent<Platform>();
             if(hit[i].transform.tag == "Ground") {
@@ -246,14 +303,14 @@ public class Player : LivingEntity, IDamageable {
 
         LookAtX(dirX);
         playerRigidbody.velocity = Vector2.zero;
-        while(offset < 1) {
-            v = Mathf.Lerp(dodgeSpeed * dirX, 0, offset);
+        while(offset < 1f) {
+            v = Mathf.Lerp(dodgeSpeed * dodgeCoef * dirX, 0, offset);
             playerRigidbody.velocity = new Vector2(v, playerRigidbody.velocity.y);
-            offset += Time.deltaTime/dodgeDuration;
+            offset += Time.deltaTime/dodgeDuration*dodgeCoef;
             yield return 0;
         }
         offset = 1f;
-        v = Mathf.Lerp(dodgeSpeed * dirX, 0, offset);
+        v = Mathf.Lerp(dodgeSpeed * dodgeCoef * dirX, 0, offset);
         playerRigidbody.velocity = new Vector2(v, playerRigidbody.velocity.y);
 
         playerStateMachine.ChangeState(basicState);
@@ -304,7 +361,8 @@ public class Player : LivingEntity, IDamageable {
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
-        if(hit && !(hit.transform.tag == "Platform" && hit.transform.position.y + hit.transform.localScale.y/2 >= hit.point.y)) {
+        
+        if(hit && !(hit.transform.tag == "Platform" && hit.collider.bounds.center.y + hit.collider.bounds.size.y/2 >= hit.point.y)) {
             if(playerRigidbody.velocity.y <= 0) {
                 if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return;
                 currentJumpCount = 0;
@@ -316,14 +374,18 @@ public class Player : LivingEntity, IDamageable {
                 playerStateMachine.ChangeState(floatState, false);
         }
     }
-    void UpdateHPSlider() {
-        if(maxHp != 0)
-            playerSideUI.SetHP(hp / maxHp);
+    protected override float SetHP(float next){
+        float nextHp = base.SetHP(next);
+        playerSideUI.UpdateHPSlider(this);
+        return nextHp;
+    }
+    private float IncreasHP(float amount) {
+        float nextHp = SetHP(hp + amount);
+        return hp;
     }
     public void OnDamage(float damage, float duration=.25f) {
         if(isDead) return;
-        hp -= damage;
-        UpdateHPSlider();
+        IncreasHP(-damage);
         if(hp <= 0) {
             Die();
         } else {

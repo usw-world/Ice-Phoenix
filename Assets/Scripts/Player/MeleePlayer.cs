@@ -11,8 +11,6 @@ public class MeleePlayer : Player {
     [SerializeField] Transform[] attackRange;
     [SerializeField] Transform jumpAttackRange;
 
-    [SerializeField] AbilityFury _test_ability;
-
     #region Melee Attack
     protected State attackState01 = new State("Attack 01", ATTACK_STATE_TAG);
     protected State attackState02 = new State("Attack 02", ATTACK_STATE_TAG);
@@ -31,7 +29,6 @@ public class MeleePlayer : Player {
     }
     protected override void Start() {
         base.Start();
-        abilityManager.AddAbility(_test_ability);
     }
     protected override void Update() {
         base.Update();
@@ -41,6 +38,7 @@ public class MeleePlayer : Player {
         #region Attack State
         attackState01.OnActive += (prevState) => {
             playerAnimator.SetBool("Melee Attack 01", true);
+            CommonAttackEnterEvent();
             playerRigidbody.velocity = new Vector2(0, playerRigidbody.velocity.y);
         };
         attackState01.OnInactive += (State nextState) => {
@@ -51,6 +49,7 @@ public class MeleePlayer : Player {
         };
         attackState02.OnActive += (prevState) => {
             playerAnimator.SetBool("Melee Attack 02", true);
+            CommonAttackEnterEvent();
         };
         attackState02.OnInactive += (State nextState) => {
             playerAnimator.SetBool("Melee Attack 02", false);
@@ -60,6 +59,7 @@ public class MeleePlayer : Player {
         };
         attackState03.OnActive += (prevState) => {
             playerAnimator.SetBool("Melee Attack 03", true);
+            CommonAttackEnterEvent();
         };
         attackState03.OnInactive += (State nextState) => {
             playerAnimator.SetBool("Melee Attack 03", false);
@@ -67,8 +67,12 @@ public class MeleePlayer : Player {
                 CommonAttackReleaseEvent();
             }
         };
+        void CommonAttackEnterEvent() {
+            playerAnimator.speed = attackSpeed;
+        }
         void CommonAttackReleaseEvent() {
             playerAnimator.SetTrigger("End Attack");
+            playerAnimator.speed = 1;
             isAfterAttack = false;
             attackingPreInput = false;
             comboCount = 0;
@@ -79,11 +83,14 @@ public class MeleePlayer : Player {
         #region Jump Attack State
         jumpAttackState.OnActive += (prevState) => {
             playerAnimator.SetBool("Jump Attack", true);
+            playerAnimator.speed = attackSpeed;
         };
         jumpAttackState.OnInactive += (State nextState) => {
             playerAnimator.SetBool("Jump Attack", false);
+            playerAnimator.speed = 1;
         };
         jumpAttackState.OnStay += () => {
+            if(!CheckFront()) return;
             Vector2 maxSpeed = (moveSpeed * moveDirection) + new Vector2(0, playerRigidbody.velocity.y);
             Vector2 addingSpeed = Vector2.Lerp(playerRigidbody.velocity, maxSpeed, .05f);
             playerRigidbody.velocity = addingSpeed;

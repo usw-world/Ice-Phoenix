@@ -1,25 +1,52 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class UI : MonoBehaviour {
-    [SerializeField] Canvas ownCanvas;
+    [SerializeField] GameObject changeFrame;
+    [SerializeField] GameObject[] ownFrame;
 
-    void Awake() {
-        if(ownCanvas == null) {
-            ownCanvas = GetComponentInChildren<Canvas>();
-            if(ownCanvas == null) {
-                Debug.LogError($"UI Object {this.gameObject.name} has not any canvas. Please define 'ownCanvas'.");
-            } else {
-                Debug.LogWarning($"UI Object {this.gameObject.name}'s 'ownCanvas' was empty. One canvas that {this.gameObject.name} has was defined as ownCanvs.");
-            }
+    GameObject initialFrame;
+
+    protected virtual void Awake() {
+        if(initialFrame == null && ownFrame.Length>0)
+            initialFrame = ownFrame[0];
+        if(changeFrame == null && ownFrame.Length>0)
+            changeFrame = ownFrame[0];
+        if(changeFrame == null)
+            Debug.LogError($"UI Object %{this.gameObject.name}% has not any canvas. Please define 'changeFrame'.");
+
+        foreach(GameObject f in ownFrame)  {
+            f.SetActive(false);
         }
+        if(changeFrame != null)
+            changeFrame.gameObject.SetActive(true);
     }
 
     public void OnActive() {
-        ownCanvas.enabled = true;
+        this.gameObject.SetActive(true);
+        activeEvent.Invoke();
     }
     public void OnInactive() {
-        ownCanvas.enabled = false;
+        this.gameObject.SetActive(false);
+        inactiveEvent.Invoke();
     }
+    public void ChangeFrame(GameObject nextFrame) {
+        changeFrame.gameObject.SetActive(false);
+        changeFrame = nextFrame;
+        changeFrame.gameObject.SetActive(true);
+    }
+    
+    [Serializable]
+    class UIActiveEvent : UnityEngine.Events.UnityEvent {}
+
+    [FormerlySerializedAs("Active Event")]
+    [SerializeField]
+    UIActiveEvent activeEvent;
+    [FormerlySerializedAs("Inactive Event")]
+    [SerializeField]
+    UIActiveEvent inactiveEvent;
 }

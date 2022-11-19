@@ -10,9 +10,8 @@ namespace AbilitySystem {
 
         List<Ability> abilities = new List<Ability>();
 
-        private void Start() {
+        private void Awake() {
             if(player == null) {
-                Debug.LogWarning($"Player is null in {this.name} within {this.gameObject.name}.");
                 GameObject pobj = GameObject.FindGameObjectWithTag("Player");
                 if(pobj != null)
                     player = pobj.GetComponent<Player>();

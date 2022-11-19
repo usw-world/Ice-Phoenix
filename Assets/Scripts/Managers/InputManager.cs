@@ -1,14 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameObjectState;
 
 public class InputManager : MonoBehaviour {
+    private StateMachine inputStateMachine;
+    public State playState { get; private set; } = new State("Play");
+    public State menuState { get; private set; } = new State("Menu");
+
     [SerializeField] Player player;
     [SerializeField] GameObject playerObject;
-
-    [SerializeField] UIManager uiManager;
     
+    void Awake() {
+        inputStateMachine = GetComponent<StateMachine>();
+        inputStateMachine.SetIntialState(playState);
+    }
     void Start() {
+        InitialState();
         if(player == null) {
             playerObject = GameObject.FindGameObjectWithTag("Player");
             if(playerObject != null) {
@@ -21,15 +29,30 @@ public class InputManager : MonoBehaviour {
                 Debug.LogWarning("There isn't any Player Object in current scene.");
             }
         }
-        if(uiManager == null) {
-            Debug.LogWarning($"UI Manager in {this.name} is null.");
-        }
+    }
+    private void InitialState() {
+        menuState.OnActive += (State prevState) => {
+            UIManager.instance.OpenUI(UIManager.instance.escapeMenu);
+        };
+        menuState.OnInactive += (State prevState) => {
+            UIManager.instance.CloseUI();
+        };
     }
     
     void Update() {
+        if(inputStateMachine.Compare(playState))
+            PlayInputSet();
+            
+        else if(inputStateMachine.Compare(menuState))
+            MenuInputSet();
+    }
+    public void SetInputState(State next) {
+        inputStateMachine.ChangeState(next);
+    }
+    private void PlayInputSet() {
         float keyDirection = Input.GetAxisRaw("Horizontal");
         if(Input.GetKeyDown(KeyCode.Escape)) { // Esc key case
-
+            SetInputState(menuState);
         }
         if(keyDirection == 0) { // any arrow key being not pressed
             player.SetDirection(0);
@@ -50,5 +73,11 @@ public class InputManager : MonoBehaviour {
         }
         if(Input.GetButtonDown("Dodge"))
             player.Dodge();
+        if(Input.GetKeyDown(KeyCode.Tab))
+            UIManager.instance.TogglePlayerStatusUI();
+    }
+    private void MenuInputSet() {
+        if(Input.GetKeyDown(KeyCode.Escape))
+            SetInputState(playState);
     }
 }
