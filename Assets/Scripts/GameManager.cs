@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour {
     }
     public void StopGame() {
         Time.timeScale = 0;
+        InputManager.instance.SetInputState(InputManager.instance.menuState);
     }
     public void StartGame() {
         Time.timeScale = 1;
+        InputManager.instance.SetInputState(InputManager.instance.playState);
     }
 }

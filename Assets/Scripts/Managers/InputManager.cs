@@ -4,6 +4,8 @@ using UnityEngine;
 using GameObjectState;
 
 public class InputManager : MonoBehaviour {
+    static public InputManager instance;
+
     private StateMachine inputStateMachine;
     public State playState { get; private set; } = new State("Play");
     public State menuState { get; private set; } = new State("Menu");
@@ -12,6 +14,11 @@ public class InputManager : MonoBehaviour {
     [SerializeField] GameObject playerObject;
     
     void Awake() {
+        if(instance == null)
+            instance = this;
+        else
+            Destroy(this.gameObject);
+
         inputStateMachine = GetComponent<StateMachine>();
         inputStateMachine.SetIntialState(playState);
     }
@@ -31,12 +38,12 @@ public class InputManager : MonoBehaviour {
         }
     }
     private void InitialState() {
-        menuState.OnActive += (State prevState) => {
-            UIManager.instance.OpenUI(UIManager.instance.escapeMenu);
-        };
-        menuState.OnInactive += (State prevState) => {
-            UIManager.instance.CloseUI();
-        };
+        // menuState.OnActive += (State prevState) => {
+        //     UIManager.instance.OpenUI(UIManager.instance.escapeMenu);
+        // };
+        // menuState.OnInactive += (State prevState) => {
+        //     UIManager.instance.CloseUI();
+        // };
     }
     
     void Update() {
@@ -52,7 +59,7 @@ public class InputManager : MonoBehaviour {
     private void PlayInputSet() {
         float keyDirection = Input.GetAxisRaw("Horizontal");
         if(Input.GetKeyDown(KeyCode.Escape)) { // Esc key case
-            SetInputState(menuState);
+            UIManager.instance.OpenUI(UIManager.instance.escapeMenu);
         }
         if(keyDirection == 0) { // any arrow key being not pressed
             player.SetDirection(0);
@@ -78,6 +85,6 @@ public class InputManager : MonoBehaviour {
     }
     private void MenuInputSet() {
         if(Input.GetKeyDown(KeyCode.Escape))
-            SetInputState(playState);
+            UIManager.instance.CloseUI();
     }
 }

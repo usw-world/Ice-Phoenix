@@ -3005,7 +3005,7 @@ GameObject:
   - component: {fileID: 1254691003}
   - component: {fileID: 1254691002}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: 'TMP :: Remaining Point'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3070,8 +3070,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4279312947
+  m_fontColor: {r: 0.2, g: 0.13333334, b: 0.06666667, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3415,7 +3415,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1348704133
 Transform:
   m_ObjectHideFlags: 0
@@ -4100,7 +4100,7 @@ MonoBehaviour:
   - {fileID: 637376270}
   - {fileID: 1331515037}
   - {fileID: 25200611}
-  remainingPointText: {fileID: 0}
+  remainingPointText: {fileID: 1254691002}
 --- !u!1 &1572388198
 GameObject:
   m_ObjectHideFlags: 0
