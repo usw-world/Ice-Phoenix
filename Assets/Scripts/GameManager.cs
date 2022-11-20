@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
+    
     static public GameManager instance { get; private set; }
 
     public void Awake() {

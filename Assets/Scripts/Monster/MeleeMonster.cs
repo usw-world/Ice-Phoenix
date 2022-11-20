@@ -46,9 +46,7 @@ public class MeleeMonster : Monster
             Debug.LogWarning($"Particle Manager Script is null in {this.gameObject.name}");
         }
     }
-    [SerializeField] GameObject _damageEffect;
     protected override void Start() {
-
         base.Start();
         InitialState();
         rend = GetComponent<SpriteRenderer>();

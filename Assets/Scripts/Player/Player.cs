@@ -152,6 +152,9 @@ public class Player : LivingEntity, IDamageable {
     #region Adaptation
     [SerializeField] protected Adaptation adaptationManager;
     #endregion Adaptation
+    #region Particles
+    GameObject particleAttack;
+    #endregion Particles
 
     protected override void Awake() {
         base.Awake();
@@ -194,8 +197,11 @@ public class Player : LivingEntity, IDamageable {
         #region Float State >>
         floatState.OnActive += (prevState) => {
             isGrounding = false;
-            if(prevState.Compare(floatState)) playerAnimator.SetTrigger("Double Jump");
-            else playerAnimator.SetBool("Float", true);
+            if(prevState.Compare(floatState))
+                playerAnimator.SetTrigger("Double Jump");
+            else
+                playerAnimator.SetBool("Float", true);
+            
             currentJumpCount ++;
         };
         floatState.OnInactive += (nextState) => {
@@ -224,6 +230,8 @@ public class Player : LivingEntity, IDamageable {
 
         #region Dodge State >>
         dodgeState.OnActive += (prevState) => {
+            if(prevState.Compare(floatState))
+                currentJumpCount --;
             playerRigidbody.gravityScale = 0;
             playerAnimator.SetBool("Dodge", true);
         };
