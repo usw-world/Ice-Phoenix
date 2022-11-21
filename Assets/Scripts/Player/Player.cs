@@ -230,7 +230,8 @@ public class Player : LivingEntity, IDamageable {
 
         #region Dodge State >>
         dodgeState.OnActive += (prevState) => {
-            if(prevState.Compare(floatState))
+            if(prevState.Compare(floatState)
+            || prevState.Compare(JUMP_ATTACK_STATE_TAG))
                 currentJumpCount --;
             playerRigidbody.gravityScale = 0;
             playerAnimator.SetBool("Dodge", true);
