@@ -296,7 +296,7 @@ public class Player : LivingEntity, IDamageable {
     public void Dodge() {
         if(dodgeCount <= 0
         || playerStateMachine.Compare(hitState)
-        || playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG)) return;
+        /* || playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG) */) return;
         if(dodgeCoroutine != null) StopCoroutine(dodgeCoroutine);
         dodgeCoroutine = StartCoroutine(DodgeCoroutine());
     }
