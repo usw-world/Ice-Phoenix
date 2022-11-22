@@ -188,6 +188,7 @@ public class Player : LivingEntity, IDamageable {
         #region Idle State >>
         idleState.OnActive += (prevState) => {
             playerAnimator.SetBool("Idle", true);
+            currentJumpCount = 0;
         };
         idleState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Idle", false);
@@ -221,6 +222,7 @@ public class Player : LivingEntity, IDamageable {
         moveState.OnActive += (prevState) => {
             playerAnimator.SetBool("Move", true);
             playerAnimator.speed = moveSpeedCoef;
+            currentJumpCount = 0;
         };
         moveState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Move", false);
@@ -369,18 +371,26 @@ public class Player : LivingEntity, IDamageable {
         /* || playerStateMachine.Compare(ATTACK_STATE_TAG) */)
             return;
         Bounds b = playerCollider.bounds;
-        RaycastHit2D hit = Physics2D.BoxCast(new Vector2(b.center.x, b.center.y - b.size.y/2), new Vector2(b.size.x, .02f), 0, Vector2.down, .01f, GROUNDABLE_LAYER);
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(new Vector2(b.center.x, b.center.y - b.size.y/2 + .1f), new Vector2(b.size.x, .1f), 0, Vector2.down, .1f, GROUNDABLE_LAYER);
         
-        if(hit && !(hit.transform.tag == "Platform" && hit.collider.bounds.center.y + hit.collider.bounds.size.y/2 >= hit.point.y)) {
-            if(playerRigidbody.velocity.y <= 0) {
-                if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return;
-                currentJumpCount = 0;
-                playerStateMachine.ChangeState(basicState, false);
-                groundedPlatform = hit.transform.gameObject;
+        
+        State next = floatState;
+        if(hits.Length <= 0)
+            next = floatState;
+        else {
+            foreach(RaycastHit2D hit in hits) {
+                string tag = hit.transform.tag;
+                print(hit.distance);
+                if(tag == "Ground"
+                || tag == "Platform" && hit.distance >= .05f) {
+                    next = basicState;
+                    break;
+                }
             }
-        } else {
-            if(!playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG))
-                playerStateMachine.ChangeState(floatState, false);
+        }
+        if(next.Compare(basicState) && !playerStateMachine.Compare(ATTACK_STATE_TAG)
+        || next.Compare(floatState) && !playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG)) {
+            playerStateMachine.ChangeState(next, false);
         }
     }
     protected override float SetHP(float next){
