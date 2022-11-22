@@ -4,28 +4,42 @@ using System.IO;
 using UnityEngine;
 
 public class IntroScreen : MonoBehaviour {
-    void Update() {
-        if(Input.anyKeyDown) {
-            try {
-                string productDir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile) + "\\Ice Phoenix";
-                if(!Directory.Exists(productDir)) {
-                    print("dir is not exist. will make dir that named Ice Phoenix.");
-                    Directory.CreateDirectory(productDir);
-                }
-                string FILE_NAME = "\\userinfo.csv";
-                FileInfo userinfo = new FileInfo(productDir + FILE_NAME);
-                var fs = userinfo.Create();
-                fs.Close();
+    string PRODUCT_DIR = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile) + "\\Ice Phoenix";
+        string SAVE_FILE_NAME = "\\userinfo.csv";
 
-                StreamWriter writer = new StreamWriter(productDir + FILE_NAME);
-                System.DateTime now = System.DateTime.Now;
-                writer.Write("user_key,create_date\n" + $"usoock,{now.ToShortDateString()}");
-                writer.Close();
-                
-            } catch(System.Exception e) {
-                print(e.Message);
-                Debug.LogError(e.StackTrace);
+    [SerializeField] GameObject confirmCreateSaveFrame;
+    ServerConnector connector;
+
+    void Awake() {
+        connector = GetComponent<ServerConnector>();
+    }
+    class Item {
+        public int no;
+        public Item(int n) {
+            no = n;
+        }
+    }
+    void Update() {
+        if(Input.GetKeyDown(KeyCode.Return)) {
+            if(!Directory.Exists(PRODUCT_DIR)) {
+                confirmCreateSaveFrame.SetActive(true);
             }
         }
+    }
+    public void CreateSave() {
+        
+    }
+    public string ReadUserkey() {
+        Directory.CreateDirectory(PRODUCT_DIR);
+        FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
+        var fs = userinfo.Create();
+        fs.Close();
+
+        StreamWriter writer = new StreamWriter(PRODUCT_DIR + SAVE_FILE_NAME);
+        System.DateTime now = System.DateTime.Now;
+        // writer.Write("user_key,register_date\n" + $"{},{now.ToShortDateString()}");
+        writer.Close();
+
+        return "Start spreading the news.";
     }
 }
