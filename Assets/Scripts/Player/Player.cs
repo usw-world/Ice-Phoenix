@@ -285,7 +285,7 @@ public class Player : LivingEntity, IDamageable {
         }
     }
     public void DownJump() {
-        if(playerStateMachine.Compare(ATTACK_STATE_TAG)) return;
+        if(playerStateMachine.Compare(ATTACK_STATE_TAG) && !canMove) return;
         
         RaycastHit2D[] inners = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, Vector2.down, .02f, GROUNDABLE_LAYER);
         foreach(RaycastHit2D inner in inners) {
