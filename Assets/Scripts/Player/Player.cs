@@ -380,7 +380,6 @@ public class Player : LivingEntity, IDamageable {
         else {
             foreach(RaycastHit2D hit in hits) {
                 string tag = hit.transform.tag;
-                print(hit.distance);
                 if(tag == "Ground"
                 || tag == "Platform" && hit.distance >= .05f) {
                     next = basicState;
