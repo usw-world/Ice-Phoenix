@@ -8,4 +8,22 @@ public abstract class Utility : MonoBehaviour {
         yield return new WaitForSeconds(seconds);
         func();
     }
+
+    public class WaitForRead : IEnumerator {
+        int count = 0;
+        public object Current {
+            get {
+                count ++;
+                return null;
+            }
+        }
+
+        public bool MoveNext() {
+            return count < 1000;
+        }
+
+        public void Reset() {
+            throw new NotImplementedException();
+        }
+    }
 }

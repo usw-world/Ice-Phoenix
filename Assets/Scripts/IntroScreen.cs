@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class IntroScreen : MonoBehaviour {
@@ -12,12 +13,11 @@ public class IntroScreen : MonoBehaviour {
 
     void Awake() {
         connector = GetComponent<ServerConnector>();
+        connector.GetUser();
+        // StartCoroutine(Foo());
     }
-    class Item {
-        public int no;
-        public Item(int n) {
-            no = n;
-        }
+    IEnumerator Foo() {
+        yield return new Utility.WaitForRead();
     }
     void Update() {
         if(Input.GetKeyDown(KeyCode.Return)) {
@@ -27,9 +27,6 @@ public class IntroScreen : MonoBehaviour {
         }
     }
     public void CreateSave() {
-        
-    }
-    public string ReadUserkey() {
         Directory.CreateDirectory(PRODUCT_DIR);
         FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
         var fs = userinfo.Create();
@@ -39,6 +36,8 @@ public class IntroScreen : MonoBehaviour {
         System.DateTime now = System.DateTime.Now;
         // writer.Write("user_key,register_date\n" + $"{},{now.ToShortDateString()}");
         writer.Close();
+    }
+    public string ReadUserkey() {
 
         return "Start spreading the news.";
     }
