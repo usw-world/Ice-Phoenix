@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class IntroScreen : MonoBehaviour {
     string PRODUCT_DIR = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile) + "\\Ice Phoenix";
-        string SAVE_FILE_NAME = "\\userinfo.csv";
+    string SAVE_FILE_NAME = "\\userinfo.csv";
 
     [SerializeField] GameObject confirmCreateSaveFrame;
     ServerConnector connector;
+
+    [SerializeField] GameObject introStage;
+    [SerializeField] AudioSource bgmAudioSource;
 
     void Awake() {
         connector = GameManager.instance.gameObject.GetComponent<ServerConnector>();
@@ -70,7 +74,11 @@ public class IntroScreen : MonoBehaviour {
             return;
         } else {
             StartCoroutine(connector.LoadGameData(userKey, () => {
-                GameManager.instance.ChangeScene(GameManager.SceneList.Test);
+                introStage.GetComponent<Animation>().Play();
+                bgmAudioSource.gameObject.GetComponent<SoundPlayer>().FadeOutSound();
+                StartCoroutine(Utility.TimeoutTask(() => {
+                    GameManager.instance.ChangeScene(GameManager.SceneList.Test);
+                }, 3));
             }));
         }
     }

@@ -188,7 +188,6 @@ public class Player : LivingEntity, IDamageable {
         #region Idle State >>
         idleState.OnActive += (prevState) => {
             playerAnimator.SetBool("Idle", true);
-            currentJumpCount = 0;
         };
         idleState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Idle", false);
@@ -222,7 +221,6 @@ public class Player : LivingEntity, IDamageable {
         moveState.OnActive += (prevState) => {
             playerAnimator.SetBool("Move", true);
             playerAnimator.speed = moveSpeedCoef;
-            currentJumpCount = 0;
         };
         moveState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Move", false);
@@ -382,6 +380,7 @@ public class Player : LivingEntity, IDamageable {
                 string tag = hit.transform.tag;
                 if(tag == "Ground"
                 || tag == "Platform" && hit.distance >= .05f) {
+                    currentJumpCount = 0;
                     next = basicState;
                     break;
                 }
