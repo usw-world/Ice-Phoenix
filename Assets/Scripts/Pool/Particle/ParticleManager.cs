@@ -50,7 +50,7 @@ public class ParticleManager : MonoBehaviour {
         }
     }
     public void Release(GameObject target, float second) {
-        StartCoroutine(Utility.CoroutineTask(() => {
+        StartCoroutine(Utility.TimeoutTask(() => {
             Release(target);
         }, second));
     }

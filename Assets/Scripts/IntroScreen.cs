@@ -12,33 +12,66 @@ public class IntroScreen : MonoBehaviour {
     ServerConnector connector;
 
     void Awake() {
-        connector = GetComponent<ServerConnector>();
-        connector.GetUser();
-        // StartCoroutine(Foo());
-    }
-    IEnumerator Foo() {
-        yield return new Utility.WaitForRead();
+        connector = GameManager.instance.gameObject.GetComponent<ServerConnector>();
     }
     void Update() {
         if(Input.GetKeyDown(KeyCode.Return)) {
-            if(!Directory.Exists(PRODUCT_DIR)) {
-                confirmCreateSaveFrame.SetActive(true);
-            }
+            StartGame();
+        }
+    }
+    public void StartGame() {
+        if(CheckLocalUserKey()) { // There is save-data in local.
+            LoadSaveData();
+        } else {
+            confirmCreateSaveFrame.SetActive(true);
+        }
+    }
+    private bool CheckLocalUserKey() {
+        if(File.Exists(PRODUCT_DIR + SAVE_FILE_NAME)) {
+            return true;
+        } else {
+            return false;
         }
     }
     public void CreateSave() {
-        Directory.CreateDirectory(PRODUCT_DIR);
-        FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
-        var fs = userinfo.Create();
-        fs.Close();
+        confirmCreateSaveFrame.SetActive(false);
+        StartCoroutine(connector.GetNewUserKey((string userKey) => {
+            if(File.Exists(PRODUCT_DIR + SAVE_FILE_NAME))
+                return;
 
-        StreamWriter writer = new StreamWriter(PRODUCT_DIR + SAVE_FILE_NAME);
-        System.DateTime now = System.DateTime.Now;
-        // writer.Write("user_key,register_date\n" + $"{},{now.ToShortDateString()}");
-        writer.Close();
+            Directory.CreateDirectory(PRODUCT_DIR);
+            FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
+            var fs = userinfo.Create();
+            fs.Close();
+
+            StreamWriter writer = new StreamWriter(PRODUCT_DIR + SAVE_FILE_NAME);
+            System.DateTime now = System.DateTime.Now;
+            writer.Write("user_key,register_date\n" + $"{userKey},{now.ToShortDateString()}");
+            writer.Close();
+
+            LoadSaveData();
+        }));
     }
-    public string ReadUserkey() {
+    public void LoadSaveData() {
+        if(!File.Exists(PRODUCT_DIR + SAVE_FILE_NAME)) return;
 
-        return "Start spreading the news.";
+        FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
+        StreamReader reader = new StreamReader(PRODUCT_DIR + SAVE_FILE_NAME);
+        string[] heads = reader.ReadLine().Split(',');
+        string[] datas = reader.ReadLine().Split(',');
+        
+        Dictionary<string, string> infoMap = new Dictionary<string, string>();
+        for (int i=0; i<heads.Length; i++) {
+            infoMap.Add(heads[i], datas[i]);
+        }
+        string userKey = infoMap["user_key"];
+        if(userKey == null) {
+            Debug.LogError("Found local user-key but any unknown error was happened.");
+            return;
+        } else {
+            StartCoroutine(connector.LoadGameData(userKey, () => {
+                GameManager.instance.ChangeScene(GameManager.SceneList.Test);
+            }));
+        }
     }
 }

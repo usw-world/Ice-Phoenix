@@ -34,7 +34,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 383619881}
   - component: {fileID: 383619880}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: 'Canvas :: Side UI'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c11975d3704c794ca473cd4107f279b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownCanvas: {fileID: 383619882}
+  currentFrame: {fileID: 0}
+  ownFrame:
+  - {fileID: 383619878}
+  activeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  inactiveEvent:
+    m_PersistentCalls:
+      m_Calls: []
   hpSlider: {fileID: 1478332437}
 --- !u!1 &925553268
 GameObject:
@@ -483,7 +491,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1576915489942258478}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.45, y: 0.1, z: 0}
+  m_LocalPosition: {x: 1.75, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -511,7 +519,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1576915491001812638
 Transform:
   m_ObjectHideFlags: 0
@@ -569,7 +577,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 4723107735738678597, guid: 0bd97e23f8b532a4f8969605a3b00a4e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -606,8 +614,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 1081936737}
-  maxHp: 50000
-  hp: 0
+  maxHp: 150
   monsterSideUI: {fileID: 705579775}
   MonsterAnim: {fileID: 1576915491001812611}
   moveSpeed: 5
@@ -618,7 +625,7 @@ MonoBehaviour:
   attackDamage: 10
   coolTime: 2
   attackAreaCenter: {fileID: 1576915489942258449}
-  attackArea: {x: 4.01, y: 2.47}
+  attackArea: {x: 4.8, y: 2.47}
   particleManager: {fileID: 0}
 --- !u!50 &1576915491001812637
 Rigidbody2D:
@@ -658,14 +665,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 8.823529, y: 8.823529}
+    oldSize: {x: 9.375, y: 9.375}
     newSize: {x: 4, y: 4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.764406, y: 1.3436325}
+  m_Size: {x: 1, y: 2}
   m_EdgeRadius: 0
 --- !u!95 &1576915491001812611
 Animator:

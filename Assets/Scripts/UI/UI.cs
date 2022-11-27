@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 public class UI : MonoBehaviour {
-    [SerializeField] GameObject changeFrame;
+    [SerializeField] GameObject currentFrame;
     [SerializeField] GameObject[] ownFrame;
 
     GameObject initialFrame;
@@ -14,16 +14,16 @@ public class UI : MonoBehaviour {
     protected virtual void Awake() {
         if(initialFrame == null && ownFrame.Length>0)
             initialFrame = ownFrame[0];
-        if(changeFrame == null && ownFrame.Length>0)
-            changeFrame = ownFrame[0];
-        if(changeFrame == null)
+        if(currentFrame == null && ownFrame.Length>0)
+            currentFrame = ownFrame[0];
+        if(currentFrame == null)
             Debug.LogError($"UI Object %{this.gameObject.name}% has not any canvas. Please define 'changeFrame'.");
 
         foreach(GameObject f in ownFrame)  {
             f.SetActive(false);
         }
-        if(changeFrame != null)
-            changeFrame.gameObject.SetActive(true);
+        if(currentFrame != null)
+            currentFrame.gameObject.SetActive(true);
     }
 
     public void OnActive() {
@@ -35,9 +35,9 @@ public class UI : MonoBehaviour {
         inactiveEvent.Invoke();
     }
     public void ChangeFrame(GameObject nextFrame) {
-        changeFrame.gameObject.SetActive(false);
-        changeFrame = nextFrame;
-        changeFrame.gameObject.SetActive(true);
+        currentFrame.gameObject.SetActive(false);
+        currentFrame = nextFrame;
+        currentFrame.gameObject.SetActive(true);
     }
     
     [Serializable]

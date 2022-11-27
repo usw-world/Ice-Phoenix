@@ -14,8 +14,8 @@ public class MeleeMonster : Monster
 
     public Transform playerTransform;
     public float attackDamage = 15f;
-    private float curTime;
-    public float coolTime = 2f;
+    private float curTime = 0f;
+    public float coolTime = 1.2f;
     public Transform attackAreaCenter;
     public Vector2 attackArea;
     float distance;

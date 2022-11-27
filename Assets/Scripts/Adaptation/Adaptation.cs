@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Adaptation : MonoBehaviour {
-    public int remainingPoint { get; private set; } = 60;
+    public int remainingPoint { get; private set; }
     public enum Type {
         /// <summary>플레이어 기본 공격, 점프 공격 관련</summary>
         Power=0,
@@ -25,6 +25,14 @@ public class Adaptation : MonoBehaviour {
             GameObject pobj = GameObject.FindGameObjectWithTag("Player");
             if(pobj != null)
                 player = pobj.GetComponent<Player>();
+        }
+        if(GameManager.instance.gameData != null) {
+            points = GameManager.instance.gameData.adaptation;
+            int nextRemainingPoint = GameManager.instance.gameData.level - 1 /**/+ 30/**/;
+            foreach(int point in points) {
+                nextRemainingPoint -= point;
+            }
+            remainingPoint = nextRemainingPoint;
         }
     }
     /// <summary>Increase target Adaptation and return the value of result.</summary>

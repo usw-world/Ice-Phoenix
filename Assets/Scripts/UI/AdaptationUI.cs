@@ -9,7 +9,7 @@ public class AdaptationUI : MonoBehaviour {
 
     [SerializeField] TextMeshProUGUI[] pointText = new TextMeshProUGUI[5];
     [SerializeField] TextMeshProUGUI remainingPointText;
-    
+
     void Awake() {
         if(playerObject == null)
             playerObject = GameObject.FindWithTag("Player");
@@ -31,7 +31,9 @@ public class AdaptationUI : MonoBehaviour {
         pointText[(int)Adaptation.Type.Ability].SetText($"{adaptation.points[(int)Adaptation.Type.Ability]} / {adaptation.maxPoints[(int)Adaptation.Type.Ability]}");
         remainingPointText.SetText(adaptation.remainingPoint.ToString());
     }
-
+    private void ApplyAdaptation() {
+        GameManager.instance.SetAdaptations(adaptation.points);
+    }
     public void Increase(int type) {
         try {
             if(Input.GetKey(KeyCode.LeftShift))
@@ -56,5 +58,8 @@ public class AdaptationUI : MonoBehaviour {
     }
     public void OnOpenUI() {
         RefreshAmount();
+    }
+    public void OnCloseUI() {
+        ApplyAdaptation();
     }
 }

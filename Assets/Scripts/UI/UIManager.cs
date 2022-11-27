@@ -25,10 +25,12 @@ public class UIManager : MonoBehaviour {
     public void CloseUI(UI targetUI) {
         if(activingUI != null) activingUI.OnInactive();
         activingUI = targetUI;
-        activingUI.OnInactive();
     }
     public void OpenUI(UI targetUI) {
-        if(activingUI != null) activingUI.OnInactive();
+        if(activingUI != null && activingUI.enabled) {
+            activingUI.enabled = false;
+            activingUI.OnInactive();
+        }
         activingUI = targetUI;
         activingUI.OnActive();
     }
