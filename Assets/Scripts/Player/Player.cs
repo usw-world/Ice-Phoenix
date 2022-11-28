@@ -376,6 +376,7 @@ public class Player : LivingEntity, IDamageable {
         if(hits.Length <= 0)
             next = floatState;
         else {
+            if(playerRigidbody.velocity.y > 0) return;
             foreach(RaycastHit2D hit in hits) {
                 string tag = hit.transform.tag;
                 if(tag == "Ground"

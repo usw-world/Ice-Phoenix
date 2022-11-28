@@ -26,6 +26,8 @@ public class Adaptation : MonoBehaviour {
             if(pobj != null)
                 player = pobj.GetComponent<Player>();
         }
+    }
+    private void Start() {
         if(GameManager.instance.gameData != null) {
             points = GameManager.instance.gameData.adaptation;
             int nextRemainingPoint = GameManager.instance.gameData.level - 1 /**/+ 30/**/;
