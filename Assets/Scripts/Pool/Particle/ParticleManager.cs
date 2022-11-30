@@ -15,17 +15,11 @@ public class ParticleManager : MonoBehaviour {
     }
     public void Start() {}
     public void InitializeParticle(string particleName, GameObject particle, int amount=10, int resizeAmount=5) {
-        ParticlePool pool = new ParticlePool(particleName, particle, amount, resizeAmount);
-        for(int i=0; i<amount; i++) {
-            pool.InPool(Instantiate(particle, transform), transform);
-        }
+        ParticlePool pool = new ParticlePool(particleName, particle, amount, resizeAmount, transform);
         particleMap.Add(particleName, pool);
     }
     public GameObject Call(string particleName, Vector2 point, Transform parent=null) {
         ParticlePool pool = particleMap[particleName];
-        if(pool.Count <= 0) {
-            RestorePool(pool);
-        }
         GameObject particle = particleMap[particleName].OutPool(point, parent);
         particle.AddComponent<PoolingData>();
         particle.GetComponent<PoolingData>().poolName = particleName;
@@ -36,15 +30,10 @@ public class ParticleManager : MonoBehaviour {
         Release(particle, second);
         return particle;
     }
-    public void RestorePool(ParticlePool pool) {
-        for(int i=0; i<pool.resizeAmount; i++) {
-            pool.InPool(Instantiate(pool.poolingObject, transform), transform);
-        }
-    }
     public void Release(GameObject target) {
         PoolingData data = target.GetComponent<PoolingData>();
         if(data != null) {
-            particleMap[data.poolName].InPool(target, transform);
+            particleMap[data.poolName].InPool(target);
         } else {
             Debug.LogWarning("Object that incomming into Pool is not 'Pooling Object'.");
         }

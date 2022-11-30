@@ -4,6 +4,20 @@ using UnityEngine;
 
 
 public class MonoBehaviourIF : MonoBehaviour {
+    [System.Serializable]
+    public struct Area {
+        public Vector2 center;
+        public float radius;
+    }
+    [System.Serializable]
+    public struct Range {
+        public Vector2 center;
+        public Vector2 bounds;
+        public Range(Vector2 center, Vector2 bounds) {
+            this.center = center;
+            this.bounds = bounds;
+        }
+    }
     [Header("MonoBehavior IF")]
     [SerializeField] Transform rotatelessChildren;
     protected void LookAtX(float x) {

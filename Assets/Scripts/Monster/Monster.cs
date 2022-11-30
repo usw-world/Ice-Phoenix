@@ -2,25 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monster : LivingEntity, IDamageable {
+public abstract class Monster : LivingEntity, IDamageable {
     static public int DEFALUT_MONSTER_LAYER = 128;
 
     [SerializeField] protected SideUI monsterSideUI;
-
-    [SerializeField] protected Animator MonsterAnim;
-    [SerializeField] protected float moveSpeed;
-    [SerializeField] protected float detectingDistance;
-    [SerializeField] protected float attackDistance;
+    
     [SerializeField] protected Animator monsterAnimator;
+    [SerializeField] protected Rigidbody2D monsterRigidbody;
 
     protected override void Awake() {
         base.Awake();
         monsterAnimator = GetComponent<Animator>();
-        if(monsterSideUI != null) {
+        if(monsterAnimator == null)
+            Debug.LogWarning($"Monster hasn't any 'Animator'.");
+
+        if(monsterSideUI != null)
             monsterSideUI.UpdateHPSlider(this);
-        } else {
-            Debug.LogWarning($"There is any Side UI in {this.gameObject.name}");
-        }
+        else
+            Debug.LogWarning("Monster hasn't any 'Side UI'.");
+
+        if (monsterRigidbody==null && !TryGetComponent<Rigidbody2D>(out monsterRigidbody))
+            Debug.LogWarning("Monster hasn't any 'Rigidbody2D'.");
     }
     protected virtual void Update() {}
 
