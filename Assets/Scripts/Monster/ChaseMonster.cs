@@ -15,9 +15,12 @@ public abstract class ChaseMonster : Monster {
 
     [SerializeField] protected Area detectRange;
     
-    protected int targetDirection {
+    protected Vector2 targetDirection {
         get {
-            return targetTransform!=null && targetTransform.position.x-transform.position.x>0 ? 1 : -1;
+            return new Vector2(
+                targetTransform!=null && targetTransform.position.x-transform.position.x>0 ? 1 : -1,
+                targetTransform!=null && targetTransform.position.y-transform.position.y>0 ? 1 : -1
+            );
         }
     }
 
@@ -32,9 +35,9 @@ public abstract class ChaseMonster : Monster {
     }
     protected virtual void InitializeState() {
         chaseState.OnStay += () => {
-            LookAtX(targetDirection);
+            LookAtX(targetDirection.x);
             if(CanChase()) {
-                Vector2 moveSpace = new Vector2(targetDirection, 0) * moveSpeed * Time.deltaTime;
+                Vector2 moveSpace = new Vector2(targetDirection.x, 0) * moveSpeed * Time.deltaTime;
                 transform.Translate(moveSpace);
                 remainingDistance -= moveSpace.magnitude;
             } else {

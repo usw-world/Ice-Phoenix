@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DeathBringer_Magic : MonoBehaviourIF {
-    MeleeMonster owner;
+    DeathBringer owner;
     float damage = 20;
     [SerializeField] Range magicRange;
     public System.Action endEvent;

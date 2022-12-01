@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
 
-public class MeleeMonster : ChaseMonster {
+public class DeathBringer : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";
 
     State attackState = new State("Attack", ATTACK_STATE_TAG);
@@ -20,6 +20,7 @@ public class MeleeMonster : ChaseMonster {
     private float lastMagicTime = 0f;
     private float magicInterval = 4f;
     private float magicDistance = 4.5f;
+    private Vector2 nextMagicPoint;
     [SerializeField] private GameObject magicInstance;
     private EffectPool magicEffectPool;
 
@@ -111,6 +112,7 @@ public class MeleeMonster : ChaseMonster {
             && remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState)) {
+                nextMagicPoint = targetTransform.position;
                 monsterStateMachine.ChangeState(magicState);
             }
         }
@@ -118,7 +120,7 @@ public class MeleeMonster : ChaseMonster {
     public void AnimationEvent_SpellEnd() {
         monsterStateMachine.ChangeState(idleState);
         lastMagicTime = magicInterval;
-        Vector2 point = (Vector2)targetTransform.position + new Vector2(0, .43f);
+        Vector2 point = (Vector2)nextMagicPoint + new Vector2(0, .43f);
         GameObject effect = magicEffectPool.OutPool(point, null);
         effect.GetComponent<DeathBringer_Magic>().endEvent = () => {
             magicEffectPool.InPool(effect);
@@ -197,6 +199,12 @@ public class MeleeMonster : ChaseMonster {
         return !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState)
             && !monsterStateMachine.Compare(dieState)
+            && CheckDirection()
             && base.CanChase();
+    }
+    bool CheckDirection() {
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + targetDirection.x*.7f, transform.position.y), Vector2.down, 1.1f);
+        print(new Vector2(transform.position.x + targetDirection.x, transform.position.y - .1f));
+        return !!hit;
     }
 }
