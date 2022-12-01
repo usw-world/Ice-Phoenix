@@ -16,13 +16,15 @@ public abstract class Monster : LivingEntity, IDamageable {
         if(monsterAnimator == null)
             Debug.LogWarning($"Monster hasn't any 'Animator'.");
 
+        if (monsterRigidbody==null && !TryGetComponent<Rigidbody2D>(out monsterRigidbody))
+            Debug.LogWarning("Monster hasn't any 'Rigidbody2D'.");
+    }
+    protected override void OnEnable() {
+        base.OnEnable();
         if(monsterSideUI != null)
             monsterSideUI.UpdateHPSlider(this);
         else
             Debug.LogWarning("Monster hasn't any 'Side UI'.");
-
-        if (monsterRigidbody==null && !TryGetComponent<Rigidbody2D>(out monsterRigidbody))
-            Debug.LogWarning("Monster hasn't any 'Rigidbody2D'.");
     }
     protected virtual void Update() {}
 

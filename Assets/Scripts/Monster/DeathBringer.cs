@@ -9,7 +9,6 @@ public class DeathBringer : ChaseMonster {
     State attackState = new State("Attack", ATTACK_STATE_TAG);
     State magicState = new State("Magic", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
-    State dieState = new State("Die");
 
     private float attackDamage = 15f;
     private float lastAttackTime = 0f;
@@ -19,7 +18,7 @@ public class DeathBringer : ChaseMonster {
     private float magicDamage = 22f;
     private float lastMagicTime = 0f;
     private float magicInterval = 4f;
-    private float magicDistance = 4.5f;
+    private float magicDistance = 6.5f;
     private Vector2 nextMagicPoint;
     [SerializeField] private GameObject magicInstance;
     private EffectPool magicEffectPool;
@@ -186,11 +185,11 @@ public class DeathBringer : ChaseMonster {
             targetTransform = inner.transform;
             remainingDistance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0));
         } else {
-            targetTransform = null;
+            MissTarget();
         }
     }
     protected override void MissTarget() {
-        throw new System.NotImplementedException();
+        targetTransform = null;
     }
     protected override bool IsArrive() {
         return base.IsArrive();

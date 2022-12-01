@@ -7,6 +7,7 @@ public abstract class ChaseMonster : Monster {
     [SerializeField] protected StateMachine monsterStateMachine;
     protected State idleState = new State("Idle");
     protected State chaseState = new State("Chase");
+    protected State dieState = new State("Die");
 
     [SerializeField] protected float moveSpeed = 5f;
     protected float remainingDistance = 0;

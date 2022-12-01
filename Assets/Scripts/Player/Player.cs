@@ -155,6 +155,9 @@ public class Player : LivingEntity, IDamageable {
     #region Particles
     GameObject particleAttack;
     #endregion Particles
+    #region 
+    [SerializeField] Material expParticleMaterial;
+    #endregion
 
     protected override void Awake() {
         base.Awake();
@@ -330,12 +333,16 @@ public class Player : LivingEntity, IDamageable {
         BasicMove();
         CheckBottom();
         ResetDodgeTime();
+        SetExpMaterialAttribute();
     }
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
             cooldownForDodge -= Time.deltaTime;
         else if(dodgeCount != maxDodgeCount)
             dodgeCount = maxDodgeCount;
+    }
+    protected void SetExpMaterialAttribute() {
+        expParticleMaterial.SetVector("_PlayerPosition", new Vector4(transform.position.x, transform.position.y, transform.position.z, 1));
     }
     protected void BasicMove() {
         if(!isGrounding 
