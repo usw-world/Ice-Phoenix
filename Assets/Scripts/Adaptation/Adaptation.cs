@@ -30,7 +30,7 @@ public class Adaptation : MonoBehaviour {
     private void Start() {
         if(GameManager.instance.gameData != null) {
             points = GameManager.instance.gameData.adaptation;
-            int nextRemainingPoint = GameManager.instance.gameData.level - 1 /**/+ 30/**/;
+            int nextRemainingPoint = GameManager.instance.gameData.rate - 1 /**/+ 40/**/;
             foreach(int point in points) {
                 nextRemainingPoint -= point;
             }
@@ -52,9 +52,9 @@ public class Adaptation : MonoBehaviour {
             throw new NotEnoughPointException();
         if(points[(int)targetType] >= maxPoints[(int)targetType])
             throw new MaxPointException();
-
+            
         int c = Mathf.Min(count, remainingPoint);
-        c = Mathf.Min(count, maxPoints[(int)targetType] - points[(int)targetType]);
+        c = Mathf.Min(c, maxPoints[(int)targetType] - points[(int)targetType]);
 
         remainingPoint -= c;
         return IncreaseValue(targetType, c);

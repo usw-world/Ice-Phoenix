@@ -33,13 +33,14 @@ public class GameManager : MonoBehaviour {
             return;
     }
     public enum SceneList {
-        Test = 0,
+        Main = 0,
+        Test = 1,
     }
     public void ChangeScene(SceneList target) {
         string targetName = null;
         switch(target) {
             case SceneList.Test:
-                targetName = "architecture_scene";
+                targetName = "_ability_test_scene";
                 break;
         }
         if(targetName != null)
@@ -60,14 +61,14 @@ public class GameManager : MonoBehaviour {
     }
     public class GameData {
         public string userKey;
-        public int level;
+        public int rate;
         public int sceneNo;
         public int clearCount;
         public int[] adaptation;
         
-        public GameData(string userKey, int level, int sceneNo, int clearCount, int[] adaptation) {
+        public GameData(string userKey, int rate, int sceneNo, int clearCount, int[] adaptation) {
             this.userKey = userKey;
-            this.level = level;
+            this.rate = rate;
             this.sceneNo = sceneNo;
             this.clearCount = clearCount;
             this.adaptation = adaptation;
