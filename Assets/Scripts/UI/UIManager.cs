@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour {
     static public UIManager instance { get; private set; }
-    UI activingUI = null;
+    public UI activingUI { get; private set; } = null;
 
     public UI escapeMenu;
     [SerializeField] public UI playerStatusUI;

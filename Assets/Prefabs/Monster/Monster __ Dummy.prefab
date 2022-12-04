@@ -158,7 +158,7 @@ MonoBehaviour:
   detectRange:
     center: {x: 0, y: 0}
     radius: 10
-  experience: {fileID: 0}
+  experience: {fileID: 5889353044887389567}
 --- !u!114 &5889353044887389567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,9 +171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0c20373eb6aef4abdcadd3243d200f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expAmount: 5
-  expParticleObject: {fileID: 0}
-  expParticleMaterial: {fileID: 0}
+  expAmount: 40
+  expParticleObject: {fileID: 7193905233714009055, guid: 1ee2bac629f720747b7bcc0fe22a8e69, type: 3}
 --- !u!70 &4662684542596281355
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

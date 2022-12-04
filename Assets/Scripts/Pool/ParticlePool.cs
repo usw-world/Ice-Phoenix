@@ -14,9 +14,9 @@ namespace Pool {
                 base.RestorePool();
             }
             target = poolingQueue.Dequeue();
+            target.SetActive(true);
             target.transform.position = point;
             target.transform.SetParent(parent);
-            target.SetActive(true);
             return target;
         }
         public override void InPool(GameObject target) {

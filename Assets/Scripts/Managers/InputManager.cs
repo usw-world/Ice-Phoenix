@@ -84,7 +84,8 @@ public class InputManager : MonoBehaviour {
             UIManager.instance.TogglePlayerStatusUI();
     }
     private void MenuInputSet() {
-        if(Input.GetKeyDown(KeyCode.Escape))
-            UIManager.instance.CloseUI();
+        UIManager.instance.activingUI.KeyPressEvent();
+        // if(Input.GetKeyDown(KeyCode.Escape))
+        //     UIManager.instance.CloseUI();
     }
 }

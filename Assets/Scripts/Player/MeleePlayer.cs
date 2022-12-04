@@ -8,8 +8,8 @@ public class MeleePlayer : Player {
     [Header("Basic Attack Range")]
     [SerializeField] int DEBUG_INDEX_ATTACKING;
     [SerializeField] bool DEBUG_JUMP_ATTACK_RANGE;
-    [SerializeField] Transform[] attackRange;
-    [SerializeField] Transform jumpAttackRange;
+    [SerializeField] Range[] attackRange;
+    [SerializeField] Range jumpAttackRange;
 
     #region Melee Attack
     protected State attackState01 = new State("Attack 01", ATTACK_STATE_TAG);
@@ -133,8 +133,10 @@ public class MeleePlayer : Player {
         }
     }
     void AnimationEvent_Attack(int index) {
-        Collider2D[] inners = Physics2D.OverlapBoxAll(attackRange[index].position, attackRange[index].localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
+        Vector2 center = (Vector2)transform.position + attackRange[index].center * transform.localScale;
+        Collider2D[] inners = Physics2D.OverlapBoxAll(center, attackRange[index].bounds, 0, Monster.DEFALUT_MONSTER_LAYER);
         float damage = attackDamage;
+              damage *= Random.Range(0, 1f)<criticalChance ? 2 : 1;
         float force = attackForce;
         Vector2 slideforce = new Vector2(transform.localScale.x + moveDirection.x, 0);
         switch(index) {
@@ -157,11 +159,14 @@ public class MeleePlayer : Player {
         playerRigidbody.AddForce(slideforce, ForceMode2D.Impulse);
         foreach(Collider2D inner in inners) {
             IDamageable target;
+            if(CheckWallBetween(inner.transform, attackRange[index].center.y)) continue;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
                     damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
                     .5f);
+                if(basicAttackDamageEvent != null)
+                    basicAttackDamageEvent(inner.transform);
             }
         }
     }
@@ -187,27 +192,47 @@ public class MeleePlayer : Player {
         playerStateMachine.ChangeState(jumpAttackState);
     }
     void AnimationEvent_JumpAttack() {
-        Collider2D[] inners = Physics2D.OverlapBoxAll(jumpAttackRange.position, jumpAttackRange.localScale, 0, Monster.DEFALUT_MONSTER_LAYER);
         float damage = attackDamage * .8f;
+              damage *= Random.Range(0, 1f)<criticalChance ? 2 : 1;
         float force = attackForce * .6f;
+        Vector2 center = (Vector2)transform.position + jumpAttackRange.center * transform.localScale;
+        Collider2D[] inners = Physics2D.OverlapBoxAll(center, jumpAttackRange.bounds, 0, Monster.DEFALUT_MONSTER_LAYER);
         foreach(Collider2D inner in inners) {
             IDamageable target;
+            if(CheckWallBetween(inner.transform, jumpAttackRange.center.y)) continue;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
                     damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
                     .5f);
+                if(jumpAttackDamageEvent != null)
+                    jumpAttackDamageEvent(inner.transform);
             }
         }
+    }
+    private bool CheckWallBetween(Transform target, float pointY) {
+        Collider2D collider;
+        if(target.TryGetComponent<Collider2D>(out collider)) {
+            RaycastHit2D hit = Physics2D.Raycast(
+                (Vector2)transform.position + new Vector2(0, pointY),
+                new Vector2(transform.localScale.x, 0),
+                Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x/2,
+                1<<6
+            );
+            return !!hit && hit.collider.tag == "Ground";
+        }
+        return false;
     }
     void OnDrawGizmos() {
         if(DEBUG_INDEX_ATTACKING >= 0) {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(attackRange[DEBUG_INDEX_ATTACKING].position, attackRange[DEBUG_INDEX_ATTACKING].localScale);
+            Vector2 center = (Vector2)transform.position + attackRange[DEBUG_INDEX_ATTACKING].center * transform.localScale;
+            Gizmos.DrawWireCube(center, attackRange[DEBUG_INDEX_ATTACKING].bounds);
         }
         if(DEBUG_JUMP_ATTACK_RANGE) {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(jumpAttackRange.position, jumpAttackRange.localScale);
+            Gizmos.color = Color.green;
+            Vector2 center = (Vector2)transform.position + jumpAttackRange.center * transform.localScale;
+            Gizmos.DrawWireCube(center, jumpAttackRange.bounds);
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Pool {
         public string particleName { get; protected set; }
         [SerializeField] public int amount { get; protected set; }
         [SerializeField] public int resizeAmount { get; protected set; }
-        [SerializeField] protected T targetInstance;
         public T poolingObject { get; private set; }
         protected Queue<T> poolingQueue = new Queue<T>();
         protected Transform originTransform;
@@ -29,7 +28,7 @@ namespace Pool {
         public abstract void InPool(T target);
         protected virtual void RestorePool() {
             for(int i=0; i<resizeAmount; i++)
-                InPool(Object.Instantiate<T>(targetInstance, originTransform));
+                InPool(Object.Instantiate<T>(poolingObject, originTransform));
         }
     }
 }

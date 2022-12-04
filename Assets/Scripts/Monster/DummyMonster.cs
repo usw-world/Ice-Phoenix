@@ -39,10 +39,13 @@ public class DummyMonster : ChaseMonster {
     protected override void Die() {
         if(isDead) return;
         base.Die();
+        
+        GetComponent<GiveExperience>().ReleaseExp();
+
         monsterStateMachine.ChangeState(dieState);
         GetComponent<SpriteRenderer>().color = Color.white;
         transform.localScale = new Vector3(.5f, .5f, .5f);
         monsterSideUI.gameObject.SetActive(false);
-        Destroy(this.gameObject, 1f);
+        Destroy(this.gameObject, 2f);
     }
 }

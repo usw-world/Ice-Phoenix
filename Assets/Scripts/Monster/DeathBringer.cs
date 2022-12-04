@@ -42,7 +42,7 @@ public class DeathBringer : ChaseMonster {
     protected override void Awake() {
         base.Awake();
         #region Magic Effect Pool Generate
-        magicEffectPool = new EffectPool("Magic", magicInstance, 10, 5, this.transform);
+        magicEffectPool = new EffectPool("Magic", magicInstance, 2, 1, this.transform);
         #endregion Magic Effect Pool Generate
 
     }
@@ -65,6 +65,7 @@ public class DeathBringer : ChaseMonster {
             monsterAnimator.SetBool("Chase", false);
         };
         attackState.OnActive += (nextState) => {
+            LookAtX(targetDirection.x);
             monsterAnimator.SetBool("Attack", true);
         };
         attackState.OnInactive += (prevState) => {
@@ -128,7 +129,8 @@ public class DeathBringer : ChaseMonster {
     void AnimationEvent_DamageTarget() {
         Collider2D collider = Physics2D.OverlapBox(damageArea.center, damageArea.bounds, 0, Player.DEFAULT_PLAYER_LAYERMASK);
         lastAttackTime = attackInterval;
-        if(collider && collider.tag == "Player") {
+        if(collider && collider.tag == "Player"
+        && !CheckWallBetween(collider.transform, attackArea.center.y)) {
             Vector2 force = ((collider.transform.position - transform.position).normalized + Vector3.up*.5f) * 300f;
             collider.GetComponent<Player>().OnDamage(attackDamage, force);
         }
@@ -203,7 +205,21 @@ public class DeathBringer : ChaseMonster {
     }
     bool CheckDirection() {
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + targetDirection.x*.7f, transform.position.y), Vector2.down, 1.1f);
-        print(new Vector2(transform.position.x + targetDirection.x, transform.position.y - .1f));
         return !!hit;
+    }
+    private bool CheckWallBetween(Transform target, float pointY) {
+        Collider2D collider;
+        print(pointY);
+        if(target.TryGetComponent<Collider2D>(out collider)) {
+            RaycastHit2D hit = Physics2D.Raycast(
+                (Vector2)transform.position + new Vector2(0, pointY),
+                new Vector2(transform.localScale.x, 0),
+                Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x/2,
+                1<<6
+            );
+            print((Vector2)transform.position + new Vector2(0, pointY) + " ~ " + ((Vector2)transform.position + new Vector2(0, pointY) + (Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x/2) * new Vector2(transform.localScale.x, 0)));
+            return !!hit && hit.collider.tag == "Ground";
+        }
+        return false;
     }
 }

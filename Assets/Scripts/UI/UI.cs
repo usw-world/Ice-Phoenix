@@ -39,6 +39,11 @@ public class UI : MonoBehaviour {
         currentFrame = nextFrame;
         currentFrame.gameObject.SetActive(true);
     }
+    public virtual void KeyPressEvent() {
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            UIManager.instance.CloseUI();
+        }
+    }
     
     [Serializable]
     class UIActiveEvent : UnityEngine.Events.UnityEvent {}

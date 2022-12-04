@@ -14,6 +14,9 @@ public class ParticleManager : MonoBehaviour {
             Destroy(this.gameObject);
     }
     public void Start() {}
+    public bool ContainParticle(string particleName) {
+        return particleMap.ContainsKey(particleName);
+    }
     public void InitializeParticle(string particleName, GameObject particle, int amount=10, int resizeAmount=5) {
         ParticlePool pool = new ParticlePool(particleName, particle, amount, resizeAmount, transform);
         particleMap.Add(particleName, pool);

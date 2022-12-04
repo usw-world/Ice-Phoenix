@@ -12,6 +12,7 @@ public class Player : LivingEntity, IDamageable {
 
     static public Player playerInstance;
     public delegate float Coefficients();
+    public delegate void DamageEnemyEvent(Transform target);
 
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
@@ -88,7 +89,25 @@ public class Player : LivingEntity, IDamageable {
             return defaultAttackSpeed * coef;
         }
     }
+    public Coefficients criticalChanceCoef;
+    public float criticalChance {
+        get {
+            float coef = 0;;
+            if(criticalChanceCoef != null) {
+                Delegate[] coefs = criticalChanceCoef.GetInvocationList();
+                for(int i=0; i<coefs.Length; i++) {
+                    coef += ((Coefficients)coefs[i])();
+                }
+            }
+            return coef;
+        }
+    }
+    public DamageEnemyEvent basicAttackDamageEvent;
+    public DamageEnemyEvent jumpAttackDamageEvent;
     protected bool isAfterAttack = false;
+    public float abilityCoef {
+        get { return 1 + (adaptationManager.points[(int)Adaptation.Type.Ability] * 0.03f); }
+    }
     #endregion Attack
     #region Defence
     float defaultArmor = 1;
@@ -144,10 +163,7 @@ public class Player : LivingEntity, IDamageable {
     public delegate void DodgeEvent(Vector2 direction);
     #endregion ActionEvent
     #region Ability
-    public float abilityCoef {
-        get { return 1 + (adaptationManager.points[(int)Adaptation.Type.Ability] * 0.03f); }
-    }
-    [SerializeField] protected AbilityManager abilityManager;
+
     #endregion Ability
     #region Adaptation
     [SerializeField] protected Adaptation adaptationManager;
@@ -155,9 +171,18 @@ public class Player : LivingEntity, IDamageable {
     #region Particles
     GameObject particleAttack;
     #endregion Particles
-    #region 
+    #region Level (Experience)
+    [Header("Level")]
+    [SerializeField] protected Slider expSlider;
+    protected int playerLevel = 0;
+    protected int nextLevelExp = 100;
+    public int currentExp { get; protected set; } = 0;
     [SerializeField] Material expParticleMaterial;
-    #endregion
+    delegate void IncreaseIntEvent(int amount);
+    IncreaseIntEvent increaseExpEvent;
+    Coroutine expSmoothIncreaseCoroutine;
+    int abilityPoint = 0;
+    #endregion Level (Experience)
 
     protected override void Awake() {
         base.Awake();
@@ -178,14 +203,13 @@ public class Player : LivingEntity, IDamageable {
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
 
         playerSideUI = playerSideUI==null ? GetComponentInChildren<SideUI>() : playerSideUI;
-        
-        abilityManager = abilityManager==null ? GetComponentInChildren<AbilityManager>() : abilityManager;
 
         adaptationManager = adaptationManager==null ? GetComponentInChildren<Adaptation>() : adaptationManager;
     }
     protected override void Start() {
         InitialState();
         playerSideUI.UpdateHPSlider(this);
+        RefreshExpSlider();
     }
     protected virtual void InitialState() {
         #region Idle State >>
@@ -334,6 +358,10 @@ public class Player : LivingEntity, IDamageable {
         CheckBottom();
         ResetDodgeTime();
         SetExpMaterialAttribute();
+        if(abilityPoint>0 && !AbilityUI.isChoosing) {
+            abilityPoint --;
+            AbilityManager.instance.OfferChoices();
+        }
     }
     protected void ResetDodgeTime() {
         if(cooldownForDodge > 0)
@@ -398,6 +426,35 @@ public class Player : LivingEntity, IDamageable {
         || next.Compare(floatState) && !playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG)) {
             playerStateMachine.ChangeState(next, false);
         }
+    }
+    public void IncreaseExp(int amount) {
+        currentExp += amount;
+        if(currentExp >= nextLevelExp) {
+            int residual = currentExp - nextLevelExp;
+            LevelUp();
+            currentExp -= nextLevelExp;
+            IncreaseExp(0);
+        }
+        if(increaseExpEvent != null) increaseExpEvent(amount);
+        RefreshExpSlider();
+    }
+    protected void RefreshExpSlider() {
+        if(expSmoothIncreaseCoroutine != null)
+            StopCoroutine(expSmoothIncreaseCoroutine);
+        expSmoothIncreaseCoroutine = StartCoroutine(ExpSmoothIncreaseCoroutine());
+    }
+    protected IEnumerator ExpSmoothIncreaseCoroutine() {
+        float offset = 0;
+        while(offset < 1) {
+            offset += Time.deltaTime/3;
+            float next = (float)currentExp / nextLevelExp;
+            expSlider.value = Mathf.Lerp(expSlider.value, next, offset);
+            yield return null;
+        }
+    }
+    protected void LevelUp() {
+        playerLevel ++;
+        abilityPoint ++;
     }
     protected override float SetHP(float next){
         float nextHp = base.SetHP(next);
