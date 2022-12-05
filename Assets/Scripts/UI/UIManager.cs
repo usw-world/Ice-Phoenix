@@ -21,12 +21,14 @@ public class UIManager : MonoBehaviour {
     }
     public void CloseUI() {
         if(activingUI != null) activingUI.OnInactive();
+        InputManager.instance.SetInputState(InputManager.instance.playState);
     }
     public void CloseUI(UI targetUI) {
-        if(activingUI != null) activingUI.OnInactive();
+        CloseUI();
         activingUI = targetUI;
     }
     public void OpenUI(UI targetUI) {
+        InputManager.instance.SetInputState(InputManager.instance.menuState);
         if(activingUI != null && activingUI.enabled) {
             activingUI.enabled = false;
             activingUI.OnInactive();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class AdaptationUI : MonoBehaviour {
+public class AdaptationFrame : MonoBehaviour {
     [SerializeField] Adaptation adaptation;
     [SerializeField] GameObject playerObject;
 
@@ -52,7 +52,7 @@ public class AdaptationUI : MonoBehaviour {
             else
                 adaptation.Decrease((Adaptation.Type)type);
         } catch(System.Exception e) {
-            print(e.Message);
+            Debug.LogWarning(e.Message);
         }
         RefreshAmount();
     }

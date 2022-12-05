@@ -37,6 +37,9 @@ public class Adaptation : MonoBehaviour {
             remainingPoint = nextRemainingPoint;
         }
     }
+    public void IncreasePoint() {
+        remainingPoint ++;
+    }
     /// <summary>Increase target Adaptation and return the value of result.</summary>
     public int Increase(Type targetType) {
         if(remainingPoint <= 0)

@@ -155,17 +155,19 @@ public class Player : LivingEntity, IDamageable {
     protected Animator playerAnimator;
     protected Color playerOriginColor;
     #endregion Graphics
-    #region UI
-    [Header("UI")]
-    [SerializeField] SideUI playerSideUI;
-    #endregion UI
+    // #region UI
+    // [Header("UI")]
+    // #endregion UI
     #region ActionEvent
     public delegate void DodgeEvent(Vector2 direction);
     #endregion ActionEvent
-    #region Ability
+    // #region Ability
 
-    #endregion Ability
+    // #endregion Ability
     #region Adaptation
+    public int rate { get; protected set; } = 0;
+    public int rateGauge { get; protected set; } = 0;
+    public int nextRateGauge { get; protected set; } = 150;
     [SerializeField] protected Adaptation adaptationManager;
     #endregion Adaptation
     #region Particles
@@ -175,7 +177,7 @@ public class Player : LivingEntity, IDamageable {
     [Header("Level")]
     [SerializeField] protected Slider expSlider;
     protected int playerLevel = 0;
-    protected int nextLevelExp = 100;
+    public int nextLevelExp { get; protected set; } = 100;
     public int currentExp { get; protected set; } = 0;
     [SerializeField] Material expParticleMaterial;
     delegate void IncreaseIntEvent(int amount);
@@ -202,14 +204,14 @@ public class Player : LivingEntity, IDamageable {
         playerOriginColor = playerSprite==null ? Color.white : playerSprite.color;
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
 
-        playerSideUI = playerSideUI==null ? GetComponentInChildren<SideUI>() : playerSideUI;
-
         adaptationManager = adaptationManager==null ? GetComponentInChildren<Adaptation>() : adaptationManager;
     }
     protected override void Start() {
         InitialState();
-        playerSideUI.UpdateHPSlider(this);
-        RefreshExpSlider();
+        InitializeRate();
+        ScreenUI.instance.UpdateHPSlider(this);
+        ScreenUI.instance.UpdateExpSlider();
+        ScreenUI.instance.UpdateRateUI();
     }
     protected virtual void InitialState() {
         #region Idle State >>
@@ -432,42 +434,61 @@ public class Player : LivingEntity, IDamageable {
         if(currentExp >= nextLevelExp) {
             int residual = currentExp - nextLevelExp;
             LevelUp();
-            currentExp -= nextLevelExp;
             IncreaseExp(0);
         }
         if(increaseExpEvent != null) increaseExpEvent(amount);
-        RefreshExpSlider();
-    }
-    protected void RefreshExpSlider() {
-        if(expSmoothIncreaseCoroutine != null)
-            StopCoroutine(expSmoothIncreaseCoroutine);
-        expSmoothIncreaseCoroutine = StartCoroutine(ExpSmoothIncreaseCoroutine());
-    }
-    protected IEnumerator ExpSmoothIncreaseCoroutine() {
-        float offset = 0;
-        while(offset < 1) {
-            offset += Time.deltaTime/3;
-            float next = (float)currentExp / nextLevelExp;
-            expSlider.value = Mathf.Lerp(expSlider.value, next, offset);
-            yield return null;
-        }
+        ScreenUI.instance.UpdateExpSlider();
     }
     protected void LevelUp() {
         playerLevel ++;
         abilityPoint ++;
+        currentExp -= nextLevelExp;
+        nextLevelExp = (int)(nextLevelExp * 1.6f);
+    }
+    protected void InitializeRate() {
+        try {
+            rate = GameManager.instance.gameData.rate;
+            rateGauge = GameManager.instance.gameData.rateGauge;
+            nextRateGauge = GetNextRateGauge();
+            print(rateGauge);
+            print(nextRateGauge);
+        } catch(System.Exception e) {
+            Debug.LogWarning(e.StackTrace);
+        }
+    }
+    public void IncreaseRageGauge(int amount) {
+        rateGauge += amount;
+        if(rateGauge >= nextRateGauge) {
+            RateUp();
+        }
+        GameManager.instance.SetRate(rate, rateGauge);
+        ScreenUI.instance.UpdateRateUI();
+    }
+    protected void RateUp() {
+        rate ++;
+        rateGauge -= nextRateGauge;
+        nextRateGauge = GetNextRateGauge();
+        adaptationManager.IncreasePoint();
+    }
+    protected int GetNextRateGauge() {
+        int res = 100;
+        for(int i=0; i<rate; i++) {
+            res = (int)(res * 1.5f);
+        }
+        return res;
     }
     protected override float SetHP(float next){
         float nextHp = base.SetHP(next);
-        playerSideUI.UpdateHPSlider(this);
+        ScreenUI.instance.UpdateHPSlider(this);
         return nextHp;
     }
-    private float IncreasHP(float amount) {
+    private float IncreaseHP(float amount) {
         float nextHp = SetHP(hp + amount);
         return hp;
     }
     public void OnDamage(float damage, float duration=.25f) {
         if(isDead) return;
-        IncreasHP(-damage);
+        IncreaseHP(-damage);
         if(hp <= 0) {
             Die();
         } else {

@@ -47,10 +47,14 @@ public class GameManager : MonoBehaviour {
             UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
     }
     public void SetAdaptations(int[] next) {
-        if(gameData != null)
-            gameData.adaptation = next;
-        else 
-            Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
+        if(gameData != null) gameData.adaptation = next;
+        else Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
+        SynchronizeData();
+    }
+    public void SetRate(int next, int nextGauge) {
+        if(gameData != null) gameData.rate = next;
+        if(gameData != null) gameData.rateGauge = nextGauge;
+        else Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
         SynchronizeData();
     }
     public void SynchronizeData() {
@@ -62,13 +66,15 @@ public class GameManager : MonoBehaviour {
     public class GameData {
         public string userKey;
         public int rate;
+        public int rateGauge;
         public int sceneNo;
         public int clearCount;
         public int[] adaptation;
         
-        public GameData(string userKey, int rate, int sceneNo, int clearCount, int[] adaptation) {
+        public GameData(string userKey, int rate, int rateGauge, int sceneNo, int clearCount, int[] adaptation) {
             this.userKey = userKey;
             this.rate = rate;
+            this.rateGauge = rateGauge;
             this.sceneNo = sceneNo;
             this.clearCount = clearCount;
             this.adaptation = adaptation;
