@@ -56,6 +56,7 @@ public class ServerConnector : MonoBehaviour
                 GameManager.instance.SetGameData(gameData);
                 Callback();
             } else {
+                print(json);
                 Response res = JsonUtility.FromJson<Response>(json);
                 TextMeshProUGUI text = logMessageBox.GetComponentInChildren<TextMeshProUGUI>();
                 text.text = res.message;
@@ -88,7 +89,7 @@ public class ServerConnector : MonoBehaviour
                 if(res.result == 200) {
                     Callback();
                 } else {
-                    Debug.LogError("Some error happen in sychronize data.");
+                    Debug.LogWarning("Some error happen in sychronize data.");
                 }
             }
             if(synchronizationQueue.Count > 0) {

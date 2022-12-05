@@ -6,6 +6,7 @@ using TMPro;
 using AbilitySystem;
 
 public class AbilityUI : UI {
+    [SerializeField] private Button firstCard;
     [System.Serializable]
     private class AbilityChoice {
         public Ability ability;
@@ -15,7 +16,6 @@ public class AbilityUI : UI {
         [SerializeField] public TextMeshProUGUI abilityDescription;
         [SerializeField] public TextMeshProUGUI abilityAnnotation;
     }
-    [SerializeField] Ability[] __test_ability;
 
     [SerializeField] private AbilityChoice[] abilityChoices;
 
@@ -24,6 +24,7 @@ public class AbilityUI : UI {
     public void ShowChoices() {
         isChoosing = true;
         UIManager.instance.OpenUI(this);
+        firstCard.Select();
     }
     public void SetChoice(int index, Ability ability) {
         abilityChoices[index].ability = ability;
