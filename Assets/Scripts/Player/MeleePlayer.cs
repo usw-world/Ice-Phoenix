@@ -19,10 +19,14 @@ public class MeleePlayer : Player {
     int comboCount = 0;
     int maxComboCount = 3;
     #endregion Melee Attack
-
     #region Melee Jump Attack
     protected State jumpAttackState = new State("Jump Attack", JUMP_ATTACK_STATE_TAG);
     #endregion Melee Jump Attack
+    #region Sound
+    [Header("Additional Sound Clips")]
+    [SerializeField] AudioClip[] playerAttackClips;
+    [SerializeField] AudioClip playerJumpAttackClip;
+    #endregion Sound
 
     protected override void Awake() {
         base.Awake();
@@ -157,6 +161,10 @@ public class MeleePlayer : Player {
                 break;
         }
         playerRigidbody.AddForce(slideforce, ForceMode2D.Impulse);
+        if(inners.Length > 0) {
+        } else {
+            playerSoundPlayer.PlayClip(playerAttackClips[index]);
+        }
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(CheckWallBetween(inner.transform, attackRange[index].center.y)) continue;
@@ -197,6 +205,10 @@ public class MeleePlayer : Player {
         float force = attackForce * .6f;
         Vector2 center = (Vector2)transform.position + jumpAttackRange.center * transform.localScale;
         Collider2D[] inners = Physics2D.OverlapBoxAll(center, jumpAttackRange.bounds, 0, Monster.DEFALUT_MONSTER_LAYER);
+        if(inners.Length > 0) {
+        } else {
+            playerSoundPlayer.PlayClip(playerJumpAttackClip);
+        }
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(CheckWallBetween(inner.transform, jumpAttackRange.center.y)) continue;

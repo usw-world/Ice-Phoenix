@@ -8,6 +8,9 @@ public class SoundPlayer : MonoBehaviour {
         if(audioSource == null)
             audioSource = GetComponent<AudioSource>();
     }
+    public void PlayClip(AudioClip clip) {
+        audioSource.PlayOneShot(clip);
+    }
     public void PlaySoundOne() {
         audioSource.Play();
     }

@@ -165,6 +165,12 @@ public class Player : LivingEntity, IDamageable {
 
     // #endregion Ability
     #region Adaptation
+    #region Sound
+    [Header("Sound Clips")]
+    [SerializeField] protected SoundPlayer playerSoundPlayer;
+    [SerializeField] protected AudioClip[] playerFootstepClip;
+    #endregion Sound
+
     public int rate { get; protected set; } = 0;
     public int rateGauge { get; protected set; } = 0;
     public int nextRateGauge { get; protected set; } = 150;
@@ -205,6 +211,8 @@ public class Player : LivingEntity, IDamageable {
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
 
         adaptationManager = adaptationManager==null ? GetComponentInChildren<Adaptation>() : adaptationManager;
+
+        playerSoundPlayer = playerSoundPlayer==null ? GetComponent<SoundPlayer>() : playerSoundPlayer;
     }
     protected override void Start() {
         InitialState();
@@ -398,6 +406,14 @@ public class Player : LivingEntity, IDamageable {
                 playerRigidbody.velocity = addingSpeed;
                 playerStateMachine.ChangeState(moveState, false);
             }
+        }
+    }
+    public void AnimationEvent_Footstep() {
+        try {
+            int index = UnityEngine.Random.Range(0, playerFootstepClip.Length);
+            playerSoundPlayer.PlayClip(playerFootstepClip[index]);
+        } catch(Exception e) {
+            Debug.LogWarning(e.StackTrace);
         }
     }
     protected void CheckBottom() {
