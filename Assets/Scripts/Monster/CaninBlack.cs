@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
+using UnityEngine.U2D;
+using static UnityEngine.Rendering.DebugUI;
+using UnityEditor;
 
-public class NightBorne : ChaseMonster {
+public class CaninBlack : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";
 
     State attackState = new State("Attack", ATTACK_STATE_TAG);
@@ -15,11 +18,23 @@ public class NightBorne : ChaseMonster {
 
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;
+
     Range damageArea {
         get {
             return new Range(
                 (Vector2)transform.position + attackArea.center * new Vector2(transform.localScale.x, 1),
                 attackArea.bounds
+            );
+        }
+    }
+
+    protected Vector2 targetDirection
+    {
+        get
+        {
+            return new Vector2(
+                targetTransform != null && targetTransform.position.x - transform.position.x > 0 ? -1 : 1,
+                targetTransform != null && targetTransform.position.y - transform.position.y > 0 ? -1 : 1
             );
         }
     }
@@ -39,7 +54,20 @@ public class NightBorne : ChaseMonster {
         StartCoroutine(Patrol());
     }
     protected override void InitializeState() {
-        base.InitializeState();
+        chaseState.OnStay += () => {
+            LookAtX(targetDirection.x);
+            if (CanChase())
+            {
+                Vector2 moveSpace = new Vector2(targetDirection.x, 0) * moveSpeed * Time.deltaTime;
+                transform.Translate(-moveSpace);
+                remainingDistance -= moveSpace.magnitude;
+            }
+            else
+            {
+                monsterStateMachine.ChangeState(idleState);
+            }
+        };
+
         idleState.OnActive += (nextState) => {
             monsterAnimator.SetBool("Idle", true);
         };
@@ -107,6 +135,7 @@ public class NightBorne : ChaseMonster {
         base.OnDrawGizmos();
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(damageArea.center, damageArea.bounds);
+       
     }
 
     public override void OnDamage(float damage, float duration=0) {
@@ -151,6 +180,7 @@ public class NightBorne : ChaseMonster {
         if(inner != null) {
             targetTransform = inner.transform;
             remainingDistance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0));
+            CanJump(targetTransform, detectRange.radius);
         } else {
             MissTarget();
         }
@@ -158,6 +188,24 @@ public class NightBorne : ChaseMonster {
     protected override void MissTarget() {
         targetTransform = null;
     }
+    private void CanJump(Transform targetTransform, float detectRadius) 
+    {
+        float viewAngle = 30f;
+        print(targetTransform.rotation.x);
+        Vector2 rightDir = AngleToDir(targetTransform.rotation.y + viewAngle * .5f);
+        Vector2 leftDir = AngleToDir(targetTransform.rotation.y - viewAngle * .5f);
+
+        //Debug.DrawRay(transform.position, rightDir * detectRadius, Color.red, 10f);
+        //Debug.DrawRay(transform.position, leftDir * detectRadius, Color.red, 10f);
+
+    }
+
+    private Vector2 AngleToDir(float angle)
+    {
+        float radian = angle * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Sin(radian), 0f);
+    }
+
     protected override bool IsArrive() {
         return base.IsArrive();
     }
@@ -177,7 +225,6 @@ public class NightBorne : ChaseMonster {
     private bool CheckWallBetween(Transform target, float pointY)
     {
         Collider2D collider;
-        print(pointY);
         if (target.TryGetComponent<Collider2D>(out collider))
         {
             RaycastHit2D hit = Physics2D.Raycast(

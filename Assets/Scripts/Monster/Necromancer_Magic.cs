@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class Necromancer_Magic : MonoBehaviourIF {
     public System.Action endEvent;
-    private EffectPool magicEffectPool;
 
     float damage = 20;
     float moveSpeed = 5f;
 
     Vector2 dir;
-    
 
     private void Start()
     {
         Initial();
+        StartCoroutine("RemoveMagicOverTime");
     }
     private void FixedUpdate()
     {
@@ -41,6 +40,14 @@ public class Necromancer_Magic : MonoBehaviourIF {
             transform.localScale = new Vector3(-1, 1, 1);
 
         return transform.localScale.x;
+    }
+
+    private IEnumerator RemoveMagicOverTime()
+    {
+        float removeTime = 5f;
+
+        yield return new WaitForSeconds(removeTime);
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D player)
