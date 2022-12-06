@@ -443,7 +443,7 @@ public class Player : LivingEntity, IDamageable {
         playerLevel ++;
         abilityPoint ++;
         currentExp -= nextLevelExp;
-        nextLevelExp = (int)(nextLevelExp * 1.6f);
+        nextLevelExp = (int)(nextLevelExp * 1.3f);
     }
     protected void InitializeRate() {
         try {
@@ -473,7 +473,7 @@ public class Player : LivingEntity, IDamageable {
     protected int GetNextRateGauge() {
         int res = 100;
         for(int i=0; i<rate; i++) {
-            res = (int)(res * 1.5f);
+            res = (int)(res * 1.2f) + 10;
         }
         return res;
     }

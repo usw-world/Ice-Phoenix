@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bleeding : Attach {
+public class Attach_Bleeding : Attach {
     [SerializeField] GameObject bleedingEffect;
     private EffectPool bleedingEffectPool;
 
