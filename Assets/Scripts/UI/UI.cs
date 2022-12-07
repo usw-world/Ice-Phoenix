@@ -6,10 +6,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 public class UI : MonoBehaviour {
-    [SerializeField] GameObject currentFrame;
-    [SerializeField] GameObject[] ownFrame;
+    [SerializeField] protected GameObject currentFrame;
+    [SerializeField] protected GameObject[] ownFrame;
 
-    GameObject initialFrame;
+    public virtual bool isActive {
+        get {
+            return gameObject.activeInHierarchy;
+        }
+    }
+
+    protected GameObject initialFrame;
 
     protected virtual void Awake() {
         if(initialFrame == null && ownFrame.Length>0)
@@ -26,11 +32,11 @@ public class UI : MonoBehaviour {
             currentFrame.gameObject.SetActive(true);
     }
 
-    public void OnActive() {
+    public virtual void OnActive() {
         this.gameObject.SetActive(true);
         activeEvent.Invoke();
     }
-    public void OnInactive() {
+    public virtual void OnInactive() {
         this.gameObject.SetActive(false);
         inactiveEvent.Invoke();
     }
@@ -46,12 +52,12 @@ public class UI : MonoBehaviour {
     }
     
     [Serializable]
-    class UIActiveEvent : UnityEngine.Events.UnityEvent {}
+    protected class UIActiveEvent : UnityEngine.Events.UnityEvent {}
 
     [FormerlySerializedAs("Active Event")]
     [SerializeField]
-    UIActiveEvent activeEvent;
+    protected UIActiveEvent activeEvent;
     [FormerlySerializedAs("Inactive Event")]
     [SerializeField]
-    UIActiveEvent inactiveEvent;
+    protected UIActiveEvent inactiveEvent;
 }

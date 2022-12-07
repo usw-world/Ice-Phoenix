@@ -8,7 +8,7 @@ namespace AbilitySystem {
     public class AbilityManager : MonoBehaviour {
         static public AbilityManager instance;
 
-        [SerializeField] GameObject levelUpPrefab;
+        // [SerializeField] GameObject levelUpPrefab;
 
         [SerializeField] Player player;
         [SerializeField] AbilityUI abilityUI;
@@ -27,10 +27,12 @@ namespace AbilitySystem {
                 if(pobj != null)
                     player = pobj.GetComponent<Player>();
             }
+            /*  */
             foreach(Ability ability in allAbilities) {
                 if(!currentAbilityChoices.Contains(ability))
                     currentAbilityChoices.Push(ability);
             }
+            /*  */
         }
         public void Update() {
             /* ------------------- */

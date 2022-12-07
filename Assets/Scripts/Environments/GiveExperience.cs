@@ -18,6 +18,10 @@ public class GiveExperience : MonoBehaviour {
     }
     public void ReleaseExp() {
         GameObject particle = ParticleManager.instance.Call(EXP_PARTICLE_NAME, transform.position, null);
+        var em = particle.GetComponent<ParticleSystem>().emission;
+        int count = expAmount / 10;
+        em.SetBursts(new ParticleSystem.Burst[]{ new ParticleSystem.Burst(0, count, 5, 0.05f) });
+        
         ParticleManager.instance.Release(particle, 3);
         StartCoroutine(IncreaseExpCoroutine());
     }

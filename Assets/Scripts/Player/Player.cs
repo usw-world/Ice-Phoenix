@@ -182,7 +182,7 @@ public class Player : LivingEntity, IDamageable {
     #region Level (Experience)
     [Header("Level")]
     [SerializeField] protected Slider expSlider;
-    protected int playerLevel = 0;
+    public int playerLevel { get; protected set; } = 1;
     public int nextLevelExp { get; protected set; } = 100;
     public int currentExp { get; protected set; } = 0;
     [SerializeField] Material expParticleMaterial;
@@ -219,7 +219,7 @@ public class Player : LivingEntity, IDamageable {
         InitializeRate();
         ScreenUI.instance.UpdateHPSlider(this);
         ScreenUI.instance.UpdateExpSlider();
-        ScreenUI.instance.UpdateRateUI();
+        StatusUI.instance.UpdateRateUI();
     }
     protected virtual void InitialState() {
         #region Idle State >>
@@ -466,8 +466,6 @@ public class Player : LivingEntity, IDamageable {
             rate = GameManager.instance.gameData.rate;
             rateGauge = GameManager.instance.gameData.rateGauge;
             nextRateGauge = GetNextRateGauge();
-            print(rateGauge);
-            print(nextRateGauge);
         } catch(System.Exception e) {
             Debug.LogWarning(e.StackTrace);
         }
@@ -478,7 +476,7 @@ public class Player : LivingEntity, IDamageable {
             RateUp();
         }
         GameManager.instance.SetRate(rate, rateGauge);
-        ScreenUI.instance.UpdateRateUI();
+        StatusUI.instance.UpdateRateUI();
     }
     protected void RateUp() {
         rate ++;
