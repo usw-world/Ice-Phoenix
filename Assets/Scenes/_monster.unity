@@ -2492,7 +2492,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 53708725893303897, guid: 8111d39063726f54e9eb2c6d4b747167, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 53708725893303898, guid: 8111d39063726f54e9eb2c6d4b747167, type: 3}
       propertyPath: m_RootOrder
@@ -2540,7 +2540,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 53708726124232496, guid: 8111d39063726f54e9eb2c6d4b747167, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6737886697504152941, guid: 8111d39063726f54e9eb2c6d4b747167, type: 3}
       propertyPath: maxHp
@@ -3963,7 +3963,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1321243189}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.5, y: -0.75, z: 0}
+  m_LocalPosition: {x: 7.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6531,6 +6531,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+<<<<<<< Updated upstream
+    - target: {fileID: 53708725893303896, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 53708725893303896, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 53708725893303896, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: m_UseAutoMass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 53708725893303896, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
+=======
+>>>>>>> Stashed changes
     - target: {fileID: 53708725893303897, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
       propertyPath: m_Name
       value: Monster __ Canin
@@ -6541,11 +6560,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 53708725893303898, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< Updated upstream
+      value: 6.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 53708725893303898, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.18
+=======
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 53708725893303898, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 53708725893303898, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6583,6 +6610,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+<<<<<<< Updated upstream
+    - target: {fileID: 6607798398812444109, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: jumpLimit
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6607798398812444109, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
       propertyPath: virtualRotObject
       value: 
@@ -6591,6 +6623,8 @@ PrefabInstance:
       propertyPath: detectRange.radius
       value: 5
       objectReference: {fileID: 0}
+=======
+>>>>>>> Stashed changes
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
 --- !u!1001 &1867697591

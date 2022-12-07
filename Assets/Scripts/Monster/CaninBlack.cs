@@ -20,7 +20,7 @@ public class CaninBlack : ChaseMonster {
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;
 
-    [SerializeField] float jumpLimit = 10f;
+    [SerializeField] float jumpForce = 10f;
     [SerializeField] GameObject virtualRotObject;
 
     Range damageArea {
@@ -192,7 +192,7 @@ public class CaninBlack : ChaseMonster {
         if(inner != null) {
             targetTransform = inner.transform;
             remainingDistance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0));
-            Jump(CanJump(targetTransform, detectRange.radius));
+            Jump(CanJump(targetTransform));
         } else {
             MissTarget();
         }
@@ -200,26 +200,28 @@ public class CaninBlack : ChaseMonster {
     protected override void MissTarget() {
         targetTransform = null;
     }
-    private bool CanJump(Transform targetTransform, float detectRadius) 
+    private bool CanJump(Transform targetTransform) 
     {
-        float viewAngle = 45f;
         virtualRotObject.transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(new Vector3(targetTransform.position.x - transform.position.x, targetTransform.position.y - transform.position.y, 0)));
-        
-        Vector3 lookDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.z);
-        Vector3 rightDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.z + viewAngle * .5f);
-        Vector3 leftDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.z - viewAngle * .5f);
 
-        Debug.DrawRay(transform.position, lookDir * detectRadius, Color.blue, detectRadius);
-        Debug.DrawRay(transform.position, rightDir * detectRadius, Color.red, detectRadius);
-        Debug.DrawRay(transform.position, leftDir * detectRadius, Color.red, detectRadius);
+        //Debug.DrawRay(transform.position, lookDir * detectRadius, Color.blue, detectRadius);
+        //Debug.DrawRay(transform.position, rightDir * detectRadius, Color.red, detectRadius);
+        //Debug.DrawRay(transform.position, leftDir * detectRadius, Color.red, detectRadius);
+        //FOV ½Ã°¢È­
 
-        return virtualRotObject.transform.eulerAngles.z > 60 && virtualRotObject.transform.eulerAngles.z < 120;
+        return virtualRotObject.transform.eulerAngles.z > 60 && virtualRotObject.transform.eulerAngles.z < 120; // leftAngle < targetAngle < rightAngle
     }
 
     private void Jump(bool canJump)
     {
-        if (canJump)
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("Groundable"));
+        if (hit && canJump)
         {
+            Rigidbody2D transformRigid = transform.GetComponent<Rigidbody2D>();
+            if (hit.transform.CompareTag("Ground") || hit.transform.CompareTag("Platform"))
+
+                transformRigid.AddForce(new Vector2(0, Mathf.Sqrt(jumpForce * -2 * (Physics2D.gravity.y * transformRigid.gravityScale))), ForceMode2D.Impulse);
+                // h = v^2 / 2g -> v = sqrt(h * 2g)
             monsterStateMachine.ChangeState(jumpState);
         }
             
