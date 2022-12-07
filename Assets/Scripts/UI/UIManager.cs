@@ -6,8 +6,10 @@ public class UIManager : MonoBehaviour {
     static public UIManager instance { get; private set; }
     public UI activingUI { get; private set; } = null;
 
-    public UI escapeMenu;
-    [SerializeField] public UI playerStatusUI;
+    [SerializeField] public EscapeMenuUI escapeMenuUI;
+    [SerializeField] public StatusUI playerStatusUI;
+    [SerializeField] public ScreenUI screenUI;
+    [SerializeField] public AbilityUI abilityUI;
 
     public void Awake() {
         if(instance == null)

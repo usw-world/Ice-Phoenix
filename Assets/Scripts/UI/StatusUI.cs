@@ -1,16 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using AbilitySystem;
 
 public class StatusUI : UI {
     static public StatusUI instance;
+
+    public AdaptationManager adaptationManager;
+    public AbilityManager abilityManager;
 
     [SerializeField] Slider rateGaugeSlider;
     [SerializeField] TextMeshProUGUI rateTmp;
 
     public override bool isActive {
         get {
-            return currentFrame.activeInHierarchy;
+            return canvas.activeInHierarchy;
         }
     }
 
@@ -21,6 +25,11 @@ public class StatusUI : UI {
             instance = this;
     }
 
+    private void Start() {
+        adaptationManager = AdaptationManager.instance;
+        abilityManager = AbilityManager.instance;
+    }
+
     public override void KeyPressEvent() {
         base.KeyPressEvent();
         if(Input.GetKeyDown(KeyCode.Tab)) {
@@ -28,11 +37,11 @@ public class StatusUI : UI {
         }
     }
     public override void OnActive() {
-        currentFrame.SetActive(true);
+        canvas.SetActive(true);
         activeEvent.Invoke();
     }
     public override void OnInactive() {
-        currentFrame.SetActive(false);
+        canvas.SetActive(false);
         inactiveEvent.Invoke();
     }
     public void UpdateRateUI() {

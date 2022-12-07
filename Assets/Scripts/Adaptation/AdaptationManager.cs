@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Adaptation : MonoBehaviour {
+public class AdaptationManager : MonoBehaviour {
+    static public AdaptationManager instance;
+
     public int remainingPoint { get; private set; }
     public enum Type {
         /// <summary>플레이어 기본 공격, 점프 공격 관련</summary>
@@ -21,11 +23,8 @@ public class Adaptation : MonoBehaviour {
     [SerializeField] Player player;
 
     private void Awake() {
-        if(player == null) {
-            GameObject pobj = GameObject.FindGameObjectWithTag("Player");
-            if(pobj != null)
-                player = pobj.GetComponent<Player>();
-        }
+        if(instance != null) Destroy(this.gameObject);
+        else instance = this;
     }
     private void Start() {
         if(GameManager.instance.gameData != null) {
@@ -87,20 +86,20 @@ public class Adaptation : MonoBehaviour {
                 nextValue = points[(int)Type.Power];
                 break;
             case Type.Movement:
-                points[(int)Adaptation.Type.Movement] += amount;
-                nextValue = points[(int)Adaptation.Type.Movement];
+                points[(int)AdaptationManager.Type.Movement] += amount;
+                nextValue = points[(int)AdaptationManager.Type.Movement];
                 break;
             case Type.Fast:
-                points[(int)Adaptation.Type.Fast] += amount;
-                nextValue = points[(int)Adaptation.Type.Fast];
+                points[(int)AdaptationManager.Type.Fast] += amount;
+                nextValue = points[(int)AdaptationManager.Type.Fast];
                 break;
             case Type.Strong:
-                points[(int)Adaptation.Type.Strong] += amount;
-                nextValue = points[(int)Adaptation.Type.Strong];
+                points[(int)AdaptationManager.Type.Strong] += amount;
+                nextValue = points[(int)AdaptationManager.Type.Strong];
                 break;
             case Type.Ability:
-                points[(int)Adaptation.Type.Ability] += amount;
-                nextValue = points[(int)Adaptation.Type.Ability];
+                points[(int)AdaptationManager.Type.Ability] += amount;
+                nextValue = points[(int)AdaptationManager.Type.Ability];
                 break;
             default:
                 Debug.LogWarning("undefined adaptation type was referd.");

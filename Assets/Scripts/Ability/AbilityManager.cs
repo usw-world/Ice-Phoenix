@@ -11,7 +11,6 @@ namespace AbilitySystem {
         // [SerializeField] GameObject levelUpPrefab;
 
         [SerializeField] Player player;
-        [SerializeField] AbilityUI abilityUI;
 
         [SerializeField] List<Ability> allAbilities = new List<Ability>();
         [SerializeField] List<Ability> abilitiesForEmpty = new List<Ability>();
@@ -62,9 +61,9 @@ namespace AbilitySystem {
             for(int i=0; i<3; i++) {
                 Ability choice = choices.Dequeue();
                 currentAbilityChoices.Push(choice);
-                abilityUI.SetChoice(i, choice);
+                UIManager.instance.abilityUI.SetChoice(i, choice);
             }
-            abilityUI.ShowChoices();
+            UIManager.instance.abilityUI.ShowChoices();
         }
         public void AddAbility(Ability ability) {
             Ability target;

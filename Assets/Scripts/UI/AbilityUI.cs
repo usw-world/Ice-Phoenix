@@ -17,6 +17,8 @@ public class AbilityUI : UI {
         [SerializeField] public TextMeshProUGUI abilityAnnotation;
     }
 
+    public override bool isActive => canvas.activeInHierarchy;
+
     [SerializeField] private AbilityChoice[] abilityChoices;
 
     static public bool isChoosing { get; private set; } = false;
