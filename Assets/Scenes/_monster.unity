@@ -6583,6 +6583,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6607798398812444109, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: virtualRotObject
+      value: 
+      objectReference: {fileID: 2083074015}
+    - target: {fileID: 6607798398812444109, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+      propertyPath: detectRange.radius
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
 --- !u!1001 &1867697591
@@ -7005,6 +7013,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042581997}
   m_CullTransparentMesh: 1
+--- !u!1 &2083074015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3113697007450833004, guid: ce821f9355fc53241ad25bbb430d117e, type: 3}
+  m_PrefabInstance: {fileID: 1813880935}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2093055991
 GameObject:
   m_ObjectHideFlags: 0

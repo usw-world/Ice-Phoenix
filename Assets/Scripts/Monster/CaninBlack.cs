@@ -11,6 +11,7 @@ public class CaninBlack : ChaseMonster {
 
     State attackState = new State("Attack", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
+    State jumpState = new State("Jump");
 
     private float lastAttackTime = 0f;
     private float attackInterval = 1.2f;
@@ -18,6 +19,9 @@ public class CaninBlack : ChaseMonster {
 
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;
+
+    [SerializeField] float jumpLimit = 10f;
+    [SerializeField] GameObject virtualRotObject;
 
     Range damageArea {
         get {
@@ -94,6 +98,14 @@ public class CaninBlack : ChaseMonster {
         };
         dieState.OnInactive += (nextState) => {
             monsterAnimator.SetBool("Die", false);
+        };
+        jumpState.OnActive += (prevState) =>
+        {
+            monsterAnimator.SetBool("Jump", true);
+        };
+        jumpState.OnInactive += (nextState) =>
+        {
+            monsterAnimator.SetBool("Jump", false);
         };
     }
     protected override void Update() {
@@ -180,7 +192,7 @@ public class CaninBlack : ChaseMonster {
         if(inner != null) {
             targetTransform = inner.transform;
             remainingDistance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0));
-            CanJump(targetTransform, detectRange.radius);
+            Jump(CanJump(targetTransform, detectRange.radius));
         } else {
             MissTarget();
         }
@@ -188,22 +200,50 @@ public class CaninBlack : ChaseMonster {
     protected override void MissTarget() {
         targetTransform = null;
     }
-    private void CanJump(Transform targetTransform, float detectRadius) 
+    private bool CanJump(Transform targetTransform, float detectRadius) 
     {
-        float viewAngle = 30f;
-        print(targetTransform.rotation.x);
-        Vector2 rightDir = AngleToDir(targetTransform.rotation.y + viewAngle * .5f);
-        Vector2 leftDir = AngleToDir(targetTransform.rotation.y - viewAngle * .5f);
+        float viewAngle = 45f;
+        virtualRotObject.transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(new Vector3(targetTransform.position.x - transform.position.x, targetTransform.position.y - transform.position.y, 0)));
+        
+        Vector3 lookDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.z);
+        Vector3 rightDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.z + viewAngle * .5f);
+        Vector3 leftDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.z - viewAngle * .5f);
 
-        //Debug.DrawRay(transform.position, rightDir * detectRadius, Color.red, 10f);
-        //Debug.DrawRay(transform.position, leftDir * detectRadius, Color.red, 10f);
+        Debug.DrawRay(transform.position, lookDir * detectRadius, Color.blue, detectRadius);
+        Debug.DrawRay(transform.position, rightDir * detectRadius, Color.red, detectRadius);
+        Debug.DrawRay(transform.position, leftDir * detectRadius, Color.red, detectRadius);
 
+        return virtualRotObject.transform.eulerAngles.z > 60 && virtualRotObject.transform.eulerAngles.z < 120;
     }
 
-    private Vector2 AngleToDir(float angle)
+    private void Jump(bool canJump)
     {
-        float radian = angle * Mathf.Deg2Rad;
-        return new Vector2(Mathf.Sin(radian), 0f);
+        if (canJump)
+        {
+            monsterStateMachine.ChangeState(jumpState);
+        }
+            
+    }
+
+    public void AnimationEvent_JumpEnd()
+    {
+        monsterStateMachine.ChangeState(idleState);
+    }
+
+    private int GetAngleFromVector(Vector3 dir)
+    {
+        dir = dir.normalized;
+        float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        if (n < 0) n += 360;
+        int angle = Mathf.RoundToInt(n);
+
+        return angle;
+    }
+
+    private Vector3 GetVectorFromAngle(float angle)
+    {
+        float angleRad = angle * (Mathf.PI / 180f);
+        return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
     }
 
     protected override bool IsArrive() {
