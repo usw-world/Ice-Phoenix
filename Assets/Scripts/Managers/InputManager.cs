@@ -10,8 +10,7 @@ public class InputManager : MonoBehaviour {
     public State playState { get; private set; } = new State("Play");
     public State menuState { get; private set; } = new State("Menu");
 
-    [SerializeField] Player player;
-    [SerializeField] GameObject playerObject;
+    Player player;
     
     void Awake() {
         if(instance == null)
@@ -24,18 +23,7 @@ public class InputManager : MonoBehaviour {
     }
     void Start() {
         InitialState();
-        if(player == null) {
-            playerObject = GameObject.FindGameObjectWithTag("Player");
-            if(playerObject != null) {
-                if(playerObject.TryGetComponent<Player>(out player)) {
-                    Debug.LogWarning($"Player variable is auto-define by {this.name}. If it's not your purpose check player attribute in {this.name}.");
-                } else {
-                    Debug.LogWarning($"Input manager found 'Player Object' that has not {player.GetType()} script. name:{player.name}");
-                }
-            } else {
-                Debug.LogWarning("There isn't any Player Object in current scene.");
-            }
-        }
+        player = Player.playerInstance;
     }
     private void InitialState() {
         // menuState.OnActive += (State prevState) => {
@@ -59,7 +47,7 @@ public class InputManager : MonoBehaviour {
     private void PlayInputSet() {
         float keyDirection = Input.GetAxisRaw("Horizontal");
         if(Input.GetKeyDown(KeyCode.Escape)) { // Esc key case
-            UIManager.instance.OpenUI(UIManager.instance.escapeMenu);
+            UIManager.instance.OpenUI(UIManager.instance.escapeMenuUI);
         }
         if(keyDirection == 0) { // any arrow key being not pressed
             player.SetDirection(0);

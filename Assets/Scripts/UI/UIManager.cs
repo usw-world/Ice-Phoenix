@@ -6,8 +6,10 @@ public class UIManager : MonoBehaviour {
     static public UIManager instance { get; private set; }
     public UI activingUI { get; private set; } = null;
 
-    public UI escapeMenu;
-    [SerializeField] public UI playerStatusUI;
+    [SerializeField] public EscapeMenuUI escapeMenuUI;
+    [SerializeField] public StatusUI playerStatusUI;
+    [SerializeField] public ScreenUI screenUI;
+    [SerializeField] public AbilityUI abilityUI;
 
     public void Awake() {
         if(instance == null)
@@ -29,15 +31,14 @@ public class UIManager : MonoBehaviour {
     }
     public void OpenUI(UI targetUI) {
         InputManager.instance.SetInputState(InputManager.instance.menuState);
-        if(activingUI != null && activingUI.enabled) {
-            activingUI.enabled = false;
+        if(activingUI != null && activingUI.isActive) {
             activingUI.OnInactive();
         }
         activingUI = targetUI;
         activingUI.OnActive();
     }
     public void TogglePlayerStatusUI() {
-        if(!playerStatusUI.gameObject.activeInHierarchy) {
+        if(!playerStatusUI.isActive) {
             OpenUI(playerStatusUI);
         } else {
             CloseUI(playerStatusUI);

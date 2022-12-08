@@ -43,5 +43,6 @@ public abstract class Monster : LivingEntity, IDamageable {
 
     protected override void Die() {
         base.Die();
+        GetComponent<GiveExperience>().ReleaseExp();
     }
 }

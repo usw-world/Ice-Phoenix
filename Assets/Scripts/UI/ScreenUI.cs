@@ -9,10 +9,8 @@ public class ScreenUI : UI {
     [SerializeField] Slider playerHpSlider;
 
     [SerializeField] Slider expSlider;
+    [SerializeField] TextMeshProUGUI levelText;
     Coroutine expSmoothIncreaseCoroutine;
-
-    [SerializeField] Slider rateGaugeSlider;
-    [SerializeField] TextMeshProUGUI rateTmp;
 
     protected override void Awake() {
         base.Awake();
@@ -30,10 +28,7 @@ public class ScreenUI : UI {
         if(expSmoothIncreaseCoroutine != null)
             StopCoroutine(expSmoothIncreaseCoroutine);
         expSmoothIncreaseCoroutine = StartCoroutine(ExpSmoothIncreaseCoroutine());
-    }
-    public void UpdateRateUI() {
-        rateGaugeSlider.value = 1f * Player.playerInstance.rateGauge / Player.playerInstance.nextRateGauge;
-        rateTmp.text = Player.playerInstance.rate+"";
+        levelText.text = Player.playerInstance.playerLevel + ".Lv";
     }
     private IEnumerator ExpSmoothIncreaseCoroutine() {
         float offset = 0;

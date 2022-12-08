@@ -8,10 +8,9 @@ namespace AbilitySystem {
     public class AbilityManager : MonoBehaviour {
         static public AbilityManager instance;
 
-        [SerializeField] GameObject levelUpPrefab;
+        // [SerializeField] GameObject levelUpPrefab;
 
         [SerializeField] Player player;
-        [SerializeField] AbilityUI abilityUI;
 
         [SerializeField] List<Ability> allAbilities = new List<Ability>();
         [SerializeField] List<Ability> abilitiesForEmpty = new List<Ability>();
@@ -27,10 +26,12 @@ namespace AbilitySystem {
                 if(pobj != null)
                     player = pobj.GetComponent<Player>();
             }
+            /*  */
             foreach(Ability ability in allAbilities) {
                 if(!currentAbilityChoices.Contains(ability))
                     currentAbilityChoices.Push(ability);
             }
+            /*  */
         }
         public void Update() {
             /* ------------------- */
@@ -60,9 +61,9 @@ namespace AbilitySystem {
             for(int i=0; i<3; i++) {
                 Ability choice = choices.Dequeue();
                 currentAbilityChoices.Push(choice);
-                abilityUI.SetChoice(i, choice);
+                UIManager.instance.abilityUI.SetChoice(i, choice);
             }
-            abilityUI.ShowChoices();
+            UIManager.instance.abilityUI.ShowChoices();
         }
         public void AddAbility(Ability ability) {
             Ability target;

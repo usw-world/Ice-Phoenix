@@ -6,38 +6,28 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 public class UI : MonoBehaviour {
-    [SerializeField] GameObject currentFrame;
-    [SerializeField] GameObject[] ownFrame;
+    [SerializeField] protected GameObject canvas;
 
-    GameObject initialFrame;
-
-    protected virtual void Awake() {
-        if(initialFrame == null && ownFrame.Length>0)
-            initialFrame = ownFrame[0];
-        if(currentFrame == null && ownFrame.Length>0)
-            currentFrame = ownFrame[0];
-        if(currentFrame == null)
-            Debug.LogError($"UI Object %{this.gameObject.name}% has not any canvas. Please define 'changeFrame'.");
-
-        foreach(GameObject f in ownFrame)  {
-            f.SetActive(false);
+    public virtual bool isActive {
+        get {
+            if(canvas != null) return canvas.activeInHierarchy;
+            return gameObject.activeInHierarchy;
         }
-        if(currentFrame != null)
-            currentFrame.gameObject.SetActive(true);
     }
 
-    public void OnActive() {
-        this.gameObject.SetActive(true);
+    protected GameObject initialFrame;
+
+    protected virtual void Awake() {}
+
+    public virtual void OnActive() {
+        if(canvas != null) { canvas.SetActive(true); } 
+        else { this.gameObject.SetActive(true); }
         activeEvent.Invoke();
     }
-    public void OnInactive() {
-        this.gameObject.SetActive(false);
+    public virtual void OnInactive() {
+        if(canvas != null) { canvas.SetActive(false); }
+        else { this.gameObject.SetActive(false); }
         inactiveEvent.Invoke();
-    }
-    public void ChangeFrame(GameObject nextFrame) {
-        currentFrame.gameObject.SetActive(false);
-        currentFrame = nextFrame;
-        currentFrame.gameObject.SetActive(true);
     }
     public virtual void KeyPressEvent() {
         if(Input.GetKeyDown(KeyCode.Escape)) {
@@ -46,12 +36,12 @@ public class UI : MonoBehaviour {
     }
     
     [Serializable]
-    class UIActiveEvent : UnityEngine.Events.UnityEvent {}
+    protected class UIActiveEvent : UnityEngine.Events.UnityEvent {}
 
     [FormerlySerializedAs("Active Event")]
     [SerializeField]
-    UIActiveEvent activeEvent;
+    protected UIActiveEvent activeEvent;
     [FormerlySerializedAs("Inactive Event")]
     [SerializeField]
-    UIActiveEvent inactiveEvent;
+    protected UIActiveEvent inactiveEvent;
 }

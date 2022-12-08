@@ -40,7 +40,7 @@ public class DummyMonster : ChaseMonster {
         if(isDead) return;
         base.Die();
         
-        GetComponent<GiveExperience>().ReleaseExp();
+        // GetComponent<GiveExperience>().ReleaseExp();
 
         monsterStateMachine.ChangeState(dieState);
         GetComponent<SpriteRenderer>().color = Color.white;

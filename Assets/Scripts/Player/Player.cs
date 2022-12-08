@@ -33,7 +33,7 @@ public class Player : LivingEntity, IDamageable {
     protected float moveSpeedCoef {
         get {
             float coef = 1;
-            coef += adaptationManager.points[(int)Adaptation.Type.Movement] * .015f;
+            coef += adaptationManager.points[(int)AdaptationManager.Type.Movement] * .015f;
             if(moveSpeedAttribute != null) {
                 Delegate[] coefficients = moveSpeedAttribute.GetInvocationList();
                 for (int i=0; i<coefficients.Length; i++) {
@@ -61,7 +61,7 @@ public class Player : LivingEntity, IDamageable {
     protected float attackDamage {
         get {
             float coef = 1;
-            int power = adaptationManager.points[(int)Adaptation.Type.Power];
+            int power = adaptationManager.points[(int)AdaptationManager.Type.Power];
             coef += power * .02f;
             if(damageCoefs != null) {
                 Delegate[] coefficients = damageCoefs.GetInvocationList();
@@ -78,7 +78,7 @@ public class Player : LivingEntity, IDamageable {
     protected float attackSpeed {
         get {
             float coef = 1;
-            int fast = adaptationManager.points[(int)Adaptation.Type.Fast];
+            int fast = adaptationManager.points[(int)AdaptationManager.Type.Fast];
             coef += fast * .02f;
             if(attackSpeedCoefs != null) { 
                 Delegate[] coefficients = attackSpeedCoefs.GetInvocationList();
@@ -106,7 +106,7 @@ public class Player : LivingEntity, IDamageable {
     public DamageEnemyEvent jumpAttackDamageEvent;
     protected bool isAfterAttack = false;
     public float abilityCoef {
-        get { return 1 + (adaptationManager.points[(int)Adaptation.Type.Ability] * 0.03f); }
+        get { return 1 + (adaptationManager.points[(int)AdaptationManager.Type.Ability] * 0.03f); }
     }
     #endregion Attack
     #region Defence
@@ -115,7 +115,7 @@ public class Player : LivingEntity, IDamageable {
     float armor {
         get {
             float coef = 0;
-            int strong = adaptationManager.points[(int)Adaptation.Type.Strong];
+            int strong = adaptationManager.points[(int)AdaptationManager.Type.Strong];
             Delegate[] coefficient = armorCoefficients.GetInvocationList();
             for(int i=0; i<coefficient.Length; i++) {
                 coef += ((Coefficients) coefficient[i])();
@@ -131,7 +131,7 @@ public class Player : LivingEntity, IDamageable {
     float dodgeCoef {
         get {
             float coef = 1;
-            float movement = adaptationManager.points[(int)Adaptation.Type.Movement];
+            float movement = adaptationManager.points[(int)AdaptationManager.Type.Movement];
             return coef + (movement * 0.01f);
         }
     }
@@ -174,7 +174,7 @@ public class Player : LivingEntity, IDamageable {
     public int rate { get; protected set; } = 0;
     public int rateGauge { get; protected set; } = 0;
     public int nextRateGauge { get; protected set; } = 150;
-    [SerializeField] protected Adaptation adaptationManager;
+    [SerializeField] protected AdaptationManager adaptationManager;
     #endregion Adaptation
     #region Particles
     GameObject particleAttack;
@@ -182,7 +182,7 @@ public class Player : LivingEntity, IDamageable {
     #region Level (Experience)
     [Header("Level")]
     [SerializeField] protected Slider expSlider;
-    protected int playerLevel = 0;
+    public int playerLevel { get; protected set; } = 1;
     public int nextLevelExp { get; protected set; } = 100;
     public int currentExp { get; protected set; } = 0;
     [SerializeField] Material expParticleMaterial;
@@ -210,7 +210,7 @@ public class Player : LivingEntity, IDamageable {
         playerOriginColor = playerSprite==null ? Color.white : playerSprite.color;
         playerAnimator = playerAnimator==null ? GetComponent<Animator>() : playerAnimator;
 
-        adaptationManager = adaptationManager==null ? GetComponentInChildren<Adaptation>() : adaptationManager;
+        adaptationManager = adaptationManager==null ? GetComponentInChildren<AdaptationManager>() : adaptationManager;
 
         playerSoundPlayer = playerSoundPlayer==null ? GetComponent<SoundPlayer>() : playerSoundPlayer;
     }
@@ -219,7 +219,7 @@ public class Player : LivingEntity, IDamageable {
         InitializeRate();
         ScreenUI.instance.UpdateHPSlider(this);
         ScreenUI.instance.UpdateExpSlider();
-        ScreenUI.instance.UpdateRateUI();
+        StatusUI.instance.UpdateRateUI();
     }
     protected virtual void InitialState() {
         #region Idle State >>
@@ -466,8 +466,6 @@ public class Player : LivingEntity, IDamageable {
             rate = GameManager.instance.gameData.rate;
             rateGauge = GameManager.instance.gameData.rateGauge;
             nextRateGauge = GetNextRateGauge();
-            print(rateGauge);
-            print(nextRateGauge);
         } catch(System.Exception e) {
             Debug.LogWarning(e.StackTrace);
         }
@@ -478,7 +476,7 @@ public class Player : LivingEntity, IDamageable {
             RateUp();
         }
         GameManager.instance.SetRate(rate, rateGauge);
-        ScreenUI.instance.UpdateRateUI();
+        StatusUI.instance.UpdateRateUI();
     }
     protected void RateUp() {
         rate ++;

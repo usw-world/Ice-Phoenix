@@ -29,6 +29,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8719356383318196977}
+  - {fileID: 7056385131615998297}
   - {fileID: 5954267831444708873}
   - {fileID: 1417270673801657461}
   m_Father: {fileID: 3093435163584624748}
@@ -83,10 +84,8 @@ MonoBehaviour:
   levelUpPrefab: {fileID: 6612572233915201463, guid: 9c91eef3576119246b533bdb1b92caf9, type: 3}
   player: {fileID: 0}
   abilityUI: {fileID: 0}
-  allAbility:
-  - {fileID: 8719356383318196982}
-  - {fileID: 4748067262128182095}
-  - {fileID: 4982955372927502003}
+  allAbilities: []
+  abilitiesForEmpty: []
 --- !u!1 &4727136250095061625
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,6 +180,68 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6574807468103275200, guid: f06bd02c80fff2243970928cbcb0dbb9, type: 3}
   m_PrefabInstance: {fileID: 938899626574806786}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1120677643403570798
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3093435163138918482}
+    m_Modifications:
+    - target: {fileID: 7953394897008688948, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_Name
+      value: Ability __ Bleeding
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+--- !u!4 &7056385131615998297 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7953394897008688951, guid: a1234fcb7f3ff164c8c553c4545132a5, type: 3}
+  m_PrefabInstance: {fileID: 1120677643403570798}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3093435162925570698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -190,11 +251,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7357252013290931383, guid: 69196fffff844a547aae09c4f03f7a6a, type: 3}
       propertyPath: m_Name
-      value: Ability_Thunderbolt
+      value: Ability __ Thunderbolt
       objectReference: {fileID: 0}
     - target: {fileID: 8669387431372227715, guid: 69196fffff844a547aae09c4f03f7a6a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8669387431372227715, guid: 69196fffff844a547aae09c4f03f7a6a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -238,17 +299,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69196fffff844a547aae09c4f03f7a6a, type: 3}
---- !u!114 &4748067262128182095 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7713136607149050309, guid: 69196fffff844a547aae09c4f03f7a6a, type: 3}
-  m_PrefabInstance: {fileID: 3093435162925570698}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1447dfdcc109c745987ec02b0784a03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &5954267831444708873 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8669387431372227715, guid: 69196fffff844a547aae09c4f03f7a6a, type: 3}
@@ -307,7 +357,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6048183162968146002, guid: ab9cbc85b0da92a4bb068727e5b6ba5b, type: 3}
       propertyPath: m_Name
-      value: Ability_Fury
+      value: Ability __ Fury
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab9cbc85b0da92a4bb068727e5b6ba5b, type: 3}
@@ -316,17 +366,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6048183162968146000, guid: ab9cbc85b0da92a4bb068727e5b6ba5b, type: 3}
   m_PrefabInstance: {fileID: 3093435163573502625}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8719356383318196982 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6048183162968146007, guid: ab9cbc85b0da92a4bb068727e5b6ba5b, type: 3}
-  m_PrefabInstance: {fileID: 3093435163573502625}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 173591fe47625ae4794d15520da60be3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5086979126945208611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -336,11 +375,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 75066167450284516, guid: 72b943cd2ffc8e043b15f31aa6da437f, type: 3}
       propertyPath: m_Name
-      value: 'Ability :: FatalAttack'
+      value: Ability __ FatalAttack
       objectReference: {fileID: 0}
     - target: {fileID: 6139458229855577430, guid: 72b943cd2ffc8e043b15f31aa6da437f, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6139458229855577430, guid: 72b943cd2ffc8e043b15f31aa6da437f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -389,14 +428,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6139458229855577430, guid: 72b943cd2ffc8e043b15f31aa6da437f, type: 3}
   m_PrefabInstance: {fileID: 5086979126945208611}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4982955372927502003 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 270100609042128784, guid: 72b943cd2ffc8e043b15f31aa6da437f, type: 3}
-  m_PrefabInstance: {fileID: 5086979126945208611}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71b194a41c5a808499b70e738bcf4759, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

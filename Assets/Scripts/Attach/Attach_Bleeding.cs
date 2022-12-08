@@ -3,34 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Attach_Bleeding : Attach {
-    [SerializeField] GameObject bleedingEffect;
     private EffectPool bleedingEffectPool;
 
-    float lifetime = 0f;
-    float duration = 0f;
-    float damagePerSecond = 0;
-    float interval = 1f;
-    
-    GameObject showingEffect = null;
+    private float lifetime = 0f;
+    public float duration = 0f;
+    public float damagePerSecond = 0;
+    public float interval = 1f;
 
-    protected void Awake() {
-        bleedingEffectPool = new EffectPool("Bleeding Effect", bleedingEffect, 10, 5);
-    }
-    public override void AttachTo(LivingEntity target) {
-        base.AttachTo(target);
-    }
-    public override void Detach() {
-        base.Detach();
-    }
-    protected override void OnAttach() {
+    int attachedCount = 0;
+
+    // protected void Awake() {}
+    public override void OnAttach() {
         Transform target = attachedEntity.transform;
-        showingEffect = bleedingEffectPool.OutPool(target.position, target);
+        transform.localPosition = Vector3.zero;
         StartCoroutine(DurationCoroutine());
     }
-    protected override void OnDetach() {
-        bleedingEffectPool.InPool(showingEffect);
+    public override void OnDetach() {
+        transform.parent = null;
     }
-    protected override void OnStayAttach() {}
+    public override void OnStayAttach() {}
     private IEnumerator DurationCoroutine() {
         while(lifetime < duration) {
             yield return new WaitForSeconds(interval);
@@ -43,6 +34,6 @@ public class Attach_Bleeding : Attach {
         OnEndDuration();
     }
     private void OnEndDuration() {
-        Detach();
+        attachedEntity.ReleaseAttach(this);
     }
 }
