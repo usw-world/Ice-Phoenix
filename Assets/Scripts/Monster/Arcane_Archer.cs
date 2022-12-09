@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
 
-public class Necromancer : ChaseMonster {
+public class Arcane_Archer : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";
 
-    State magicState = new State("Magic", ATTACK_STATE_TAG);
+    State jumpState = new State("Jump");
+    State arrawState = new State("Magic", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
 
     private float magicDamage = 22f;
@@ -18,6 +19,10 @@ public class Necromancer : ChaseMonster {
     private EffectPool magicEffectPool;
 
     [SerializeField] Range attackArea;
+
+    float jumpMinimumHeight;
+    [SerializeField] float jumpForce = 10f;
+    [SerializeField] GameObject virtualRotObject;
 
     [SerializeField] GiveExperience experience;
     Range damageArea {
@@ -37,6 +42,7 @@ public class Necromancer : ChaseMonster {
 
     protected override void Awake() {
         base.Awake();
+        jumpMinimumHeight = detectRange.radius / 2;
         #region Magic Effect Pool Generate
         magicEffectPool = new EffectPool("Magic", magicInstance, 10, 5, this.transform);
         #endregion Magic Effect Pool Generate
@@ -64,11 +70,11 @@ public class Necromancer : ChaseMonster {
         chaseState.OnInactive += (prevState) => {
             monsterAnimator.SetBool("Chase", false);
         };
-        magicState.OnActive += (nextState) => {
-            monsterAnimator.SetBool("Magic", true);
+        arrawState.OnActive += (nextState) => {
+            monsterAnimator.SetBool("Arrow Attack", true);
         };
-        magicState.OnInactive += (prevState) => {
-            monsterAnimator.SetBool("Magic", false);
+        arrawState.OnInactive += (prevState) => {
+            monsterAnimator.SetBool("Arrow Attack", false);
         };
         hitState.OnActive += (prevState) => {
             monsterAnimator.SetTrigger("Hit");
@@ -78,6 +84,10 @@ public class Necromancer : ChaseMonster {
         };
         dieState.OnInactive += (nextState) => {
             monsterAnimator.SetBool("Die", false);
+        };
+        jumpState.OnActive += (prevState) =>
+        {
+            monsterAnimator.SetTrigger("Jump");
         };
     }
     protected override void Update() {
@@ -92,9 +102,10 @@ public class Necromancer : ChaseMonster {
         else {
             if(remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
-            && !monsterStateMachine.Compare(hitState)) {
-                nextMagicPoint = new Vector2(transform.position.x, transform.position.y - 1);
-                monsterStateMachine.ChangeState(magicState);
+            && !monsterStateMachine.Compare(hitState))
+            {
+                nextMagicPoint = new Vector2(transform.position.x, transform.position.y);
+                monsterStateMachine.ChangeState(arrawState);
             }
         }
     }
@@ -103,13 +114,9 @@ public class Necromancer : ChaseMonster {
         lastMagicTime = magicInterval;
         Vector2 point = (Vector2)nextMagicPoint + new Vector2(0, .43f);
         GameObject effect = magicEffectPool.OutPool(point, null);
-        effect.GetComponent<Necromancer_Magic>().endEvent = () => {
+        effect.GetComponent<Arcane_Archer_Arrow>().endEvent = () => {
             magicEffectPool.InPool(effect);
         };
-    }
-
-    public void AnimationEvent_AttackEnd() {
-        monsterStateMachine.ChangeState(idleState);
     }
     protected override void OnDrawGizmos() {
         base.OnDrawGizmos();
@@ -159,18 +166,73 @@ public class Necromancer : ChaseMonster {
         if(inner != null) {
             targetTransform = inner.transform;
             remainingDistance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0));
+            Jump(CanJump(targetTransform));
         } else {
             MissTarget();
         }
     }
     protected override void MissTarget() {
         targetTransform = null;
+       // monsterStateMachine.ChangeState(idleState);
     }
+    private bool CanJump(Transform targetTransform)
+    {
+        float dogCanJumpHeight = detectRange.radius - jumpMinimumHeight;
+        float distanceY = Vector2.Distance(new Vector2(0, transform.position.y), new Vector2(0, targetTransform.position.y));
+        float fovAngle = 45f;
+
+        virtualRotObject.transform.eulerAngles = new Vector2(0, GetAngleFromVector(new Vector2(targetTransform.position.x - transform.position.x, targetTransform.position.y - transform.position.y)));
+        return virtualRotObject.transform.eulerAngles.y > 90 - fovAngle && virtualRotObject.transform.eulerAngles.y < 90 + fovAngle && distanceY > dogCanJumpHeight; // leftAngle < targetAngle < rightAngle
+                                                                                                                                                                     // && 강아지가 점프할 수 있는 높이 = 반지름 - 1;
+    }
+    private void Jump(bool canJump)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("Groundable"));
+        if (hit && canJump)
+        {
+            Rigidbody2D transformRigid = transform.GetComponent<Rigidbody2D>();
+            jumpForce = Vector2.Distance(new Vector2(0, transform.position.y), new Vector2(0, targetTransform.position.y));
+            if (hit.transform.CompareTag("Ground") || hit.transform.CompareTag("Platform"))
+            {
+                monsterStateMachine.ChangeState(jumpState);
+                transformRigid.AddForce(new Vector2(targetDirection.x * Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0)), Mathf.Sqrt(jumpForce * -2 * (Physics2D.gravity.y * transformRigid.gravityScale))), ForceMode2D.Impulse);
+            }
+        }
+    }
+
+    private int GetAngleFromVector(Vector2 dir)
+    {
+        dir = dir.normalized;
+        float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        if (n < 0) n += 360;
+        int angle = Mathf.RoundToInt(n);
+
+        return angle;
+    }
+
+    private Vector3 GetVectorFromAngle(float angle)
+    {
+        float angleRad = angle * (Mathf.PI / 180f);
+        return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+    }
+
+    private void drawFov()
+    {
+        float lookingAngle = virtualRotObject.transform.eulerAngles.y;
+        Vector3 rightDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.y + 70 * 0.5f);
+        Vector3 leftDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.y - 70 * 0.5f);
+        Vector3 lookDir = GetVectorFromAngle(lookingAngle);
+
+        Debug.DrawRay(transform.position, rightDir * 5, Color.blue);
+        Debug.DrawRay(transform.position, leftDir * 5, Color.blue);
+        Debug.DrawRay(transform.position, lookDir * 5, Color.red);
+    }
+
     protected override bool IsArrive() {
         return base.IsArrive();
     }
     protected override bool CanChase() {
-        return !monsterStateMachine.Compare(magicState)
+        return !monsterStateMachine.Compare(arrawState)
             && !monsterStateMachine.Compare(hitState)
             && !monsterStateMachine.Compare(dieState)
             && CheckDirection()

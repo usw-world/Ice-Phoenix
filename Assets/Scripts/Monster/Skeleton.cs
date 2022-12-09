@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
 
-public class NightBorne : ChaseMonster {
+public class Skeleton : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";
 
     State attackState = new State("Attack", ATTACK_STATE_TAG);

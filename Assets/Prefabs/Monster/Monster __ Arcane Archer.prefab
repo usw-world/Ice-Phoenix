@@ -46,10 +46,10 @@ GameObject:
   - component: {fileID: 53708725893303893}
   - component: {fileID: 53708725893303896}
   - component: {fileID: 53708725893303895}
-  - component: {fileID: 6607798398812444109}
-  - component: {fileID: 346594539527262408}
+  - component: {fileID: 4911297450639245504}
+  - component: {fileID: 5326410022709176903}
   m_Layer: 7
-  m_Name: Monster __ Canin
+  m_Name: Monster __ Arcane Archer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113,7 +113,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2114571023, guid: fdafa3bdbea8cbd4381c7bfd306e3baa, type: 3}
+  m_Sprite: {fileID: -609861324, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -134,7 +134,7 @@ Animator:
   m_GameObject: {fileID: 53708725893303897}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 082328da14652654397d3c30df23522e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 094d392a4f82ae248803b6813301dd77, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -157,8 +157,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 1}
+  m_Offset: {x: -0.11406374, y: -0.004224539}
+  m_Size: {x: 1.059144, y: 1.4140091}
   m_Direction: 0
 --- !u!50 &53708725893303896
 Rigidbody2D:
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 745dd835b5b94854ba46c611eaa5e1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6607798398812444109
+--- !u!114 &4911297450639245504
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,29 +202,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 53708725893303897}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c0d8e07b1705754e96740b74201b416, type: 3}
+  m_Script: {fileID: 11500000, guid: e3bab9cd71a54964aa00ae76a2ce4ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 53708725040610907}
-  maxHp: 50
+  maxHp: 120
   monsterSideUI: {fileID: 5987502384696993903}
   monsterAnimator: {fileID: 53708725893303894}
   monsterRigidbody: {fileID: 53708725893303896}
   monsterStateMachine: {fileID: 53708725893303895}
   moveSpeed: 5
-  stoppingDistance: 1
+  stoppingDistance: 2
   targetTransform: {fileID: 0}
   detectRange:
     center: {x: 0, y: 0}
-    radius: 3
-  attackDamage: 10
+    radius: 10
+  magicInstance: {fileID: 2613131061454542431, guid: 7d984d8aca73b2c44bbf50bd25fc6f6f, type: 3}
   attackArea:
-    center: {x: -1, y: 0}
-    bounds: {x: 1, y: 1}
+    center: {x: 0, y: 0}
+    bounds: {x: 0, y: 0}
   jumpForce: 10
   virtualRotObject: {fileID: 3113697007450833004}
-  experience: {fileID: 346594539527262408}
---- !u!114 &346594539527262408
+  experience: {fileID: 5326410022709176903}
+--- !u!114 &5326410022709176903
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0c20373eb6aef4abdcadd3243d200f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expAmount: 20
+  expAmount: 40
   expParticleObject: {fileID: 7193905233714009055, guid: 1ee2bac629f720747b7bcc0fe22a8e69, type: 3}
 --- !u!1 &3113697007450833004
 GameObject:

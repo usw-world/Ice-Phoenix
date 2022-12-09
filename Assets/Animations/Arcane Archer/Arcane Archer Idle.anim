@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Canin Black Jump End
+  m_Name: Arcane Archer Idle
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,11 +20,13 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: -541966189, guid: b5081754240045c48a03cf868fea5745, type: 3}
+      value: {fileID: -609861324, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
     - time: 0.083333336
-      value: {fileID: 1877577081, guid: b5081754240045c48a03cf868fea5745, type: 3}
+      value: {fileID: -699919159, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
     - time: 0.16666667
-      value: {fileID: -380275815, guid: b5081754240045c48a03cf868fea5745, type: 3}
+      value: {fileID: -1945462748, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
+    - time: 0.25
+      value: {fileID: -1485417338, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -44,15 +46,16 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: -541966189, guid: b5081754240045c48a03cf868fea5745, type: 3}
-    - {fileID: 1877577081, guid: b5081754240045c48a03cf868fea5745, type: 3}
-    - {fileID: -380275815, guid: b5081754240045c48a03cf868fea5745, type: 3}
+    - {fileID: -609861324, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
+    - {fileID: -699919159, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
+    - {fileID: -1945462748, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
+    - {fileID: -1485417338, guid: 1dae6317974d04748b17d923f882adb0, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.18333334
+    m_StopTime: 0.26666668
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
