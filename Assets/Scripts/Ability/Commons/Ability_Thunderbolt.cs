@@ -9,7 +9,7 @@ public class Ability_Thunderbolt : Ability
         get { return 3; }
     }
     float[] thunderboltchance = {.15f, .20f, .25f};
-    float[] thunderboltDamage = {30, 40, 50};
+    float[] thunderboltDamage = {18, 24, 30};
     EffectPool thunderboltPool;
     [SerializeField] GameObject thunderboltEffect;
 

@@ -161,16 +161,12 @@ public class Player : LivingEntity, IDamageable {
     #region ActionEvent
     public delegate void DodgeEvent(Vector2 direction);
     #endregion ActionEvent
-    // #region Ability
-
-    // #endregion Ability
-    #region Adaptation
     #region Sound
     [Header("Sound Clips")]
     [SerializeField] protected SoundPlayer playerSoundPlayer;
     [SerializeField] protected AudioClip[] playerFootstepClip;
     #endregion Sound
-
+    #region Adaptation
     public int rate { get; protected set; } = 0;
     public int rateGauge { get; protected set; } = 0;
     public int nextRateGauge { get; protected set; } = 150;
@@ -368,7 +364,7 @@ public class Player : LivingEntity, IDamageable {
         CheckBottom();
         ResetDodgeTime();
         SetExpMaterialAttribute();
-        if(abilityPoint>0 && !AbilityUI.isChoosing) {
+        if(abilityPoint>0 && !AbilityChoicesUI.isChoosing) {
             abilityPoint --;
             AbilityManager.instance.OfferChoices();
         }
@@ -422,8 +418,7 @@ public class Player : LivingEntity, IDamageable {
         /* || playerStateMachine.Compare(ATTACK_STATE_TAG) */)
             return;
         Bounds b = playerCollider.bounds;
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(new Vector2(b.center.x, b.center.y - b.size.y/2 + .1f), new Vector2(b.size.x, .1f), 0, Vector2.down, .1f, GROUNDABLE_LAYER);
-        
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(new Vector2(b.center.x, b.center.y - b.size.y/2 + .1f), new Vector2(b.size.x, .1f), 0, Vector2.down, .2f, GROUNDABLE_LAYER);
         
         State next = floatState;
         if(hits.Length <= 0)
@@ -509,12 +504,28 @@ public class Player : LivingEntity, IDamageable {
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitCoroutine(duration));
         }
+        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, Color.white);
+    }
+    public void OnDamage(float damage, Color textColor, float duration=.25f) {
+        if(isDead) return;
+        IncreaseHP(-damage);
+        if(hp <= 0) {
+            Die();
+        } else {
+            if(hitCoroutine != null) StopCoroutine(hitCoroutine);
+            hitCoroutine = StartCoroutine(HitCoroutine(duration));
+        }
+        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, textColor);
     }
     public void OnDamage(float damage, Vector2 force, float duration=.25f) {
         if(isDead) return;
         OnDamage(damage, duration);
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(force, ForceMode2D.Force);
+    }
+    public void OnDamage(float damage, Vector2 force, Color textColor, float duration=.25f) {
+        if(isDead) return;
+        OnDamage(damage, textColor, duration);
     }
     protected override void Die() {
         base.Die();

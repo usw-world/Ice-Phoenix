@@ -11,6 +11,8 @@ public class StatusUI : UI {
 
     [SerializeField] Slider rateGaugeSlider;
     [SerializeField] TextMeshProUGUI rateTmp;
+    
+    [SerializeField] AbilityUI abilityUI;
 
     public override bool isActive {
         get {
@@ -47,5 +49,8 @@ public class StatusUI : UI {
     public void UpdateRateUI() {
         rateGaugeSlider.value = 1f * Player.playerInstance.rateGauge / Player.playerInstance.nextRateGauge;
         rateTmp.text = "Rate " + Player.playerInstance.rate;
+    }
+    public void UpdateAbilityUI() {
+        abilityUI.Redraw();
     }
 }

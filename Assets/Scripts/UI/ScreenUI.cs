@@ -7,6 +7,7 @@ using TMPro;
 public class ScreenUI : UI {
     static public ScreenUI instance;
     [SerializeField] Slider playerHpSlider;
+    [SerializeField] AbilityIconList abilityIconList;
 
     [SerializeField] Slider expSlider;
     [SerializeField] TextMeshProUGUI levelText;
@@ -38,5 +39,8 @@ public class ScreenUI : UI {
             expSlider.value = Mathf.Lerp(expSlider.value, next, offset);
             yield return null;
         }
+    }
+    public void UpdateAbilityIcons() {
+        abilityIconList.Redraw();
     }
 }

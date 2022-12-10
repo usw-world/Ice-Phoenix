@@ -30,11 +30,14 @@ public class DummyMonster : ChaseMonster {
     protected override void MissTarget() {
         targetTransform = null;
     }
-    public override void OnDamage(float damage, Vector2 force, float duration = 0.25F) {
-        monsterRigidbody.AddForce(force);
-        base.OnDamage(damage, force, duration);
+    public override void OnDamage(float damage, float duration = 0.25F) {
+        base.OnDamage(damage, duration);
         if(hp <= 0)
             Die();
+    }
+    public override void OnDamage(float damage, Vector2 force, float duration = 0.25F) {
+        base.OnDamage(damage, force, duration);
+        monsterRigidbody.AddForce(force);
     }
     protected override void Die() {
         if(isDead) return;

@@ -36,13 +36,27 @@ public abstract class Monster : LivingEntity, IDamageable {
         IncreasHP(-damage);
         if(monsterSideUI != null)
             monsterSideUI.UpdateHPSlider(this);
+        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, Color.white);
+    }
+    public virtual void OnDamage(float damage, Color textColor, float duration=.25f) {
+        IncreasHP(-damage);
+        if(monsterSideUI != null)
+            monsterSideUI.UpdateHPSlider(this);
+        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, textColor);
     }
     public virtual void OnDamage(float damage, Vector2 force, float duration=.25f) {
         OnDamage(damage, duration);
     }
+    public virtual void OnDamage(float damage, Vector2 force, Color textColor, float duration=.25f) {
+        OnDamage(damage, textColor, duration);
+    }
 
     protected override void Die() {
         base.Die();
-        GetComponent<GiveExperience>().ReleaseExp();
+        gameObject.layer = 10;
+        GiveExperience giveExperience;
+        if(TryGetComponent<GiveExperience>(out giveExperience)) {
+            giveExperience.ReleaseExp();
+        }
     }
 }

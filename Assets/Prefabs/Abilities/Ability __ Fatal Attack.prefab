@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 75066167450284516}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.028126, y: -0.05341468, z: 0.049875434}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,9 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b194a41c5a808499b70e738bcf4759, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  derivedAbilityList: {fileID: 0}
+  derivedAbilityList:
+  - {fileID: 0}
   abilityImage: {fileID: 21300000, guid: f769e696a61c4a74ba8236e20d1d6566, type: 3}
   abilityName: Fatal Attack
-  description: "\uC73C\uC545 \uBE14\uB808\uC774\uB4DC \uB9C8\uC2A4\uD130"
-  annotation: 
+  description: "\uACF5\uACA9\uCE58 \uCE58\uBA85\uD0C0\uB85C \uC801\uC911\uD560 \uD655\uB960\uC774
+    15% / 20% / 25% \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+  annotation: "(\uCE58\uBA85\uD0C0\uAC00 \uBC1C\uC0DD\uD55C \uACF5\uACA9\uC740 \uD53C\uD574\uB7C9\uC774\n2\uBC30\uB85C
+    \uC99D\uAC00\uD569\uB2C8\uB2E4)"
+  abilitySummary: "\uC77C\uC815 \uD655\uB960(15% / 20% 25%)\uB85C \uCE58\uBA85\uD0C0
+    \uACF5\uACA9"
   currentLevel: 0

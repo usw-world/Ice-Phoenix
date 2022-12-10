@@ -124,9 +124,8 @@ namespace CmpLinkedList {
             return current.value;
         }
         public bool Shift(T target, out T data) {
-            if(Count <= 0)
-                throw new EmptyReferenceException();
-            
+            // if(Count <= 0)
+            //     throw new EmptyReferenceException();
             Node<T> temp = null;
             Node<T> current = head;
             while(current != null) {
@@ -175,7 +174,7 @@ namespace CmpLinkedList {
         }
         public bool Find(T target, out T data) {
             Node<T> current = head;
-            while (current.next != null) {
+            while (current != null) {
                 if(current.value.Equals(target)) {
                     data = current.value;
                     return true;

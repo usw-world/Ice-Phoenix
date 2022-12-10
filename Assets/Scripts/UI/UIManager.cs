@@ -9,7 +9,8 @@ public class UIManager : MonoBehaviour {
     [SerializeField] public EscapeMenuUI escapeMenuUI;
     [SerializeField] public StatusUI playerStatusUI;
     [SerializeField] public ScreenUI screenUI;
-    [SerializeField] public AbilityUI abilityUI;
+    [SerializeField] public AbilityChoicesUI abilityChoicesUI;
+    [SerializeField] public DamageTextGenerator damageTextGenerator;
 
     public void Awake() {
         if(instance == null)

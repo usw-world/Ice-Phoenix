@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AbilitySystem;
+using Pool;
 
 public class MeleePlayer : Player {
     [Header("Basic Attack Range")]
@@ -18,6 +19,8 @@ public class MeleePlayer : Player {
     bool attackingPreInput = false;
     int comboCount = 0;
     int maxComboCount = 3;
+    [SerializeField] GameObject slashParticle;
+    ParticlePool slashParticlePool;
     #endregion Melee Attack
     #region Melee Jump Attack
     protected State jumpAttackState = new State("Jump Attack", JUMP_ATTACK_STATE_TAG);
@@ -25,7 +28,8 @@ public class MeleePlayer : Player {
     #region Sound
     [Header("Additional Sound Clips")]
     [SerializeField] AudioClip[] playerAttackClips;
-    [SerializeField] AudioClip playerJumpAttackClip;
+    [SerializeField] AudioClip[] playerAttackClips_empty;
+    [SerializeField] AudioClip playerJumpAttackClip_empty;
     #endregion Sound
 
     protected override void Awake() {
@@ -33,6 +37,7 @@ public class MeleePlayer : Player {
     }
     protected override void Start() {
         base.Start();
+        slashParticlePool = new ParticlePool("Slash Particle", slashParticle, 20, 5, transform);
     }
     protected override void Update() {
         base.Update();
@@ -87,6 +92,7 @@ public class MeleePlayer : Player {
         #region Jump Attack State
         jumpAttackState.OnActive += (prevState) => {
             playerAnimator.SetBool("Jump Attack", true);
+            playerAnimator.SetTrigger("Jump Attack Trigger");
             playerAnimator.speed = attackSpeed;
         };
         jumpAttackState.OnInactive += (State nextState) => {
@@ -161,21 +167,31 @@ public class MeleePlayer : Player {
                 break;
         }
         playerRigidbody.AddForce(slideforce, ForceMode2D.Impulse);
-        if(inners.Length > 0) {
-        } else {
-            playerSoundPlayer.PlayClip(playerAttackClips[index]);
-        }
+        bool hasTarget = false;
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(CheckWallBetween(inner.transform, attackRange[index].center.y)) continue;
+            hasTarget = true;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
                     damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
-                    .5f);
+                    .5f
+                );
                 if(basicAttackDamageEvent != null)
                     basicAttackDamageEvent(inner.transform);
+
+                GameObject slashEffect = slashParticlePool.OutPool(inner.transform.position);
+                StartCoroutine(Utility.TimeoutTask(() => {
+                    slashParticlePool.InPool(slashEffect);
+                }, 2f));
             }
+        }
+        if(hasTarget) {
+            int soundIndex = Random.Range(0, playerAttackClips.Length);
+            playerSoundPlayer.PlayClip(playerAttackClips[soundIndex]);
+        } else {
+            playerSoundPlayer.PlayClip(playerJumpAttackClip_empty);
         }
     }
     void AnimationEvent_AfterAttack() {
@@ -205,13 +221,11 @@ public class MeleePlayer : Player {
         float force = attackForce * .6f;
         Vector2 center = (Vector2)transform.position + jumpAttackRange.center * transform.localScale;
         Collider2D[] inners = Physics2D.OverlapBoxAll(center, jumpAttackRange.bounds, 0, Monster.DEFALUT_MONSTER_LAYER);
-        if(inners.Length > 0) {
-        } else {
-            playerSoundPlayer.PlayClip(playerJumpAttackClip);
-        }
+        bool hasTarget = false;
         foreach(Collider2D inner in inners) {
             IDamageable target;
             if(CheckWallBetween(inner.transform, jumpAttackRange.center.y)) continue;
+            hasTarget = true;
             if(inner.TryGetComponent<IDamageable>(out target)) {
                 target.OnDamage(
                     damage,
@@ -220,6 +234,16 @@ public class MeleePlayer : Player {
                 if(jumpAttackDamageEvent != null)
                     jumpAttackDamageEvent(inner.transform);
             }
+            GameObject slashEffect = slashParticlePool.OutPool(inner.transform.position);
+            StartCoroutine(Utility.TimeoutTask(() => {
+                slashParticlePool.InPool(slashEffect);
+            }, 2f));
+        }
+        if(hasTarget) {
+            int soundIndex = Random.Range(0, playerAttackClips.Length);
+            playerSoundPlayer.PlayClip(playerAttackClips[soundIndex]);
+        } else {
+            playerSoundPlayer.PlayClip(playerJumpAttackClip_empty);
         }
     }
     private bool CheckWallBetween(Transform target, float pointY) {

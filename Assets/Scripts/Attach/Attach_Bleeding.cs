@@ -5,35 +5,40 @@ using UnityEngine;
 public class Attach_Bleeding : Attach {
     private EffectPool bleedingEffectPool;
 
-    private float lifetime = 0f;
+    public float lifetime = 0f;
     public float duration = 0f;
     public float damagePerSecond = 0;
     public float interval = 1f;
+    public int maxAttachedCount = 1;
 
-    int attachedCount = 0;
+    public int attachedCount = 0;
 
-    // protected void Awake() {}
+    Coroutine damageCoroutine;
+
+    public override string attchType => "Bleeding";
+
     public override void OnAttach() {
-        Transform target = attachedEntity.transform;
         transform.localPosition = Vector3.zero;
-        StartCoroutine(DurationCoroutine());
+        damageCoroutine = StartCoroutine(DurationCoroutine());
     }
     public override void OnDetach() {
-        transform.parent = null;
+        if(damageCoroutine != null) StopCoroutine(damageCoroutine);
+        if(detachEvent != null) detachEvent();
     }
     public override void OnStayAttach() {}
     private IEnumerator DurationCoroutine() {
         while(lifetime < duration) {
             yield return new WaitForSeconds(interval);
             IDamageable idmg;
-            if(attachedEntity.TryGetComponent<IDamageable>(out idmg)) {
-                idmg.OnDamage(damagePerSecond, 0);
+            if(attachedTarget.TryGetComponent<IDamageable>(out idmg)) {
+                idmg.OnDamage(damagePerSecond * attachedCount, 0);
             }
             lifetime += interval;
         }
         OnEndDuration();
     }
     private void OnEndDuration() {
-        attachedEntity.ReleaseAttach(this);
+        if(attachedTarget != null) 
+            attachedTarget.ReleaseAttach(this);
     }
 }
