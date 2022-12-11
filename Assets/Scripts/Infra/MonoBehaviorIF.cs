@@ -19,7 +19,7 @@ public class MonoBehaviourIF : MonoBehaviour {
         }
     }
     [Header("MonoBehavior IF")]
-    [SerializeField] Transform rotatelessChildren;
+    [SerializeField] public Transform rotatelessChildren;
     protected void LookAtX(float x) {
         if(x > 0) {
             transform.localScale = new Vector3(1, 1, 1);

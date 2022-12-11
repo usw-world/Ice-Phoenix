@@ -36,19 +36,17 @@ public abstract class Monster : LivingEntity, IDamageable {
         IncreasHP(-damage);
         if(monsterSideUI != null)
             monsterSideUI.UpdateHPSlider(this);
-        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, Color.white);
     }
-    public virtual void OnDamage(float damage, Color textColor, float duration=.25f) {
-        IncreasHP(-damage);
-        if(monsterSideUI != null)
-            monsterSideUI.UpdateHPSlider(this);
-        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, textColor);
+    public virtual void OnDamage(float damage, Color color, float duration=.25f) {
+        OnDamage(damage, duration);
+        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, color);
     }
     public virtual void OnDamage(float damage, Vector2 force, float duration=.25f) {
         OnDamage(damage, duration);
     }
-    public virtual void OnDamage(float damage, Vector2 force, Color textColor, float duration=.25f) {
-        OnDamage(damage, textColor, duration);
+    public virtual void OnDamage(float damage, Vector2 force, Color color, float duration=.25f) {
+        OnDamage(damage, force, duration);
+        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, color);
     }
 
     protected override void Die() {

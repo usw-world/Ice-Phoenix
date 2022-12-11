@@ -10,6 +10,9 @@ public class Player : LivingEntity, IDamageable {
     public const string ATTACK_STATE_TAG = "tag:Attack";
     public const string JUMP_ATTACK_STATE_TAG = "tag:Jump Attack";
 
+    [SerializeField] private GameObject normalCamera;
+    [SerializeField] private GameObject zoomCamera;
+
     static public Player playerInstance;
     public delegate float Coefficients();
     public delegate void DamageEnemyEvent(Transform target);
@@ -49,11 +52,9 @@ public class Player : LivingEntity, IDamageable {
     protected float jumpPower = 22f;
     protected Vector2 moveDirection;
     protected bool canMove = true;
-    bool isGrounding = false;
     int maxJumpCount = 2;
     int currentJumpCount = 0;
     const int GROUNDABLE_LAYER = 64;
-    [SerializeField] GameObject groundedPlatform;
     #endregion Move
     #region Attack
     private float defaultDamage = 10f;
@@ -189,18 +190,22 @@ public class Player : LivingEntity, IDamageable {
     #endregion Level (Experience)
 
     protected override void Awake() {
+        print("Awake");
         base.Awake();
-        if (Player.playerInstance != null)
-            Destroy(Player.playerInstance.gameObject);
-        Player.playerInstance = this.GetComponent<Player>();
+        if (Player.playerInstance == null) {
+            Player.playerInstance = this;
+            DontDestroyOnLoad(this.gameObject);
+        } else {
+            Destroy(this.gameObject);
+        }
 
         if (TryGetComponent<StateMachine>(out playerStateMachine)) {
             playerStateMachine.SetIntialState(idleState);
         } else {
             Debug.LogError("Player hasn't any 'StateMachine'.");
         }
-        playerRigidbody = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponents<BoxCollider2D>()[0];
+        playerRigidbody = playerRigidbody==null ? GetComponent<Rigidbody2D>() : playerRigidbody;
+        playerCollider = playerCollider==null ? GetComponents<BoxCollider2D>()[0] : playerCollider;
 
         playerSprite = GetComponent<SpriteRenderer>();
         playerOriginColor = playerSprite==null ? Color.white : playerSprite.color;
@@ -229,7 +234,6 @@ public class Player : LivingEntity, IDamageable {
 
         #region Float State >>
         floatState.OnActive += (prevState) => {
-            isGrounding = false;
             if(prevState.Compare(floatState))
                 playerAnimator.SetTrigger("Double Jump");
             else
@@ -238,7 +242,6 @@ public class Player : LivingEntity, IDamageable {
             currentJumpCount ++;
         };
         floatState.OnInactive += (nextState) => {
-            isGrounding = true;
             playerAnimator.SetBool("Float", false);
         };
         floatState.OnStay += () => {
@@ -291,7 +294,7 @@ public class Player : LivingEntity, IDamageable {
         moveDirection = Vector2.right * dirX;
     }
     protected bool CheckFront() {
-        RaycastHit2D[] hit = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size, 0, new Vector2(moveDirection.x, 0), .02f, GROUNDABLE_LAYER);
+        RaycastHit2D[] hit = Physics2D.BoxCastAll(playerCollider.bounds.center, playerCollider.bounds.size * new Vector2(1, .98f), 0, new Vector2(moveDirection.x, 0), .02f, GROUNDABLE_LAYER);
         for(int i=0; i<hit.Length; i++) {
             Platform p = hit[i].transform.GetComponent<Platform>();
             if(hit[i].transform.tag == "Ground") {
@@ -379,8 +382,7 @@ public class Player : LivingEntity, IDamageable {
         expParticleMaterial.SetVector("_PlayerPosition", new Vector4(transform.position.x, transform.position.y, transform.position.z, 1));
     }
     protected void BasicMove() {
-        if(!isGrounding 
-        || playerStateMachine.Compare(floatState)
+        if(playerStateMachine.Compare(floatState)
         || playerStateMachine.Compare(dodgeState)
         || playerStateMachine.Compare(hitState)
         || playerStateMachine.Compare(ATTACK_STATE_TAG) && !canMove
@@ -419,7 +421,7 @@ public class Player : LivingEntity, IDamageable {
             return;
         Bounds b = playerCollider.bounds;
         RaycastHit2D[] hits = Physics2D.BoxCastAll(new Vector2(b.center.x, b.center.y - b.size.y/2 + .1f), new Vector2(b.size.x, .1f), 0, Vector2.down, .2f, GROUNDABLE_LAYER);
-        
+
         State next = floatState;
         if(hits.Length <= 0)
             next = floatState;
@@ -504,7 +506,7 @@ public class Player : LivingEntity, IDamageable {
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitCoroutine(duration));
         }
-        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, Color.white);
+        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, Color.white);
     }
     public void OnDamage(float damage, Color textColor, float duration=.25f) {
         if(isDead) return;
@@ -515,7 +517,7 @@ public class Player : LivingEntity, IDamageable {
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitCoroutine(duration));
         }
-        UIManager.instance.damageTextGenerator.ShowDamageText(damage+"", transform.position, textColor);
+        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, textColor);
     }
     public void OnDamage(float damage, Vector2 force, float duration=.25f) {
         if(isDead) return;
@@ -526,6 +528,8 @@ public class Player : LivingEntity, IDamageable {
     public void OnDamage(float damage, Vector2 force, Color textColor, float duration=.25f) {
         if(isDead) return;
         OnDamage(damage, textColor, duration);
+        playerRigidbody.velocity = Vector2.zero;
+        playerRigidbody.AddForce(force, ForceMode2D.Force);
     }
     protected override void Die() {
         base.Die();
@@ -536,5 +540,13 @@ public class Player : LivingEntity, IDamageable {
             yield return new WaitForSeconds(duration);
             playerStateMachine.ChangeState(basicState);
         }
+    }
+    public void ZoomInCamera() {
+        normalCamera.SetActive(false);
+        zoomCamera.SetActive(true);
+    }
+    public void ZoomOutCamera() {
+        normalCamera.SetActive(true);
+        zoomCamera.SetActive(false);
     }
 }

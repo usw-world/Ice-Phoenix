@@ -12,7 +12,7 @@ public class DamageTextGenerator : MonoBehaviour {
     private void Start() {
         damagePooler = new ParticlePool("Damage Text", damageTmp, 20, 10, drawingCanvas);
     }
-    public void ShowDamageText(string number, Vector3 point, Color color) {
+    public void LogDamage(string number, Vector3 point, Color color) {
         GameObject text = damagePooler.OutPool(point, drawingCanvas);
         text.GetComponent<TextMeshProUGUI>().text = number;
         text.GetComponent<TextMeshProUGUI>().color = color;

@@ -18,6 +18,8 @@ public class Necromancer : ChaseMonster {
     private EffectPool magicEffectPool;
 
     [SerializeField] Range attackArea;
+
+    [SerializeField] GiveExperience experience;
     Range damageArea {
         get {
             return new Range(
@@ -43,6 +45,10 @@ public class Necromancer : ChaseMonster {
     protected override void Start() {
         base.Start();
         StartCoroutine(Patrol());
+        if (experience == null && TryGetComponent<GiveExperience>(out experience))
+        {
+            Debug.LogWarning($"There is any 'GiveExperience' component in {gameObject.name}");
+        }
     }
     protected override void InitializeState() {
         base.InitializeState();
@@ -140,7 +146,7 @@ public class Necromancer : ChaseMonster {
         monsterStateMachine.ChangeState(dieState);
     }
     public void AnimationEvent_DieEnd() {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
     public IEnumerator Patrol() {
         while(!isDead) {

@@ -5,6 +5,8 @@ using GameObjectState;
 using UnityEngine.U2D;
 using static UnityEngine.Rendering.DebugUI;
 using UnityEditor;
+using static UnityEditor.PlayerSettings;
+using UnityEngine.UIElements;
 
 public class CaninBlack : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";
@@ -12,6 +14,7 @@ public class CaninBlack : ChaseMonster {
     State attackState = new State("Attack", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
     State jumpState = new State("Jump");
+    State jumpEndState = new State("JumpEnd");
 
     private float lastAttackTime = 0f;
     private float attackInterval = 1.2f;
@@ -20,8 +23,11 @@ public class CaninBlack : ChaseMonster {
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;
 
+    float jumpMinimumHeight;
     [SerializeField] float jumpForce = 10f;
     [SerializeField] GameObject virtualRotObject;
+
+    [SerializeField] GiveExperience experience;
 
     Range damageArea {
         get {
@@ -51,14 +57,18 @@ public class CaninBlack : ChaseMonster {
 
     protected override void Awake() {
         base.Awake();
-
+        jumpMinimumHeight = detectRange.radius / 2;
     }
     protected override void Start() {
         base.Start();
         StartCoroutine(Patrol());
+        if (experience == null && TryGetComponent<GiveExperience>(out experience))
+        {
+            Debug.LogWarning($"There is any 'GiveExperience' component in {gameObject.name}");
+        }
     }
     protected override void InitializeState() {
-        chaseState.OnStay += () => {
+        chaseState.OnStay += () => {                // 이미지가 왼쪽을 보고있으면. 오른쪽을 보고있으면 삭제
             LookAtX(targetDirection.x);
             if (CanChase())
             {
@@ -101,12 +111,10 @@ public class CaninBlack : ChaseMonster {
         };
         jumpState.OnActive += (prevState) =>
         {
-            monsterAnimator.SetBool("Jump", true);
+            monsterAnimator.SetTrigger("Jump");
         };
-        jumpState.OnInactive += (nextState) =>
-        {
-            monsterAnimator.SetBool("Jump", false);
-        };
+
+
     }
     protected override void Update() {
         base.Update();
@@ -179,7 +187,7 @@ public class CaninBlack : ChaseMonster {
         monsterStateMachine.ChangeState(dieState);
     }
     public void AnimationEvent_DieEnd() {
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
     public IEnumerator Patrol() {
         while(!isDead) {
@@ -187,6 +195,7 @@ public class CaninBlack : ChaseMonster {
             yield return new WaitForSeconds(.4f);
         }
     }
+
     protected override void DetectTarget() {
         Collider2D inner = Physics2D.OverlapCircle((Vector2)transform.position + detectRange.center, detectRange.radius, Player.DEFAULT_PLAYER_LAYERMASK);
         if(inner != null) {
@@ -199,17 +208,17 @@ public class CaninBlack : ChaseMonster {
     }
     protected override void MissTarget() {
         targetTransform = null;
+        monsterStateMachine.ChangeState(idleState);
     }
     private bool CanJump(Transform targetTransform) 
     {
-        virtualRotObject.transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(new Vector3(targetTransform.position.x - transform.position.x, targetTransform.position.y - transform.position.y, 0)));
+        float dogCanJumpHeight = detectRange.radius - jumpMinimumHeight;
+        float distanceY = Vector2.Distance(new Vector2(0, transform.position.y), new Vector2(0, targetTransform.position.y));
+        float fovAngle = 45f;
 
-        //Debug.DrawRay(transform.position, lookDir * detectRadius, Color.blue, detectRadius);
-        //Debug.DrawRay(transform.position, rightDir * detectRadius, Color.red, detectRadius);
-        //Debug.DrawRay(transform.position, leftDir * detectRadius, Color.red, detectRadius);
-        //FOV 시각화
-
-        return virtualRotObject.transform.eulerAngles.z > 60 && virtualRotObject.transform.eulerAngles.z < 120; // leftAngle < targetAngle < rightAngle
+        virtualRotObject.transform.eulerAngles = new Vector2(0, GetAngleFromVector(new Vector2(targetTransform.position.x - transform.position.x, targetTransform.position.y - transform.position.y)));
+        return virtualRotObject.transform.eulerAngles.y > 90 - fovAngle && virtualRotObject.transform.eulerAngles.y < 90 + fovAngle && distanceY > dogCanJumpHeight; // leftAngle < targetAngle < rightAngle
+                                                                                                                                                               // && 강아지가 점프할 수 있는 높이 = 반지름 - 1;
     }
 
     private void Jump(bool canJump)
@@ -218,21 +227,16 @@ public class CaninBlack : ChaseMonster {
         if (hit && canJump)
         {
             Rigidbody2D transformRigid = transform.GetComponent<Rigidbody2D>();
+            jumpForce = Vector2.Distance(new Vector2(0, transform.position.y), new Vector2(0, targetTransform.position.y));
             if (hit.transform.CompareTag("Ground") || hit.transform.CompareTag("Platform"))
-
-                transformRigid.AddForce(new Vector2(0, Mathf.Sqrt(jumpForce * -2 * (Physics2D.gravity.y * transformRigid.gravityScale))), ForceMode2D.Impulse);
-                // h = v^2 / 2g -> v = sqrt(h * 2g)
-            monsterStateMachine.ChangeState(jumpState);
+            {
+                monsterStateMachine.ChangeState(jumpState);
+                transformRigid.AddForce(new Vector2(-targetDirection.x * Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0)), Mathf.Sqrt(jumpForce * -2 * (Physics2D.gravity.y * transformRigid.gravityScale))), ForceMode2D.Impulse);
+            }
         }
-            
     }
 
-    public void AnimationEvent_JumpEnd()
-    {
-        monsterStateMachine.ChangeState(idleState);
-    }
-
-    private int GetAngleFromVector(Vector3 dir)
+    private int GetAngleFromVector(Vector2 dir)
     {
         dir = dir.normalized;
         float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -246,6 +250,18 @@ public class CaninBlack : ChaseMonster {
     {
         float angleRad = angle * (Mathf.PI / 180f);
         return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+    }
+
+    private void drawFov()
+    {
+        float lookingAngle = virtualRotObject.transform.eulerAngles.y;
+        Vector3 rightDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.y + 70 * 0.5f);
+        Vector3 leftDir = GetVectorFromAngle(virtualRotObject.transform.eulerAngles.y - 70 * 0.5f);
+        Vector3 lookDir = GetVectorFromAngle(lookingAngle);
+
+        Debug.DrawRay(transform.position, rightDir * 5, Color.blue);
+        Debug.DrawRay(transform.position, leftDir * 5, Color.blue);
+        Debug.DrawRay(transform.position, lookDir * 5, Color.red);
     }
 
     protected override bool IsArrive() {

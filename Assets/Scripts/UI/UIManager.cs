@@ -10,16 +10,26 @@ public class UIManager : MonoBehaviour {
     [SerializeField] public StatusUI playerStatusUI;
     [SerializeField] public ScreenUI screenUI;
     [SerializeField] public AbilityChoicesUI abilityChoicesUI;
-    [SerializeField] public DamageTextGenerator damageTextGenerator;
+    [SerializeField] public DamageTextGenerator damageLog;
+    [SerializeField] public DialogComponent dialogUI;
+
+    [SerializeField] UnityEngine.UI.Image fadeInOutImage;
 
     public void Awake() {
-        if(instance == null)
+        if(instance == null) {
             instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
         else
             Destroy(this.gameObject);
 
         if(playerStatusUI == null) {
             Debug.LogWarning("There is any 'Player Status UI'.");
+        }
+    }
+    void Start() {
+        if(Stage.currentStage!=null && Stage.currentStage.type==Stage.StageType.Intro) {
+            dialogUI.PlayTimeline();
         }
     }
     public void CloseUI() {
@@ -44,5 +54,52 @@ public class UIManager : MonoBehaviour {
         } else {
             CloseUI(playerStatusUI);
         }
+    }
+    public void ZoomInCamera() {
+        Player.playerInstance.ZoomInCamera();
+    }
+    public void ZoomOutCamera () {
+        Player.playerInstance.ZoomOutCamera();
+    }
+    
+    public void ChangeToPlayState() {
+        InputManager.instance.ChangeToPlayState();
+    }
+    public void ChangeToMenuState() {
+        InputManager.instance.ChangeToMenuState();
+    }
+    public void ChangeToDialogState() {
+        InputManager.instance.ChangeToDialogState();
+    }
+
+    public void FadeIn(System.Action callback) {
+        StartCoroutine(FadeInCoroutine(callback));
+    }
+    private IEnumerator FadeInCoroutine(System.Action callback) {
+        float offset = 0;
+        Color start = fadeInOutImage.color;
+        while(offset < 1) {
+            offset += Time.deltaTime / 2;
+            fadeInOutImage.color = new Color(start.r, start.g, start.b, 1-offset);
+            yield return null;
+        }
+        fadeInOutImage.gameObject.SetActive(false);
+        if(callback != null)
+            callback();
+    }
+    public void FadeOut(System.Action callback) {
+        StartCoroutine(FadeOutCoroutine(callback));
+    }
+    private IEnumerator FadeOutCoroutine(System.Action callback) {
+        float offset = 0;
+        Color start = fadeInOutImage.color;
+        fadeInOutImage.gameObject.SetActive(true);
+        while(offset < 1) {
+            offset += Time.deltaTime / 2;
+            fadeInOutImage.color = new Color(start.r, start.g, start.b, offset);
+            yield return null;
+        }
+        if(callback != null)
+            callback();
     }
 }

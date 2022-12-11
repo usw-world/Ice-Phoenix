@@ -92,7 +92,7 @@ public class MeleePlayer : Player {
         #region Jump Attack State
         jumpAttackState.OnActive += (prevState) => {
             playerAnimator.SetBool("Jump Attack", true);
-            playerAnimator.SetTrigger("Jump Attack Trigger");
+            // playerAnimator.SetTrigger("Jump Attack Trigger");
             playerAnimator.speed = attackSpeed;
         };
         jumpAttackState.OnInactive += (State nextState) => {
@@ -176,6 +176,7 @@ public class MeleePlayer : Player {
                 target.OnDamage(
                     damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
+                    Color.white,
                     .5f
                 );
                 if(basicAttackDamageEvent != null)
@@ -211,7 +212,8 @@ public class MeleePlayer : Player {
     public override void JumpAttack() {
         if(playerStateMachine.Compare(dodgeState)
         || playerStateMachine.Compare(hitState)
-        || playerStateMachine.Compare(jumpAttackState))
+        || playerStateMachine.Compare(jumpAttackState)
+        || Input.GetButtonDown("Jump"))
             return;
         playerStateMachine.ChangeState(jumpAttackState);
     }
@@ -230,6 +232,7 @@ public class MeleePlayer : Player {
                 target.OnDamage(
                     damage,
                     (((inner.transform.position - transform.position) * Vector2.right).normalized + Vector2.up*.5f) * force,
+                    Color.white,
                     .5f);
                 if(jumpAttackDamageEvent != null)
                     jumpAttackDamageEvent(inner.transform);

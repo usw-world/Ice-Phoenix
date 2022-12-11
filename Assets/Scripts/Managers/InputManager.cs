@@ -9,6 +9,7 @@ public class InputManager : MonoBehaviour {
     private StateMachine inputStateMachine;
     public State playState { get; private set; } = new State("Play");
     public State menuState { get; private set; } = new State("Menu");
+    public State dialogState { get; private set; } = new State("Dialog");
 
     Player player;
     
@@ -34,12 +35,26 @@ public class InputManager : MonoBehaviour {
         // };
     }
     
+    public void ChangeToPlayState() {
+        inputStateMachine.ChangeState(playState);
+    }
+    public void ChangeToMenuState() {
+        inputStateMachine.ChangeState(menuState);
+    }
+    public void ChangeToDialogState() {
+        inputStateMachine.ChangeState(dialogState);
+    }
+    
     void Update() {
         if(inputStateMachine.Compare(playState))
             PlayInputSet();
             
         else if(inputStateMachine.Compare(menuState))
             MenuInputSet();
+
+        else if(inputStateMachine.Compare(dialogState)) {
+            DialogInputSet();
+        }
     }
     public void SetInputState(State next) {
         inputStateMachine.ChangeState(next);
@@ -76,5 +91,11 @@ public class InputManager : MonoBehaviour {
         UIManager.instance.activingUI.KeyPressEvent();
         // if(Input.GetKeyDown(KeyCode.Escape))
         //     UIManager.instance.CloseUI();
+    }
+    private void DialogInputSet() {
+        player.SetDirection(0);
+        if(Input.GetKeyDown(KeyCode.Return)) {
+            UIManager.instance.dialogUI.CallNext();
+        }
     }
 }

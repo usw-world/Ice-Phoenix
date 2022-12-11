@@ -13,7 +13,7 @@ public class Ability_Bleeding : Ability {
     [SerializeField] private Attach_Bleeding att_bleeding;
 
     public void Start() {
-        bleedingAttachPool = new AttachPooler("Bleeding", att_bleeding, 10, 5, null);
+        bleedingAttachPool = new AttachPooler("Bleeding", att_bleeding, 10, 5, transform);
     }
     public override void OnGetAbility() {
         base.OnGetAbility();

@@ -9,14 +9,14 @@ public class GameManager : MonoBehaviour {
     public GameData gameData { get; private set; }
 
     public void Awake() {
-        if(instance == null)
+        if(instance == null) {
             instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
         else
             Destroy(this.gameObject);
 
         serverConnector = GetComponent<ServerConnector>();
-
-        DontDestroyOnLoad(this.gameObject);
     }
     public void StopGame() {
         Time.timeScale = 0;
@@ -32,19 +32,29 @@ public class GameManager : MonoBehaviour {
         else
             return;
     }
+    [System.Serializable]
     public enum SceneList {
         Main = 0,
-        Test = 1,
+        Tutorial = 1,
+        Test = 2,
     }
     public void ChangeScene(SceneList target) {
         string targetName = null;
         switch(target) {
+            case SceneList.Main:
+                targetName = "_ability_test_scene";
+                break;
+            case SceneList.Tutorial:
+                targetName = "01 Start Scene";
+                break;
             case SceneList.Test:
                 targetName = "_ability_test_scene";
                 break;
         }
-        if(targetName != null)
-            UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
+        // if(targetName != null)
+        //     UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
+        // else
+            UnityEngine.SceneManagement.SceneManager.LoadScene((int)target);
     }
     public void SetAdaptations(int[] next) {
         if(gameData != null) gameData.adaptation = next;

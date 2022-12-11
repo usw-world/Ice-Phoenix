@@ -13,6 +13,8 @@ public class ScreenUI : UI {
     [SerializeField] TextMeshProUGUI levelText;
     Coroutine expSmoothIncreaseCoroutine;
 
+    [SerializeField] TextMeshProUGUI stageNameTmp;
+
     protected override void Awake() {
         base.Awake();
         if(instance != null) {
@@ -42,5 +44,30 @@ public class ScreenUI : UI {
     }
     public void UpdateAbilityIcons() {
         abilityIconList.Redraw();
+    }
+    Coroutine showStageNameCoroutine;
+    public void ShowStageName(string stageName) {
+        stageNameTmp.text = stageName;
+        
+        if(showStageNameCoroutine != null)
+            StopCoroutine(showStageNameCoroutine);
+        showStageNameCoroutine = StartCoroutine(ShowStageNameCoroutine());
+    }
+    private IEnumerator ShowStageNameCoroutine() {
+        Color start = stageNameTmp.color;
+        float offset = 0;
+        stageNameTmp.gameObject.SetActive(true);
+        while(offset < 1) {
+            offset += Time.deltaTime;
+            stageNameTmp.color = new Color(start.r, start.g, start.b, offset);
+            yield return null;
+        }
+        yield return new WaitForSeconds(2);
+        while(offset > 0) {
+            offset -= Time.deltaTime;
+            stageNameTmp.color = new Color(start.r, start.g, start.b, offset);
+            yield return null;
+        }
+        stageNameTmp.gameObject.SetActive(false);
     }
 }

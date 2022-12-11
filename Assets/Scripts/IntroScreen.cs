@@ -77,7 +77,11 @@ public class IntroScreen : MonoBehaviour {
                 introStage.GetComponent<Animation>().Play();
                 bgmAudioSource.gameObject.GetComponent<SoundPlayer>().FadeOutSound();
                 StartCoroutine(Utility.TimeoutTask(() => {
-                    GameManager.instance.ChangeScene(GameManager.SceneList.Test);
+                    if(GameManager.instance.gameData.sceneNo == 0) {
+                        GameManager.instance.ChangeScene(GameManager.SceneList.Tutorial);
+                    } else {
+                        GameManager.instance.ChangeScene(GameManager.SceneList.Test);
+                    }
                 }, 3));
             }));
         }

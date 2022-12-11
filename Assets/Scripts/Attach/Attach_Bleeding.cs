@@ -31,7 +31,8 @@ public class Attach_Bleeding : Attach {
             yield return new WaitForSeconds(interval);
             IDamageable idmg;
             if(attachedTarget.TryGetComponent<IDamageable>(out idmg)) {
-                idmg.OnDamage(damagePerSecond * attachedCount, 0);
+                idmg.OnDamage(damagePerSecond * attachedCount, new Color(.8f, 0, 0), 0);
+
             }
             lifetime += interval;
         }

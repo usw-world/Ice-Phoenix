@@ -37,7 +37,7 @@ namespace AbilitySystem {
         }
         void Start() {
             /*  */
-            AddAbility(testAbility);
+            // AddAbility(testAbility);
             /*  */
             RefreshAbilityUIs();
         }
@@ -95,7 +95,6 @@ namespace AbilitySystem {
                 }
             }
             RefreshAbilityUIs();
-            
         }
         public void RemoveAbility(Ability ability) {
             ability.OnReleaseAbility();

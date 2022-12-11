@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 53708725893303896}
   - component: {fileID: 591075963390771617}
   - component: {fileID: 53708725893303895}
+  - component: {fileID: 2407105291794974850}
   m_Layer: 7
   m_Name: Monster __ Necromancer
   m_TagString: Untagged
@@ -207,6 +208,7 @@ MonoBehaviour:
   attackArea:
     center: {x: 0, y: 0}
     bounds: {x: 0, y: 0}
+  experience: {fileID: 2407105291794974850}
 --- !u!114 &53708725893303895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +221,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 745dd835b5b94854ba46c611eaa5e1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2407105291794974850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53708725893303897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0c20373eb6aef4abdcadd3243d200f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expAmount: 50
+  expParticleObject: {fileID: 7193905233714009055, guid: 1ee2bac629f720747b7bcc0fe22a8e69, type: 3}
 --- !u!1001 &6535064732830541702
 PrefabInstance:
   m_ObjectHideFlags: 0

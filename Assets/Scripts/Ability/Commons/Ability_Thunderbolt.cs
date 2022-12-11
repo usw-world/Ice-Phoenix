@@ -14,7 +14,7 @@ public class Ability_Thunderbolt : Ability
     [SerializeField] GameObject thunderboltEffect;
 
     void Start() {
-        thunderboltPool = new EffectPool("Thunderbolt", thunderboltEffect, 5, 3);
+        thunderboltPool = new EffectPool("Thunderbolt", thunderboltEffect, 5, 3, transform);
     }
     public override void OnGetAbility() {
         base.OnGetAbility();
@@ -31,7 +31,8 @@ public class Ability_Thunderbolt : Ability
             GameObject effect = thunderboltPool.OutPool((Vector2)target.transform.position + Vector2.up * 1.4f);
             Thunderbolt thunderbolt;
             if(effect.TryGetComponent<Thunderbolt>(out thunderbolt)) {
-                thunderbolt.damage = thunderboltDamage[level];
+                thunderbolt.soundPlayer = GetComponent<SoundPlayer>();
+                thunderbolt.damage = thunderboltDamage[level] * Player.playerInstance.abilityCoef;
                 thunderbolt.endEvent = () => {
                     thunderboltPool.InPool(effect);
                 };
