@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 5101530211277067512}
   - component: {fileID: 5101530211277067495}
   - component: {fileID: 5101530211277067494}
-  - component: {fileID: 5101530211277067493}
+  - component: {fileID: 115783555084083751}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -247,7 +247,7 @@ PolygonCollider2D:
       - {x: 0.24878876, y: -0.25030833}
       - {x: 0.26351354, y: -0.2153065}
       - {x: 0.2640107, y: -0.13187303}
---- !u!114 &5101530211277067493
+--- !u!114 &115783555084083751
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -259,6 +259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff85a4d04d3dd84192cc1c2eb649839, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
-  forceX: 800
-  hitDelay: 0.2
+  damage: 1
+  forceX: 1000
+  hitDelay: 0.3

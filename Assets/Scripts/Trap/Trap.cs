@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test_Trap : MonoBehaviour
+public class Trap : MonoBehaviour
 {    
     [SerializeField] float damage;
     [SerializeField] float forceX;
@@ -16,6 +16,7 @@ public class Test_Trap : MonoBehaviour
             timer -= Time.deltaTime;
         }
     }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
