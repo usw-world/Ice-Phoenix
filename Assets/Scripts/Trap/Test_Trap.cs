@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Test_Trap : MonoBehaviour
-{
-    public Vector2 force = new Vector2(10, 0);
-    
-    public float minY,maxY;
+{    
+    [SerializeField] float damage;
+    [SerializeField] float forceX;
+    [SerializeField] float hitDelay;
 
-    [Range(1,100)]
-    public float speed;
-    private int direction = -1;
+    float timer = 0;
 
-    private void Update()
-    {
-        transform.position += new Vector3(0,speed * Time.deltaTime * direction,0);
-
-        if(transform.position.y <= minY || transform.position.y >= maxY)
+    private void Update() {
+        if(timer > 0)
         {
-            direction *= -1;
+            timer -= Time.deltaTime;
         }
     }
-    private void OnCollisionEnter2D(Collision2D other)
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag == "Player")
+        if(timer <= 0)
         {
-            other.gameObject.GetComponent<IDamageable>().OnDamage(15f,force,2f);
+            if(other.gameObject.tag == "Player")
+            {
+                timer = 2;
+                if(other.transform.position.x - transform.position.x > 0)
+                {
+                    other.gameObject.GetComponent<IDamageable>().OnDamage(damage, forceX * Vector2.right,hitDelay);
+                } else other.gameObject.GetComponent<IDamageable>().OnDamage(damage, -forceX * Vector2.right,hitDelay);                
+            }
         }
     }
 }
