@@ -187,7 +187,8 @@ public class Arcane_Archer : ChaseMonster {
     }
     private void Jump(bool canJump)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1, LayerMask.GetMask("Groundable"));
+        float rayHeight = this.GetComponent<SpriteRenderer>().bounds.extents.y;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, rayHeight, LayerMask.GetMask("Groundable"));
         if (hit && canJump)
         {
             Rigidbody2D transformRigid = transform.GetComponent<Rigidbody2D>();
