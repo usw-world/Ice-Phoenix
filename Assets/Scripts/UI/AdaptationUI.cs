@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class AdaptationUI : MonoBehaviour {
@@ -14,7 +15,6 @@ public class AdaptationUI : MonoBehaviour {
         RefreshAmount();
     }
     public void RefreshAmount() {
-        print(adaptation == null);
         pointText[(int)AdaptationManager.Type.Power].SetText($"{adaptation.points[(int)AdaptationManager.Type.Power]} / {adaptation.maxPoints[(int)AdaptationManager.Type.Power]}");
         pointText[(int)AdaptationManager.Type.Movement].SetText($"{adaptation.points[(int)AdaptationManager.Type.Movement]} / {adaptation.maxPoints[(int)AdaptationManager.Type.Movement]}");
         pointText[(int)AdaptationManager.Type.Fast].SetText($"{adaptation.points[(int)AdaptationManager.Type.Fast]} / {adaptation.maxPoints[(int)AdaptationManager.Type.Fast]}");

@@ -9008,6 +9008,17 @@ MonoBehaviour:
   rateGaugeSlider: {fileID: 3392415003987193744}
   rateTmp: {fileID: 8792756985937525790}
   abilityUI: {fileID: 637849152}
+  adaptationButtons:
+  - {fileID: 153906143}
+  - {fileID: 370640883}
+  - {fileID: 1598498251}
+  - {fileID: 765441404}
+  - {fileID: 1498892285}
+  - {fileID: 1404664514}
+  - {fileID: 1985711446}
+  - {fileID: 1371719740}
+  - {fileID: 1963704446}
+  - {fileID: 756009377}
 --- !u!1 &934845122
 GameObject:
   m_ObjectHideFlags: 0
@@ -16770,6 +16781,8 @@ PlayableDirector:
     value: {fileID: 1856458343}
   - key: {fileID: 5032862087767143349, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
     value: {fileID: 1135664630}
+  - key: {fileID: 4304309764087017409, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - f55ce0987c7c85d4e8771c90bb726af9: {fileID: 1135664630}
@@ -24534,7 +24547,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.318, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

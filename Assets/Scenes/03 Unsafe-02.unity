@@ -538,15 +538,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomList:
-  - {fileID: 6002255520683929329, guid: 9ca9902416fa00142a1e03488bb01dad, type: 3}
-  - {fileID: 1359680969933940878, guid: 6785a1ef391912741bca75d8257d734d, type: 3}
-  - {fileID: 5299590862256604344, guid: 89b317dd346a7a44098df9885fc941ab, type: 3}
-  - {fileID: 831594359147296156, guid: c454a4df533d9564e88bd5d3b7c0ca61, type: 3}
-  - {fileID: 6178472237693901568, guid: 955b18e2c571cb241a29ae903f996b41, type: 3}
-  - {fileID: 63666296513296162, guid: 0e15d0231f103394ea82067d9eb3aa48, type: 3}
-  - {fileID: 5358419051236036518, guid: d68c531b7cd283c4aa77b5d6abf1505c, type: 3}
-  - {fileID: 9057026268163746607, guid: 94d02f028151e3b4295f9b53e34ec4a6, type: 3}
-  - {fileID: 653540383879986634, guid: 6eae6d19f99ba0c46ad49199b48f47f4, type: 3}
+  - {fileID: 5318299141999010514, guid: 50cd668d8ab0a4a4bbac383b66442c42, type: 3}
+  - {fileID: 7207772272268962975, guid: 1aa1236bb1ed5de43ad20744774505c0, type: 3}
+  - {fileID: 7285627415728479841, guid: 58e2cc60492782c4baad0a8d3b65edc2, type: 3}
+  - {fileID: 2368808386352304438, guid: c4040091e08389947904de4047fedcd4, type: 3}
+  - {fileID: 5345836095555451751, guid: 72a6a8583d5ac434293d368c4fe71b72, type: 3}
+  - {fileID: 7814072324308323252, guid: 734f4730d5396e742b18638eccf5da42, type: 3}
+  - {fileID: 8758689306735170770, guid: 9a1d2e1c85f1b2b4099160cc88536164, type: 3}
+  - {fileID: 8752590115100216280, guid: 60e30e434f31f494cb31ecdd7fdad240, type: 3}
+  - {fileID: 6940253621954891096, guid: 9a478bfe59d6bc44d8d0a6995d009f7a, type: 3}
   interval: 66
   offsetY: 0
 --- !u!1 &657863622
@@ -862,7 +862,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.15}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0.625, y: 0, z: 0.625, w: 0.625}
     pivot: {x: 0.5, y: 0.5}
@@ -873,7 +873,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 680, y: 9.7}
+  m_Size: {x: 680, y: 10}
   m_EdgeRadius: 0
 --- !u!212 &1196394724
 SpriteRenderer:
@@ -1001,7 +1001,7 @@ SpriteRenderer:
   m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.4258633, g: 0.5471698, b: 0.43790364, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

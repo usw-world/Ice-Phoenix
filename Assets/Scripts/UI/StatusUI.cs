@@ -13,6 +13,7 @@ public class StatusUI : UI {
     [SerializeField] TextMeshProUGUI rateTmp;
     
     [SerializeField] AbilityUI abilityUI;
+    [SerializeField] Button[] adaptationButtons;
 
     public override bool isActive {
         get {
@@ -52,5 +53,10 @@ public class StatusUI : UI {
     }
     public void UpdateAbilityUI() {
         abilityUI.Redraw();
+    }
+    public void SetActiveAdaptationButtons(bool next) {        
+        foreach(Button button in adaptationButtons) {
+            button.interactable = next;
+        }
     }
 }

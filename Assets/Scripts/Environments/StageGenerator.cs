@@ -12,7 +12,7 @@ public class StageGenerator : MonoBehaviour {
         float offsetX = interval/2;
         foreach(GameObject room in roomList) {
             GameObject r = Instantiate(room, this.transform);
-            r.transform.position = new Vector3(offsetX, offsetY, 0);
+            r.transform.localPosition = new Vector3(offsetX, offsetY, 0);
             offsetX += interval;
         }
     }

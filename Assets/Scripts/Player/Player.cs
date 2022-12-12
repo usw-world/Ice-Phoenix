@@ -362,6 +362,7 @@ public class Player : LivingEntity, IDamageable {
     public virtual void Attack() {}
     public virtual void JumpAttack() {}
     protected virtual void Update() {
+        print(playerStateMachine.currentState);
         BasicMove();
         CheckBottom();
         ResetDodgeTime();

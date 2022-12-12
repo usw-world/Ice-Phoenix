@@ -30,5 +30,10 @@ public class Stage : MonoBehaviour {
         Player.playerInstance.transform.position = startPoint.position;
         UIManager.instance.FadeIn(() => {});
         UIManager.instance.screenUI.ShowStageName(stageName);
+        if(type != StageType.Unsafe) {
+            UIManager.instance.playerStatusUI.SetActiveAdaptationButtons(true);
+        } else {
+            UIManager.instance.playerStatusUI.SetActiveAdaptationButtons(false);
+        }
     }
 }
