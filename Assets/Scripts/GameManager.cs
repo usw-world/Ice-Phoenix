@@ -36,7 +36,15 @@ public class GameManager : MonoBehaviour {
     public enum SceneList {
         Main = 0,
         Tutorial = 1,
-        Test = 2,
+        Safe01 = 2,
+        Unsafe01 = 3,
+        Safe02 = 4,
+        Unsafe02 = 5,
+        Safe03 = 6,
+        Unsafe03 = 7,
+        Safe04 = 8,
+        Unsafe04 = 9,
+        Test = 66,
     }
     public void ChangeScene(SceneList target) {
         string targetName = null;
@@ -47,14 +55,36 @@ public class GameManager : MonoBehaviour {
             case SceneList.Tutorial:
                 targetName = "01 Start Scene";
                 break;
+            case SceneList.Safe01:
+                targetName = "02 Safe-01";
+                break;
+            case SceneList.Unsafe01:
+                targetName = "03 Unsafe-01";
+                break;
+            case SceneList.Safe02:
+                targetName = "04 Safe-02";
+                break;
+            case SceneList.Unsafe02:
+                targetName = "05 Unsafe-02";
+                break;
+            case SceneList.Safe03:
+                targetName = "06 Safe-03";
+                break;
+            case SceneList.Unsafe03:
+                targetName = "07 Unsafe-03";
+                break;
+            case SceneList.Safe04:
+                targetName = "08 Safe-04";
+                break;
+            case SceneList.Unsafe04:
+                targetName = "09 Unsafe-04";
+                break;
             case SceneList.Test:
                 targetName = "_ability_test_scene";
                 break;
         }
-        // if(targetName != null)
-        //     UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
-        // else
-            UnityEngine.SceneManagement.SceneManager.LoadScene((int)target);
+        if(targetName != null)
+            UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
     }
     public void SetAdaptations(int[] next) {
         if(gameData != null) gameData.adaptation = next;

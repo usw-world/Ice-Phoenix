@@ -14,8 +14,10 @@ public class InputManager : MonoBehaviour {
     Player player;
     
     void Awake() {
-        if(instance == null)
+        if(instance == null) {
             instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
         else
             Destroy(this.gameObject);
 

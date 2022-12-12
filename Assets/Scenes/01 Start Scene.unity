@@ -883,6 +883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageName: "\uC9C0\uC625 \uC9C0\uD558 4\uCE35 \uC678\uACFD"
+  mapConfiner: {fileID: 1678103282}
   type: 1
   startPoint: {fileID: 1544616712}
 --- !u!1 &535941800
@@ -2686,7 +2687,7 @@ MonoBehaviour:
   - speacker: "\uC758\uBB38\uC758 \uBAA9\uC18C\uB9AC"
     script: "\uC2B9\uB77D\uD55C \uC904 \uC54C\uACA0\uB2E4."
   - speacker: "\uC758\uBB38\uC758 \uBAA9\uC18C\uB9AC"
-    script: "\uB054\uCC0D\uD55C \uC2DC\uAC04\uC774 \uB418\uAC70\uB77C."
+    script: "\uB054\uCC0D\uD55C \uC2DC\uAC04 \uB418\uAC70\uB77C."
 --- !u!1 &1544616711
 GameObject:
   m_ObjectHideFlags: 0
@@ -3295,7 +3296,15 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1856458340, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
-      propertyPath: m_ExposedReferences.m_References.Array.data[7].second
+      propertyPath: m_SceneBindings.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856458340, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].key
+      value: 
+      objectReference: {fileID: 4304309764087017409, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
+    - target: {fileID: 1856458340, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].value
       value: 
       objectReference: {fileID: 955314177}
     - target: {fileID: 86142611410297184, guid: e967316e4839eef4ab7b11141a686c46, type: 3}

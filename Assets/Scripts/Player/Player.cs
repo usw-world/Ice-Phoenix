@@ -10,8 +10,8 @@ public class Player : LivingEntity, IDamageable {
     public const string ATTACK_STATE_TAG = "tag:Attack";
     public const string JUMP_ATTACK_STATE_TAG = "tag:Jump Attack";
 
-    [SerializeField] private GameObject normalCamera;
-    [SerializeField] private GameObject zoomCamera;
+    [SerializeField] public GameObject normalCamera;
+    [SerializeField] public GameObject zoomCamera;
 
     static public Player playerInstance;
     public delegate float Coefficients();
@@ -190,7 +190,6 @@ public class Player : LivingEntity, IDamageable {
     #endregion Level (Experience)
 
     protected override void Awake() {
-        print("Awake");
         base.Awake();
         if (Player.playerInstance == null) {
             Player.playerInstance = this;
