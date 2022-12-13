@@ -2092,6 +2092,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster __ Ronin
       objectReference: {fileID: 0}
+    - target: {fileID: 53708725893303897, guid: 805e8cf645909b04f8a983bc283da572, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 53708725893303898, guid: 805e8cf645909b04f8a983bc283da572, type: 3}
       propertyPath: m_RootOrder
       value: 31
@@ -2138,11 +2142,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5360609186062056566, guid: 805e8cf645909b04f8a983bc283da572, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.507
       objectReference: {fileID: 0}
     - target: {fileID: 5360609186062056566, guid: 805e8cf645909b04f8a983bc283da572, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 805e8cf645909b04f8a983bc283da572, type: 3}
