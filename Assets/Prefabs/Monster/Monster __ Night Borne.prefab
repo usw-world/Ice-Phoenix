@@ -48,6 +48,8 @@ GameObject:
   - component: {fileID: 6737886697504152941}
   - component: {fileID: 53708725893303895}
   - component: {fileID: 2701023004819062330}
+  - component: {fileID: 8890197484214842121}
+  - component: {fileID: 6366932899383518450}
   m_Layer: 7
   m_Name: Monster __ Night Borne
   m_TagString: Untagged
@@ -194,6 +196,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 53708725040610907}
   maxHp: 75
+  monsterSoundPlayer: {fileID: 8890197484214842121}
+  monsterAttackClip:
+  - {fileID: 8300000, guid: 63819c5a9278c174ebf63cacf8e17919, type: 3}
+  - {fileID: 8300000, guid: ee7ce14f8fae4b44690e990daf14359f, type: 3}
+  - {fileID: 8300000, guid: 734abd9e5b5d60445937a04414458c70, type: 3}
+  monsterDeathClip: {fileID: 8300000, guid: f9fa5c904848b1a40a781ae5e01017b7, type: 3}
+  monsterHitClip:
+  - {fileID: 8300000, guid: b3cea95358d2b1241a9a9c5c54fe6af9, type: 3}
+  - {fileID: 8300000, guid: 5da8abdb70690454b8c0d24424170feb, type: 3}
+  - {fileID: 8300000, guid: 6bdf106350dfab44ab004e88c27476ea, type: 3}
+  - {fileID: 8300000, guid: 2650fec078aa2e4429e167add14d454c, type: 3}
   monsterSideUI: {fileID: 7475998942747557931}
   monsterAnimator: {fileID: 53708725893303894}
   monsterRigidbody: {fileID: 53708725893303896}
@@ -235,6 +248,115 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   expAmount: 30
   expParticleObject: {fileID: 7193905233714009055, guid: 1ee2bac629f720747b7bcc0fe22a8e69, type: 3}
+--- !u!114 &8890197484214842121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53708725893303897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d05c178cddd0f048a42e4b9142eff67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+--- !u!82 &6366932899383518450
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53708725893303897}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 6188649168492415148, guid: 1b0e66066de28d841ac5d5aa95cb51f8, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &2824392650603007391
 PrefabInstance:
   m_ObjectHideFlags: 0

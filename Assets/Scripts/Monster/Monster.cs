@@ -4,11 +4,21 @@ using UnityEngine;
 
 public abstract class Monster : LivingEntity, IDamageable {
     static public int DEFALUT_MONSTER_LAYER = 128;
+    #region Sound
+    [Header("Monster Sound Clips")]
+    [SerializeField] protected SoundPlayer monsterSoundPlayer;
+    [SerializeField] protected AudioClip[] monsterAttackClip;
+    [SerializeField] protected AudioClip monsterDeathClip;
+    [SerializeField] protected AudioClip[] monsterHitClip;
+    #endregion Sound
 
+    [Header("Monster Details")]
     [SerializeField] protected SideUI monsterSideUI;
     
     [SerializeField] protected Animator monsterAnimator;
     [SerializeField] protected Rigidbody2D monsterRigidbody;
+
+
 
     protected override void Awake() {
         base.Awake();
@@ -33,6 +43,8 @@ public abstract class Monster : LivingEntity, IDamageable {
         return hp;
     }
     public virtual void OnDamage(float damage, float duration=.25f) {
+        int soundIndex = Random.Range(0, monsterHitClip.Length);
+        monsterSoundPlayer.PlayClip(monsterHitClip[soundIndex]);
         IncreasHP(-damage);
         if(monsterSideUI != null)
             monsterSideUI.UpdateHPSlider(this);
@@ -51,6 +63,7 @@ public abstract class Monster : LivingEntity, IDamageable {
 
     protected override void Die() {
         base.Die();
+        monsterSoundPlayer.PlayClip(monsterDeathClip);
         gameObject.layer = 10;
         GiveExperience giveExperience;
         if(TryGetComponent<GiveExperience>(out giveExperience)) {

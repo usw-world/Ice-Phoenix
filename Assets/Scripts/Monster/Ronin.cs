@@ -7,6 +7,8 @@ using static UnityEngine.Rendering.DebugUI;
 using UnityEditor;
 using static UnityEditor.PlayerSettings;
 using UnityEngine.UIElements;
+using System.Drawing;
+using Color = UnityEngine.Color;
 
 public class Ronin : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";
@@ -20,8 +22,9 @@ public class Ronin : ChaseMonster {
     private float attackInterval = 1.2f;
     private float attackDistance = 1.5f;
 
-    private float lastEvasionTime = 0f;
+    
     private float evasionTimeInterval = 3f;
+    private float lastEvasionTime = 0;
 
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;
@@ -104,7 +107,7 @@ public class Ronin : ChaseMonster {
         if(targetTransform != null) {
             AttackToTarget();
         }
-        //Evasion();
+        EvasionTimer();
     }
     void AttackToTarget() {
         if (lastAttackTime > 0)
@@ -123,6 +126,8 @@ public class Ronin : ChaseMonster {
     }
 
     void AnimationEvent_DamageTarget() {
+        int soundIndex = Random.Range(0, monsterAttackClip.Length);
+        monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
         Collider2D collider = Physics2D.OverlapBox(damageArea.center, damageArea.bounds, 0, Player.DEFAULT_PLAYER_LAYERMASK);
         lastAttackTime = attackInterval;
         if((collider && collider.tag == "Player") 
@@ -148,13 +153,30 @@ public class Ronin : ChaseMonster {
             Die();
         }
     }
+
+    public override void OnDamage(float damage, Vector2 force, Color color, float duration = .25f)
+    {
+        OnDamage(damage, force, duration);
+    }
+
     public override void OnDamage(float damage, Vector2 force, float duration=0) {
-        if(isDead) return;
-        monsterRigidbody.AddForce(force);
-        if(hitCoroutine != null)
-            StopCoroutine(hitCoroutine);
-        hitCoroutine = StartCoroutine(HitCoroutine(force, duration));
-        OnDamage(damage, duration);
+        if (lastEvasionTime <= 0)
+        {
+            UIManager.instance.damageLog.LogDamage("MISS", transform.position, Color.white);
+            lastEvasionTime = evasionTimeInterval;
+            monsterStateMachine.ChangeState(evasionState);
+            return;
+        }
+        else
+        {
+            if (isDead) return;
+            UIManager.instance.damageLog.LogDamage(damage + "", transform.position, Color.white);
+            monsterRigidbody.AddForce(force);
+            if (hitCoroutine != null)
+                StopCoroutine(hitCoroutine);
+            hitCoroutine = StartCoroutine(HitCoroutine(force, duration));
+            OnDamage(damage, duration);
+        }
     }
     private IEnumerator HitCoroutine(Vector2 force, float duration) {
             if (duration > 0)
@@ -165,18 +187,20 @@ public class Ronin : ChaseMonster {
             }
     }
 
-    private void Evasion()
+    private void EvasionTimer()
     {
         if (lastEvasionTime > 0)
-        {
             lastEvasionTime -= Time.deltaTime;
-        }
-        else
-        {
-            if (!monsterStateMachine.Compare(evasionState))
-                monsterStateMachine.ChangeState(evasionState);
-        }
-            
+    }
+
+    public void AnimationEvent_EvasionStart()
+    {
+        monsterRigidbody.AddForce(new Vector2(-targetDirection.x * 15, 0), ForceMode2D.Impulse);
+    }
+
+    public void AnimationEvent_EvasionEnd()
+    {
+        monsterStateMachine.ChangeState(idleState);
     }
 
     protected override void Die() {

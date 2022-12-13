@@ -104,6 +104,8 @@ public class Arcane_Archer : ChaseMonster {
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState))
             {
+                int soundIndex = Random.Range(0, monsterAttackClip.Length);
+                monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
                 nextMagicPoint = new Vector2(transform.position.x, transform.position.y);
                 monsterStateMachine.ChangeState(arrawState);
             }

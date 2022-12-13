@@ -93,6 +93,8 @@ public class Necromancer : ChaseMonster {
             if(remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState)) {
+                int soundIndex = Random.Range(0, monsterAttackClip.Length);
+                monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
                 nextMagicPoint = new Vector2(transform.position.x, transform.position.y - 1);
                 monsterStateMachine.ChangeState(magicState);
             }

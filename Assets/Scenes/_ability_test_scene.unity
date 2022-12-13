@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageName: "\uD14C\uC2A4\uD2B8 \uD654\uBA74"
+  mapConfiner: {fileID: 0}
   type: 0
   startPoint: {fileID: 1475518443}
 --- !u!1 &297551591
@@ -3165,6 +3166,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Melee Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6587287620164675576, guid: 6d8bd61fb4a2c0d44b67fbf9bffa7096, type: 3}
+      propertyPath: playerAttackClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 726af539fe7b67447897cc1c736eaf72, type: 3}
+    - target: {fileID: 6587287620164675576, guid: 6d8bd61fb4a2c0d44b67fbf9bffa7096, type: 3}
+      propertyPath: playerAttackClips.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 0c980e2fd53a8f943b230ae7eadf4832, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d8bd61fb4a2c0d44b67fbf9bffa7096, type: 3}
 --- !u!1001 &7835246920652051736

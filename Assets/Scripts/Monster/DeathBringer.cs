@@ -112,6 +112,8 @@ public class DeathBringer : ChaseMonster {
             && remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState)) {
+                int soundIndex = 2;
+                monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
                 nextMagicPoint = targetTransform.position;
                 monsterStateMachine.ChangeState(magicState);
             }
@@ -127,6 +129,8 @@ public class DeathBringer : ChaseMonster {
         };
     }
     void AnimationEvent_DamageTarget() {
+        int soundIndex = Random.Range(0, monsterAttackClip.Length - 1);
+        monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
         Collider2D collider = Physics2D.OverlapBox(damageArea.center, damageArea.bounds, 0, Player.DEFAULT_PLAYER_LAYERMASK);
         lastAttackTime = attackInterval;
         if(collider && collider.tag == "Player"
