@@ -11,12 +11,11 @@ public class GiveExperience : MonoBehaviour {
     private void OnEnable() {
         if(expParticleObject == null)
             Debug.LogError("Game object might throw 'NullReferenceException'." + expParticleObject);
-        
+    }
+    public void ReleaseExp() {
         if(ParticleManager.instance != null && !ParticleManager.instance.ContainParticle(EXP_PARTICLE_NAME)) {
             ParticleManager.instance.InitializeParticle(EXP_PARTICLE_NAME, expParticleObject, 10, 5);
         }
-    }
-    public void ReleaseExp() {
         GameObject particle = ParticleManager.instance.Call(EXP_PARTICLE_NAME, transform.position, null);
         var em = particle.GetComponent<ParticleSystem>().emission;
         int count = expAmount / 10;

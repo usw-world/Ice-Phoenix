@@ -182,7 +182,7 @@ public class MeleePlayer : Player {
                 if(basicAttackDamageEvent != null)
                     basicAttackDamageEvent(inner.transform);
 
-                GameObject slashEffect = slashParticlePool.OutPool(inner.transform.position);
+                GameObject slashEffect = slashParticlePool.OutPool(inner.ClosestPoint((Vector2)transform.position + attackRange[index].center));
                 StartCoroutine(Utility.TimeoutTask(() => {
                     slashParticlePool.InPool(slashEffect);
                 }, 2f));
@@ -237,7 +237,8 @@ public class MeleePlayer : Player {
                 if(jumpAttackDamageEvent != null)
                     jumpAttackDamageEvent(inner.transform);
             }
-            GameObject slashEffect = slashParticlePool.OutPool(inner.transform.position);
+            
+            GameObject slashEffect = slashParticlePool.OutPool(inner.ClosestPoint((Vector2)transform.position + jumpAttackRange.center));
             StartCoroutine(Utility.TimeoutTask(() => {
                 slashParticlePool.InPool(slashEffect);
             }, 2f));

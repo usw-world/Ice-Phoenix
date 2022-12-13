@@ -19,15 +19,16 @@ public class Player : LivingEntity, IDamageable {
 
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
-    protected State idleState = new State("Idle");
-    protected State moveState = new State("Move");
-    protected State floatState = new State("Float");
-    protected State dodgeState = new State("Dodge");
-    protected State hitState = new State("Hit");
-    protected State basicState { get {
+    public State idleState { get; protected set; } = new State("Idle");
+    public State moveState { get; protected set; } = new State("Move");
+    public State floatState { get; protected set; } = new State("Float");
+    public State dodgeState { get; protected set; } = new State("Dodge");
+    public State hitState { get; protected set; } = new State("Hit");
+    public State basicState{ get {
         if(moveDirection == Vector2.zero) return idleState;
         else return moveState;
     } }
+    public State currentState { get { return playerStateMachine.currentState; } }
     #endregion
     #region Move
     [Header("Move Status")]
@@ -362,7 +363,6 @@ public class Player : LivingEntity, IDamageable {
     public virtual void Attack() {}
     public virtual void JumpAttack() {}
     protected virtual void Update() {
-        print(playerStateMachine.currentState);
         BasicMove();
         CheckBottom();
         ResetDodgeTime();

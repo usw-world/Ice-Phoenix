@@ -63,16 +63,16 @@ public class Bat : ChaseMonster {
         };
 
         idleState.OnActive += (nextState) => {
-            monsterAnimator.SetBool("Idle", true);
+            // monsterAnimator.SetBool("Idle", true);
         };
         idleState.OnInactive += (prevState) => {
-            monsterAnimator.SetBool("Idle", false);
+            // monsterAnimator.SetBool("Idle", false);
         };
         chaseState.OnActive += (nextState) => {
-            monsterAnimator.SetBool("Chase", true);
+            // monsterAnimator.SetBool("Chase", true);
         };
         chaseState.OnInactive += (prevState) => {
-            monsterAnimator.SetBool("Chase", false);
+            // monsterAnimator.SetBool("Chase", false);
         };
         attackState.OnActive += (nextState) => {
             monsterAnimator.SetBool("Attack", true);
@@ -160,7 +160,7 @@ public class Bat : ChaseMonster {
         monsterStateMachine.ChangeState(dieState);
     }
     public void AnimationEvent_DieEnd() {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
     public IEnumerator Patrol() {
         while(!isDead) {

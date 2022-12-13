@@ -508,9 +508,9 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
+  m_FalloffIntensity: 0
   m_Color: {r: 1, g: 0.7688679, b: 0.8359229, a: 1}
-  m_Intensity: 1.5
+  m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 8d39d47500000000334847469559d131995661c2
@@ -820,7 +820,6 @@ MonoBehaviour:
   maxHp: 100
   normalCamera: {fileID: 1061049098}
   zoomCamera: {fileID: 1367275927763124704}
-  groundedPlatform: {fileID: 0}
   playerSoundPlayer: {fileID: 8886426384425601168}
   playerFootstepClip:
   - {fileID: 8300000, guid: e5453536cc3c72d408bbb54c3300c8ce, type: 3}
@@ -831,7 +830,7 @@ MonoBehaviour:
   adaptationManager: {fileID: 0}
   expSlider: {fileID: 0}
   expParticleMaterial: {fileID: 2100000, guid: 2733a94e0ef9ed94fb56e8c180eab06a, type: 2}
-  DEBUG_INDEX_ATTACKING: 1
+  DEBUG_INDEX_ATTACKING: 0
   DEBUG_JUMP_ATTACK_RANGE: 1
   attackRange:
   - center: {x: 0.79, y: 0.1}

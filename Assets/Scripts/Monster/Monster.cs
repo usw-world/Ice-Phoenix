@@ -43,8 +43,10 @@ public abstract class Monster : LivingEntity, IDamageable {
         return hp;
     }
     public virtual void OnDamage(float damage, float duration=.25f) {
-        int soundIndex = Random.Range(0, monsterHitClip.Length);
-        monsterSoundPlayer.PlayClip(monsterHitClip[soundIndex]);
+        if(monsterHitClip.Length > 0) {
+            int soundIndex = Random.Range(0, monsterHitClip.Length);
+            monsterSoundPlayer.PlayClip(monsterHitClip[soundIndex]);
+        }
         IncreasHP(-damage);
         if(monsterSideUI != null)
             monsterSideUI.UpdateHPSlider(this);

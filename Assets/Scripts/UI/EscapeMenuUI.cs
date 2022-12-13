@@ -1,8 +1,14 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class EscapeMenuUI : UI {
+    [SerializeField] UnityEngine.Audio.AudioMixerGroup masterMixer;
+    [SerializeField] UnityEngine.Audio.AudioMixerGroup effectMixer;
+    [SerializeField] UnityEngine.Audio.AudioMixerGroup musicMixer;
+
+    [SerializeField] UnityEngine.UI.Slider masterSlider;
+    [SerializeField] UnityEngine.UI.Slider effectSlider;
+    [SerializeField] UnityEngine.UI.Slider musicSlider;
     public override bool isActive => canvas.activeInHierarchy;
 
     public override void OnActive() {
@@ -14,5 +20,14 @@ public class EscapeMenuUI : UI {
         GameManager.instance.StartGame();
         inactiveEvent.Invoke();
         canvas.SetActive(false);
+    }
+    public void SetMasterVolume() {
+        masterMixer.audioMixer.SetFloat("Master", masterSlider.value<=-40 ? -80 : masterSlider.value);
+    }
+    public void SetEffectVolume() {
+        effectMixer.audioMixer.SetFloat("Effect", effectSlider.value<=-40 ? -80 : effectSlider.value);
+    }
+    public void SetMusicVolume() {
+        musicMixer.audioMixer.SetFloat("Music", musicSlider.value<=-40 ? -80 : musicSlider.value);
     }
 }

@@ -18,15 +18,12 @@ public class Trap : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if(timer <= 0)
-        {
-            if(other.gameObject.tag == "Player")
-            {
+    private void OnTriggerEnter2D(Collider2D other) {
+        if(timer <= 0) {
+            if(other.gameObject.tag == "Player"
+            && !Player.playerInstance.currentState.Compare(Player.playerInstance.dodgeState)) {
                 timer = 2;
-                if(other.transform.position.x - transform.position.x > 0)
-                {
+                if(other.transform.position.x - transform.position.x > 0) {
                     other.gameObject.GetComponent<IDamageable>().OnDamage(damage, forceX * Vector2.right,hitDelay);
                 } else other.gameObject.GetComponent<IDamageable>().OnDamage(damage, -forceX * Vector2.right,hitDelay);                
             }

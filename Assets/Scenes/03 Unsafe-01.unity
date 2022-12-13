@@ -418,7 +418,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 525861335}
-  - {fileID: 1688077169}
+  - {fileID: 1196394720}
   - {fileID: 1678103281}
   - {fileID: 657863624}
   - {fileID: 281795725}
@@ -799,7 +799,7 @@ GameObject:
   - component: {fileID: 1196394722}
   - component: {fileID: 1196394721}
   m_Layer: 6
-  m_Name: Ground
+  m_Name: Main Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -817,8 +817,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1688077169}
-  m_RootOrder: 0
+  m_Father: {fileID: 521537332}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!222 &1196394721
 CanvasRenderer:
@@ -1072,38 +1072,6 @@ PolygonCollider2D:
       - {x: 1, y: -15}
       - {x: 679, y: -15}
       - {x: 679, y: 100}
---- !u!1 &1688077168
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1688077169}
-  m_Layer: 0
-  m_Name: Grounds
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1688077169
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1688077168}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1196394720}
-  m_Father: {fileID: 521537332}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &86142612580538710
 PrefabInstance:
   m_ObjectHideFlags: 0
