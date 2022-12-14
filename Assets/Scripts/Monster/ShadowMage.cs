@@ -10,7 +10,7 @@ public class ShadowMage : ChaseMonster {
     State hitState = new State("Hit");
 
     private float magicDamage = 22f;
-    private float lastMagicTime = 5f;
+    private float lastMagicTime = 2f;
     private float magicInterval = 10f;
     private float magicDistance = 50f;
     private Vector2 nextMagicPoint;
@@ -106,6 +106,7 @@ public class ShadowMage : ChaseMonster {
         lastMagicTime = magicInterval;
         Vector2 point = (Vector2)nextMagicPoint + new Vector2(0, .43f);
         GameObject effect = magicEffectPool.OutPool(point, null);
+        effect.GetComponent<Shadow_Magic>().target = targetTransform;
         effect.GetComponent<Shadow_Magic>().endEvent = () => {
             magicEffectPool.InPool(effect);
         };

@@ -1,9 +1,13 @@
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     static public GameManager instance { get; private set; }
+
+    string PRODUCT_DIR = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile) + "\\Ice Phoenix";
+    string SAVE_FILE_NAME = "\\userinfo.csv";
 
     ServerConnector serverConnector;
     public GameData gameData { get; private set; }
@@ -98,6 +102,8 @@ public class GameManager : MonoBehaviour {
             foreach(GameObject gobj in destroyObjectsOnGameOver) {
                 Destroy(gobj);
             }
+            LoadData();
+            print(gameData.adaptation.Length);
             ChangeScene(SceneList.Lobby);
         }, 5);
     }
@@ -137,6 +143,26 @@ public class GameManager : MonoBehaviour {
             this.sceneNo = sceneNo;
             this.clearCount = clearCount;
             this.adaptation = adaptation;
+        }
+    }
+    public void LoadData() {
+        if(!File.Exists(PRODUCT_DIR + SAVE_FILE_NAME)) return;
+
+        FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
+        StreamReader reader = new StreamReader(PRODUCT_DIR + SAVE_FILE_NAME);
+        string[] heads = reader.ReadLine().Split(',');
+        string[] datas = reader.ReadLine().Split(',');
+        
+        Dictionary<string, string> infoMap = new Dictionary<string, string>();
+        for (int i=0; i<heads.Length; i++) {
+            infoMap.Add(heads[i], datas[i]);
+        }
+        string userKey = infoMap["user_key"];
+        if(userKey == null) {
+            Debug.LogError("Found local user-key but any unknown error was happened.");
+            return;
+        } else {
+            StartCoroutine(serverConnector.LoadGameData(userKey, () => {}));
         }
     }
 }

@@ -6,8 +6,16 @@ using AbilitySystem;
 public class StatusUI : UI {
     static public StatusUI instance;
 
-    public AdaptationManager adaptationManager;
-    public AbilityManager abilityManager;
+    public AdaptationManager adaptationManager {
+        get {
+            return AdaptationManager.instance;
+        }
+    }
+    public AbilityManager abilityManager {
+        get {
+            return AbilityManager.instance;
+        }
+    }
 
     [SerializeField] Slider rateGaugeSlider;
     [SerializeField] TextMeshProUGUI rateTmp;
@@ -26,11 +34,6 @@ public class StatusUI : UI {
             Destroy(this.gameObject);
         else
             instance = this;
-    }
-
-    private void Start() {
-        adaptationManager = AdaptationManager.instance;
-        abilityManager = AbilityManager.instance;
     }
 
     public override void KeyPressEvent() {

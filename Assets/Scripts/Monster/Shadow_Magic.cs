@@ -5,30 +5,23 @@ using UnityEngine;
 public class Shadow_Magic : MonoBehaviourIF {
     public System.Action endEvent;
 
+    public Transform target;
+
     float damage = 20;
     float moveSpeed = 5f;
 
     Vector2 dir;
 
-    private void Start()
-    {
-        Initial();
+    private void Start() {
         StartCoroutine("RemoveMagicOverTime");
     }
-    private void FixedUpdate()
-    {
+    private void Update() {
         MoveToTarget();
     }
 
-    private void Initial()
-    {
-        Transform targetTransform = GameObject.FindWithTag("Player").transform;
-        dir = targetTransform.position - transform.position;
-    }
-
     private void MoveToTarget() {
-        transform.Translate(new Vector2(MagicLookAtX(dir.x), 0) * Time.deltaTime * moveSpeed * (Mathf.Sin(Time.deltaTime) + 1));
-        transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(dir.y * MagicLookAtX(dir.x), dir.x * MagicLookAtX(dir.x)) * Mathf.Rad2Deg, Vector3.forward);
+        transform.Translate(new Vector2(MagicLookAtX(dir.x), 0) * Time.deltaTime * moveSpeed * (Mathf.Sin(Time.time) + 1));
+        transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg, Vector3.forward);
     }
 
     private float MagicLookAtX(float x) {
