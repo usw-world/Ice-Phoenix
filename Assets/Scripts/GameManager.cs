@@ -178,4 +178,7 @@ public class GameManager : MonoBehaviour {
             StartCoroutine(serverConnector.LoadGameData(userKey, () => {}));
         }
     }
+    public void GameQuit() {
+        Application.Quit();
+    }
 }

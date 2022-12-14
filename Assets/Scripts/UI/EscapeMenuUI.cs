@@ -52,4 +52,7 @@ public class EscapeMenuUI : UI {
         musicMixer.audioMixer.SetFloat("Music", v);
         PlayerPrefs.SetString("Music Volume", v+"");
     }
+    public void OnClickQuit() {
+        GameManager.instance.GameQuit();
+    }
 }

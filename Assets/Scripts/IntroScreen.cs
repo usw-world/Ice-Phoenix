@@ -22,6 +22,9 @@ public class IntroScreen : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Return)) {
             StartGame();
         }
+        if(Input.GetKeyDown(KeyCode.F3)) {
+            GameManager.instance.ChangeScene(GameManager.SceneList.Safe01);
+        }
     }
     public void StartGame() {
         if(CheckLocalUserKey()) { // There is save-data in local.
