@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Monster : LivingEntity, IDamageable {
+    static public int DEFALUT_MONSTER_LAYER_NUMBER = 7;
     static public int DEFALUT_MONSTER_LAYER = 128;
     #region Sound
     [Header("Monster Sound Clips")]
@@ -40,6 +41,12 @@ public abstract class Monster : LivingEntity, IDamageable {
 
     private float IncreasHP(float amount) {
         float nextHp = SetHP(hp + amount);
+        return hp;
+    }
+    protected override float SetHP(float next) {
+        base.SetHP(next);
+        if(monsterSideUI != null)
+            monsterSideUI.UpdateHPSlider(this);
         return hp;
     }
     public virtual void OnDamage(float damage, float duration=.25f) {

@@ -6,9 +6,11 @@ using CmpLinkedList;
 public class LivingEntity : MonoBehaviourIF {
     public bool isDead { get; private set; } = false;
     [Header("Living Entity")]
-    [SerializeField] protected float maxHp;
+    [SerializeField] public float maxHp;
     [SerializeField] protected float hp { get; private set; }
     public IntegratedList<Attach> havingAttach { get; protected set; } = new IntegratedList<Attach>();
+
+    public System.Action dieEvent;
 
     public float hpRatio {
         get {
@@ -23,6 +25,8 @@ public class LivingEntity : MonoBehaviourIF {
     protected virtual void Start() {}
     protected virtual void Die() {
         isDead = true;
+        if(dieEvent != null)
+            dieEvent();
         while(havingAttach.Count > 0) {
             Attach t = havingAttach[0];
             ReleaseAttach(t);
@@ -41,6 +45,10 @@ public class LivingEntity : MonoBehaviourIF {
         if(hpFollow)
             SetHP(maxHp * ratio);
         return maxHp;
+    }
+    public virtual void Revive() {
+        isDead = false;
+        SetHP(maxHp);
     }
 
     public void GetAttach(Attach attach) {

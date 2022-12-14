@@ -23,17 +23,37 @@ public class BossMonster : Monster {
     State dieState = new State("Die");
 
     bool isAngry = false;
+    bool turningMoveState = false;
 
+    #region Movement
     float moveSpeed = 7f;
     float dirX = -1;
+    [SerializeField] AudioClip bossFootStep;
+    #endregion Movement
 
     Transform playerTransform;
 
+    #region Punch
     [SerializeField] Transform punchEffectPoint;
     [SerializeField] GameObject punchEffect;
     EffectPool punchEffectPool;
-    float punchingCooldown = 0;
+    float punchCooldown = 0;
     float punchInterval = 2f;
+    #endregion Punch
+
+    #region Summon Dogs
+    EffectPool summonEffectPool;
+    [SerializeField] GameObject summonEffect;
+    [SerializeField] GameObject[] shadowDogs;
+    float summonDogsCooldown = 5f;
+    float summonDogsInterval = 15f;
+    #endregion Summon Dogs
+
+    #region Summon Mages
+    [SerializeField] GameObject[] shadowMages;
+    float summonShadowMagesCooldown = 0;
+    float summonShadowMagesInterval = 30f;
+    #endregion Summon Mages
     
     [SerializeField] AudioClip shoutClip;
 
@@ -47,9 +67,10 @@ public class BossMonster : Monster {
         playerTransform = Player.playerInstance.transform;
         InitializeStates();
         if(playerTransform != null) {
-            bossStateMachine.ChangeState(moveState);
+            Decide();
         };
         punchEffectPool = new EffectPool("Boss Punch Effect", punchEffect, 5, 2, null);
+        summonEffectPool = new EffectPool("Summon Effect", summonEffect);
     }
     private void InitializeStates() {
         idleState.OnActive = (State prevState) => {
@@ -63,10 +84,7 @@ public class BossMonster : Monster {
         };
         moveState.OnStay = () => {
             LookAtX(dirX);
-            if(Mathf.Abs(playerTransform.position.x - transform.position.x)< 12
-            && punchingCooldown <= 0) {
-                bossStateMachine.ChangeState(punchState);
-            }
+            Decide();
         };
         moveState.OnInactive = (State nextState) => {
             monsterAnimator.SetBool("Move", false);
@@ -83,11 +101,19 @@ public class BossMonster : Monster {
         summonThunderState.OnActive = (State prevState) => {};
         summonThunderState.OnInactive = (State nextState) => {};
         
-        summonDogsState.OnActive = (State prevState) => {};
-        summonDogsState.OnInactive = (State nextState) => {};
+        summonDogsState.OnActive = (State prevState) => {
+            monsterAnimator.SetBool("Summon Dogs", true);
+        };
+        summonDogsState.OnInactive = (State nextState) => {
+            monsterAnimator.SetBool("Summon Dogs", false);
+        };
         
-        summonMagesState.OnActive = (State prevState) => {};
-        summonMagesState.OnInactive = (State nextState) => {};
+        summonMagesState.OnActive = (State prevState) => {
+            monsterAnimator.SetBool("Summon Soldiers", true);
+        };
+        summonMagesState.OnInactive = (State nextState) => {
+            monsterAnimator.SetBool("Summon Soldiers", false);
+        };
         
         hitState.OnActive = (State prevState) => {};
         hitState.OnInactive = (State nextState) => {};
@@ -99,13 +125,43 @@ public class BossMonster : Monster {
             monsterAnimator.SetBool("Die", false);
         };
     }
+    private void Decide() {
+        if(bossStateMachine.currentState.Compare(idleState)) {
+            bossStateMachine.ChangeState(moveState);
+            turningMoveState = true;
+            return;
+        }
+
+        if(turningMoveState) return;
+
+        if(summonShadowMagesCooldown <= 0) {
+            summonShadowMagesCooldown = summonShadowMagesInterval;
+            bossStateMachine.ChangeState(summonMagesState);
+            return;
+        }
+
+        if(summonDogsCooldown <= 0) {
+            summonDogsCooldown = summonDogsInterval;
+            bossStateMachine.ChangeState(summonDogsState);
+            return;
+        }
+
+        if(Mathf.Abs(playerTransform.position.x - transform.position.x)< 12
+        && punchCooldown <= 0) {
+            bossStateMachine.ChangeState(punchState);
+            return;
+        }
+    }
     protected override void Update() {
         base.Update();
         dirX = playerTransform.position.x-transform.position.x<0 ? -1 : 1;
 
-        if(punchingCooldown > 0) {
-            punchingCooldown -= Time.deltaTime;
-        }
+        if(punchCooldown > 0)
+            punchCooldown -= Time.deltaTime;
+        if(summonDogsCooldown > 0)
+            summonDogsCooldown -= Time.deltaTime;
+        if(summonShadowMagesCooldown > 0)
+            summonShadowMagesCooldown -= Time.deltaTime;
     }
 
     protected override void LookAtX(float x) {
@@ -130,10 +186,16 @@ public class BossMonster : Monster {
         if(hp <= 0) {
             Die();
             bossStateMachine.ChangeState(dieState);
-
-            bgmAudioSource.Stop();
-            bgmAudioSource.clip = commonPhaseBGMClip;
-            bgmAudioSource.Play();
+            OnDie();
+        }
+    }
+    private void OnDie() {
+        bgmAudioSource.Stop();
+        bgmAudioSource.clip = commonPhaseBGMClip;
+        bgmAudioSource.Play();
+        GameManager.instance.IncreaseClearCount();
+        foreach(GameObject dog in shadowDogs) {
+            dog.GetComponent<IDamageable>().OnDamage(dog.GetComponent<LivingEntity>().maxHp);
         }
     }
 
@@ -145,7 +207,7 @@ public class BossMonster : Monster {
     }
 
     public void AnimationEvent_PunchDamage() {
-        punchingCooldown = punchInterval;
+        punchCooldown = punchInterval;
         GameObject effect = punchEffectPool.OutPool(punchEffectPoint.position, null);
         effect.transform.localScale = transform.localScale.x>0 ? new Vector3(-3, 3, 3) : new Vector3(3, 3, 3);
         effect.GetComponent<BossPunchEffect>().endEvent = () => {
@@ -153,14 +215,50 @@ public class BossMonster : Monster {
         };
         monsterRigidbody.AddForce(Vector3.Scale(transform.localScale, -Vector3.right) * 300);
     }
-    public void AnimationEvent_PunchEnd() {
+    public void AnimationEvent_Footstep() {
+        monsterSoundPlayer.PlayClip(bossFootStep);
+        bossRoomCameraEffect.Shake(3f, .1f);
+        turningMoveState = false;
+    }
+    public void AnimationEvent_SetMove() {
+        turningMoveState = true;
         bossStateMachine.ChangeState(moveState);
     }
     public void AnimationEvent_CameraShake(float second) {
-        bossRoomCameraEffect.Shake(.2f, second);
+        bossRoomCameraEffect.Shake(3f, second);
     }
     public void AnimationEvent_Shout() {
         monsterSoundPlayer.PlayClip(shoutClip);
+    }
+    public void AnimationEvent_SummonDogs() {
+        StartCoroutine(IntervalCoroutine((int index) => {
+
+            GameObject dog = shadowDogs[index];
+            dog.SetActive(true);
+            dog.GetComponent<ShadowDog>().Revive();
+            
+            GameObject s_effect = summonEffectPool.OutPool(dog.transform.position + new Vector3(0, -.5f, 0));
+            
+            StartCoroutine(Utility.TimeoutTask(() => {
+                summonEffectPool.InPool(s_effect);
+            }, 4));
+        }, .2f, shadowDogs.Length));
+    }
+    public void AnimationEvent_SummonMages() {
+        foreach(GameObject mage in shadowMages) {
+            mage.SetActive(true);
+            mage.GetComponent<ShadowMage>().Revive();
+            GameObject s_effect = summonEffectPool.OutPool(mage.transform.position/*  + new Vector3(0, -.5f, 0) */);
+            StartCoroutine(Utility.TimeoutTask(() => {
+                summonEffectPool.InPool(s_effect);
+            }, 4));
+        }
+    }
+    public IEnumerator IntervalCoroutine(System.Action<int> func, float interval, int count) {
+        for(int i=0; i<count; i++) {
+            func(i);
+            yield return new WaitForSeconds(interval);
+        }
     }
     public void OnClear() {
         bossRoomActivingObjects.SetActive(false);

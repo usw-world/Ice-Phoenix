@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 
 public class DialogComponent : MonoBehaviour {
+    [SerializeField] public GameObject frame;
     [SerializeField] TextMeshProUGUI speackerTmp;
     [SerializeField] TextMeshProUGUI scriptTmp;
     

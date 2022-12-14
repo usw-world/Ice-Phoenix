@@ -141,6 +141,7 @@ public class Player : LivingEntity, IDamageable {
     int maxDodgeCount = 2;
     float cooldownForDodge = 0;
     float dodgeResetTime = 1f;
+    [SerializeField] ParticleSystem dodgeParticle;
     #endregion Dodge
     #region Coroutines
     protected Coroutine dodgeCoroutine;
@@ -167,6 +168,11 @@ public class Player : LivingEntity, IDamageable {
     [Header("Sound Clips")]
     [SerializeField] protected SoundPlayer playerSoundPlayer;
     [SerializeField] protected AudioClip[] playerFootstepClip;
+    [SerializeField] protected AudioClip playerHitClip;
+    [SerializeField] protected AudioClip playerJumpClip;
+    [SerializeField] protected AudioClip playerLandClip;
+    [SerializeField] protected AudioClip playerDodgeClip;
+    [SerializeField] protected AudioClip playerDieClip;
     #endregion Sound
     #region Adaptation
     public int rate { get; protected set; } = 0;
@@ -189,12 +195,16 @@ public class Player : LivingEntity, IDamageable {
     Coroutine expSmoothIncreaseCoroutine;
     int abilityPoint = 0;
     #endregion Level (Experience)
+    #region Die
+    [SerializeField] GameObject playerDieParticle;
+    #endregion Die
 
     protected override void Awake() {
         base.Awake();
         if (Player.playerInstance == null) {
             Player.playerInstance = this;
             DontDestroyOnLoad(this.gameObject);
+            GameManager.instance.destroyObjectsOnGameOver.Add(this.gameObject);
         } else {
             Destroy(this.gameObject);
         }
@@ -226,6 +236,11 @@ public class Player : LivingEntity, IDamageable {
         #region Idle State >>
         idleState.OnActive += (prevState) => {
             playerAnimator.SetBool("Idle", true);
+
+            if(prevState.Compare(floatState)
+            || prevState.Compare(JUMP_ATTACK_STATE_TAG)) {
+                playerSoundPlayer.PlayClip(playerLandClip);
+            }
         };
         idleState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Idle", false);
@@ -238,7 +253,7 @@ public class Player : LivingEntity, IDamageable {
                 playerAnimator.SetTrigger("Double Jump");
             else
                 playerAnimator.SetBool("Float", true);
-            
+                
             currentJumpCount ++;
         };
         floatState.OnInactive += (nextState) => {
@@ -257,6 +272,11 @@ public class Player : LivingEntity, IDamageable {
         moveState.OnActive += (prevState) => {
             playerAnimator.SetBool("Move", true);
             playerAnimator.speed = moveSpeedCoef;
+
+            if(prevState.Compare(floatState)
+            || prevState.Compare(JUMP_ATTACK_STATE_TAG)) {
+                playerSoundPlayer.PlayClip(playerLandClip);
+            }
         };
         moveState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Move", false);
@@ -269,6 +289,9 @@ public class Player : LivingEntity, IDamageable {
             if(prevState.Compare(floatState)
             || prevState.Compare(JUMP_ATTACK_STATE_TAG))
                 currentJumpCount --;
+
+            dodgeParticle.Play();
+            playerSoundPlayer.PlayClip(playerDodgeClip);
             playerRigidbody.gravityScale = 0;
             playerAnimator.SetBool("Dodge", true);
         };
@@ -309,6 +332,7 @@ public class Player : LivingEntity, IDamageable {
         || playerStateMachine.Compare(hitState)
         || playerStateMachine.Compare(ATTACK_STATE_TAG) && !canMove)
             return;
+        playerSoundPlayer.PlayClip(playerJumpClip);
         playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
         playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
         playerStateMachine.ChangeState(floatState, true);
@@ -456,7 +480,7 @@ public class Player : LivingEntity, IDamageable {
         playerLevel ++;
         abilityPoint ++;
         currentExp -= nextLevelExp;
-        nextLevelExp = (int)(nextLevelExp * 1.3f);
+        nextLevelExp = (int)(nextLevelExp * 1.05f) + 20;
     }
     protected void InitializeRate() {
         try {
@@ -522,6 +546,7 @@ public class Player : LivingEntity, IDamageable {
     public void OnDamage(float damage, Vector2 force, float duration=.25f) {
         if(isDead) return;
         OnDamage(damage, duration);
+        playerSoundPlayer.PlayClip(playerHitClip);
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(force, ForceMode2D.Force);
     }
@@ -533,6 +558,15 @@ public class Player : LivingEntity, IDamageable {
     }
     protected override void Die() {
         base.Die();
+        playerDieParticle.SetActive(true);
+        playerDieParticle.transform.parent = null;
+        playerSoundPlayer.PlayClip(playerDieClip);
+        playerSprite.color = new Color(0, 0, 0, 0);
+        playerRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+        gameObject.layer = 10;
+        StartCoroutine(Utility.TimeoutTask(() => {
+            GameManager.instance.GameOver();
+        }, 2));
     }
     IEnumerator HitCoroutine(float duration) {
         if(duration > 0) {

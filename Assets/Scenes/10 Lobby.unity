@@ -419,7 +419,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 50, y: 35}
+  m_Offset: {x: 9, y: 35}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -933,7 +933,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1976842637
-  m_SortingLayer: -2
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1217,7 +1217,7 @@ PlayableDirector:
   m_InitialTime: 0
   m_SceneBindings:
   - key: {fileID: -519238626577471144, guid: 5b66aebef92fc864ab160f080c536177, type: 2}
-    value: {fileID: 86142612580538717}
+    value: {fileID: 0}
   - key: {fileID: 2487716502295508164, guid: 5b66aebef92fc864ab160f080c536177, type: 2}
     value: {fileID: 2052873684}
   - key: {fileID: 4496890899983203290, guid: 5b66aebef92fc864ab160f080c536177, type: 2}
@@ -1449,6 +1449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9860af1c713aae44afb1d88406d99dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tutorialUI: {fileID: 0}
   director: {fileID: 1330318791}
   dialogs: {fileID: 1330318790}
 --- !u!114 &1330318793
@@ -1601,8 +1602,8 @@ PolygonCollider2D:
     m_Paths:
     - - {x: -50, y: 65}
       - {x: -50, y: -15}
-      - {x: 50, y: -15}
-      - {x: 50, y: 65}
+      - {x: 9, y: -15}
+      - {x: 9, y: 65}
 --- !u!1 &2052873684 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 952924279, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
@@ -1714,17 +1715,6 @@ PrefabInstance:
     - {fileID: 1856458340, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
     - {fileID: 2890454834588939914, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
---- !u!114 &86142612580538717 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1856458343, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
-  m_PrefabInstance: {fileID: 86142612580538710}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233928360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &86142612580538718 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1856458342, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
@@ -1742,8 +1732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 877d1d24caed3804aa0758eb7082fc8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  director: {fileID: 0}
-  dialogs: {fileID: 0}
+  frame: {fileID: 0}
   speackerTmp: {fileID: 2127773441}
   scriptTmp: {fileID: 86005379}
 --- !u!1001 &1136579715468043049

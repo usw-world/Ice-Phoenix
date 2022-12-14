@@ -214,7 +214,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b4e430311e26c5d478aad9654eecda25, type: 3}
   - {fileID: 8300000, guid: 4a33798b089b2494ca9ed9f00b0da0a2, type: 3}
   monsterDeathClip: {fileID: 8300000, guid: f4adb3c120066734c8b3b8d1ae28b2e6, type: 3}
-  monsterHitClip: {fileID: 8300000, guid: 54df8a15ec9115344a6f9d75c56bffc5, type: 3}
+  monsterHitClip:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   monsterSideUI: {fileID: 5987502384696993903}
   monsterAnimator: {fileID: 53708725893303894}
   monsterRigidbody: {fileID: 53708725893303896}
@@ -224,11 +227,11 @@ MonoBehaviour:
   targetTransform: {fileID: 0}
   detectRange:
     center: {x: 0, y: 0}
-    radius: 3
+    radius: 20
   attackDamage: 10
   attackArea:
-    center: {x: -1, y: 0}
-    bounds: {x: 1, y: 1}
+    center: {x: -0.5, y: 0}
+    bounds: {x: 1, y: 0.75}
   jumpForce: 10
   virtualRotObject: {fileID: 3113697007450833004}
   experience: {fileID: 346594539527262408}

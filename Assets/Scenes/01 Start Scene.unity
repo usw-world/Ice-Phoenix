@@ -851,6 +851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9860af1c713aae44afb1d88406d99dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tutorialUI: {fileID: 0}
   director: {fileID: 430053406}
   dialogs: {fileID: 430053407}
 --- !u!320 &430053406
@@ -2615,7 +2616,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1976842637
-  m_SortingLayer: -2
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2937,17 +2938,16 @@ MonoBehaviour:
       \uD569\uB2F9\uD55C \uBC8C\uC744 \uBC1B\uAC8C \uB420 \uD130."
   - speacker: "\uC758\uBB38\uC758 \uBAA9\uC18C\uB9AC"
     script: "\uB0B4 \uC9C0\uAE08 \uAE09\uD55C \uC6A9\uBB34\uB97C \uCC98\uB9AC\uD558\uB294\uB300\uB85C
-      \uB124\uB188\uC758 \uD615\uC744 \uC9D1\uD589\uD560 \uAC83\uC774\uB2C8,\n\uADF8\uB7EC\uB294
-      \uB3D9\uC548 \uAD1C\uD788 \uC9C0\uC625\uC758 \uB054\uCC0D\uD55C \uAD34\uBB3C\uB4E4\uC774
-      \uC6B0\uAE00\uC6B0\uAE00\uD55C \uCD9C\uAD6C\uB85C \uB098\uAC08 \uC5C4\uB450\uB3C4
-      \uB0B4\uC9C0 \uB9D0\uACE0 \uADF8 \uC790\uB9AC\uC5D0 \uC7A0\uC790\uCF54 \uC788\uAC70\uB77C."
+      \uB124\uB188\uC758 \uD615\uC744 \uC9D1\uD589\uD560 \uAC83\uC774\uB2C8..."
+  - speacker: "\uC758\uBB38\uC758 \uBAA9\uC18C\uB9AC"
+    script: "\uAD1C\uD788 \uB054\uCC0D\uD55C \uAD34\uBB3C\uB4E4\uB85C \uAC00\uB4DD\uD55C
+      \uC800 \uCD9C\uAD6C\uB85C \uB098\uAC08 \uC0DD\uAC01 \uB9D0\uACE0 \uADF8 \uC790\uB9AC\uC5D0
+      \uC7A0\uC790\uCF54 \uC788\uAC70\uB77C."
   - speacker: ...
     script: ...
   - speacker: ...
-    script: "(\uAC14\uB098...?)"
-  - speacker: ...
     script: "\uC774 \uBC29\uD5A5\uC73C\uB85C \uAC00\uBA74... \uB098\uAC08 \uC218
-      \uC788\uB294\uAC74\uAC00..."
+      \uC788\uB294\uAC74\uAC00...?"
 --- !u!1 &1367725970
 GameObject:
   m_ObjectHideFlags: 0

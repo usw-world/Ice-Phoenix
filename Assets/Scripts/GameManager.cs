@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour {
     ServerConnector serverConnector;
     public GameData gameData { get; private set; }
 
+    public List<GameObject> destroyObjectsOnGameOver = new List<GameObject>();
+
     public void Awake() {
         if(instance == null) {
             instance = this;
@@ -90,6 +92,15 @@ public class GameManager : MonoBehaviour {
         if(targetName != null)
             UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
     }
+    public void GameOver() {
+        SynchronizeData();
+        UIManager.instance.FadeOut(() => {
+            foreach(GameObject gobj in destroyObjectsOnGameOver) {
+                Destroy(gobj);
+            }
+            ChangeScene(SceneList.Lobby);
+        }, 5);
+    }
     public void SetAdaptations(int[] next) {
         if(gameData != null) gameData.adaptation = next;
         else Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
@@ -100,6 +111,10 @@ public class GameManager : MonoBehaviour {
         if(gameData != null) gameData.rateGauge = nextGauge;
         else Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
         SynchronizeData();
+    }
+    public void IncreaseClearCount() {
+        if(gameData != null)
+            gameData.clearCount ++;
     }
     public void SynchronizeData() {
         string payload = JsonUtility.ToJson(gameData);

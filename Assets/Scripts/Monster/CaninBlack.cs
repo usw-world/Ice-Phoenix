@@ -185,11 +185,11 @@ public class CaninBlack : ChaseMonster {
 
     protected override void Die() {
         base.Die();
-        monsterSideUI.gameObject.SetActive(false);
         monsterStateMachine.ChangeState(dieState);
     }
     public void AnimationEvent_DieEnd() {
-        Destroy(gameObject);
+        // Destroy(gameObject);
+        monsterSideUI.gameObject.SetActive(false);
     }
     public IEnumerator Patrol() {
         while(!isDead) {
@@ -294,7 +294,7 @@ public class CaninBlack : ChaseMonster {
                 Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x / 2,
                 1 << 6
             );
-            print((Vector2)transform.position + new Vector2(0, pointY) + " ~ " + ((Vector2)transform.position + new Vector2(0, pointY) + (Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x / 2) * new Vector2(transform.localScale.x, 0)));
+            // print((Vector2)transform.position + new Vector2(0, pointY) + " ~ " + ((Vector2)transform.position + new Vector2(0, pointY) + (Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x / 2) * new Vector2(transform.localScale.x, 0)));
             return !!hit && hit.collider.tag == "Ground";
         }
         return false;

@@ -11,6 +11,9 @@ public class AdaptationUI : MonoBehaviour {
     [SerializeField] TextMeshProUGUI[] pointText = new TextMeshProUGUI[5];
     [SerializeField] TextMeshProUGUI remainingPointText;
 
+    void Awake() {
+        playerStatusUI = UIManager.instance.playerStatusUI;
+    }
     void Start() {
         RefreshAmount();
     }

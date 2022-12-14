@@ -11,7 +11,7 @@ public class Bat : ChaseMonster {
 
     private float lastAttackTime = 0f;
     private float attackInterval = 1.2f;
-    private float attackDistance = 1.5f;
+    private float attackDistance = .75f;
 
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;

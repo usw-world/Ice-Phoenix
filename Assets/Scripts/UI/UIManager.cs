@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour {
         if(instance == null) {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
+            // GameManager.instance.destroyObjectsOnGameOver.Add(this.gameObject);
         }
         else
             Destroy(this.gameObject);
@@ -85,12 +86,15 @@ public class UIManager : MonoBehaviour {
     public void FadeOut(System.Action callback) {
         StartCoroutine(FadeOutCoroutine(callback));
     }
-    private IEnumerator FadeOutCoroutine(System.Action callback) {
+    public void FadeOut(System.Action callback, float second) {
+        StartCoroutine(FadeOutCoroutine(callback, second));
+    }
+    private IEnumerator FadeOutCoroutine(System.Action callback, float second=2) {
         float offset = 0;
         Color start = fadeInOutImage.color;
         fadeInOutImage.gameObject.SetActive(true);
         while(offset < 1) {
-            offset += Time.deltaTime / 2;
+            offset += Time.deltaTime / second;
             fadeInOutImage.color = new Color(start.r, start.g, start.b, offset);
             yield return null;
         }

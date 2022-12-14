@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour {
         if(instance == null) {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
+            GameManager.instance.destroyObjectsOnGameOver.Add(this.gameObject);
         }
         else
             Destroy(this.gameObject);

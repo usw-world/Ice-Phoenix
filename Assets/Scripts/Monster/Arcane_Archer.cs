@@ -13,7 +13,7 @@ public class Arcane_Archer : ChaseMonster {
     private float magicDamage = 22f;
     private float lastMagicTime = 0f;
     private float magicInterval = 3f;
-    private float magicDistance = 6.5f;
+    private float magicDistance = 11f;
     private Vector2 nextMagicPoint;
     [SerializeField] private GameObject magicInstance;
     private EffectPool magicEffectPool;
@@ -35,7 +35,6 @@ public class Arcane_Archer : ChaseMonster {
     }
 
     #region Coroutines
-    // Coroutine setDistanceCoroutine;
     Coroutine dieCoroutine;
     Coroutine hitCoroutine;
     #endregion
@@ -85,8 +84,7 @@ public class Arcane_Archer : ChaseMonster {
         dieState.OnInactive += (nextState) => {
             monsterAnimator.SetBool("Die", false);
         };
-        jumpState.OnActive += (prevState) =>
-        {
+        jumpState.OnActive += (prevState) => {
             monsterAnimator.SetTrigger("Jump");
         };
     }
@@ -103,9 +101,9 @@ public class Arcane_Archer : ChaseMonster {
             if(remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState)) {
+                LookAtX(targetDirection.x);
                 monsterSoundPlayer.PlayClip(monsterAttackClip[0]);
                 int soundIndex = Random.Range(0, monsterAttackClip.Length);
-                nextMagicPoint = new Vector2(transform.position.x, transform.position.y);
                 monsterStateMachine.ChangeState(arrawState);
             }
         }
@@ -114,6 +112,7 @@ public class Arcane_Archer : ChaseMonster {
         monsterSoundPlayer.PlayClip(monsterAttackClip[1]);
         monsterStateMachine.ChangeState(idleState);
         lastMagicTime = magicInterval;
+        nextMagicPoint = new Vector2(transform.position.x, transform.position.y);
         Vector2 point = (Vector2)nextMagicPoint + new Vector2(0, .43f);
         GameObject effect = magicEffectPool.OutPool(point, null);
         effect.GetComponent<Arcane_Archer_Arrow>().endEvent = () => {

@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageName: "\uC9C0\uD558 3\uCE35 \uC704\uD5D8\uD55C \uC232"
-  mapConfiner: {fileID: 0}
+  mapConfiner: {fileID: 1678103282}
   type: 3
   startPoint: {fileID: 281795725}
 --- !u!1 &525861334
@@ -999,7 +999,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1976842637
-  m_SortingLayer: -2
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.4258633, g: 0.5471698, b: 0.43790364, a: 1}
@@ -1450,14 +1450,6 @@ PrefabInstance:
     - target: {fileID: 4445516826456096525, guid: 6d8bd61fb4a2c0d44b67fbf9bffa7096, type: 3}
       propertyPath: m_Name
       value: Melee Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 7906218686440254360, guid: 6d8bd61fb4a2c0d44b67fbf9bffa7096, type: 3}
-      propertyPath: description
-      value: "\uC8FC\uBCC0\uC744 \uD68C\uC804\uD558\uB294 \uD654\uC5FC\uAD6C\uB97C
-        3\uAC1C \uC18C\uD658\uD569\uB2C8\uB2E4.\n\uD654\uC5FC\uAD6C\uB294 \uC801\uC5D0\uAC8C
-        \uB2FF\uC73C\uBA74 \uD3ED\uBC1C\uD558\uC5EC 14 / 18 / 22 / 26 / 30\uC758\n\uD53C\uD574\uB97C
-        \uC785\uD788\uBA70 \uC0AC\uB77C\uC9C4 \uD6C4, 7 / 6 / 5 / 4 / 3\uCD08\uAC00
-        \uC9C0\uB09C \uB4A4\n\uB2E4\uC2DC \uC0DD\uC131\uB429\uB2C8\uB2E4."
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d8bd61fb4a2c0d44b67fbf9bffa7096, type: 3}
