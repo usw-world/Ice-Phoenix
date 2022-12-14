@@ -15,7 +15,7 @@ public abstract class Attach : MonoBehaviour {
     public abstract void OnDetach();
 
     public bool Equals(Attach other) {
-        print(other.attchType);
+        // print(other.attchType);
         return attchType == other.attchType;
     }
     public override bool Equals(object other) {

@@ -8,9 +8,9 @@ public class Door : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other) {
         if(hasEnter) return;
-        hasEnter = true;
-        Player player;
         if(other.tag == "Player") {
+            Player player;
+            hasEnter = true;
             if(other.TryGetComponent<Player>(out player)) {
                 UIManager.instance.FadeOut(() => {
                     GameManager.instance.ChangeScene(targetScene);

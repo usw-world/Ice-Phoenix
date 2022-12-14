@@ -8,7 +8,7 @@ public class Shadow_Magic : MonoBehaviourIF {
     public Transform target;
 
     float damage = 20;
-    float moveSpeed = 5f;
+    float moveSpeed = 3.5f;
 
     Vector2 dir;
 
@@ -20,7 +20,7 @@ public class Shadow_Magic : MonoBehaviourIF {
     }
 
     private void MoveToTarget() {
-        transform.Translate(new Vector2(MagicLookAtX(dir.x), 0) * Time.deltaTime * moveSpeed * (Mathf.Sin(Time.time) + 1));
+        transform.Translate(Vector3.right * Time.deltaTime * moveSpeed * (Mathf.Sin(Time.time) + 1));
         transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg, Vector3.forward);
     }
 
@@ -35,7 +35,7 @@ public class Shadow_Magic : MonoBehaviourIF {
 
     private IEnumerator RemoveMagicOverTime()
     {
-        float removeTime = 5f;
+        float removeTime = 7f;
         yield return new WaitForSeconds(removeTime);
         endEvent();
     }

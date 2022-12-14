@@ -27,7 +27,6 @@ public class AdaptationUI : MonoBehaviour {
     }
     private void ApplyAdaptation() {
         GameManager.instance.SetAdaptations(adaptation.points);
-        print(GameManager.instance.gameData.adaptation.Length);
     }
     public void Increase(int type) {
         try {
@@ -36,7 +35,6 @@ public class AdaptationUI : MonoBehaviour {
             else
                 adaptation.Increase((AdaptationManager.Type)type);
         } catch(System.Exception e) {
-            print(e.Message);
         }
         RefreshAmount();
     }

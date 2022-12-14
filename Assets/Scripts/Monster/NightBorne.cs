@@ -185,7 +185,7 @@ public class NightBorne : ChaseMonster {
     private bool CheckWallBetween(Transform target, float pointY)
     {
         Collider2D collider;
-        print(pointY);
+        // print(pointY);
         if (target.TryGetComponent<Collider2D>(out collider))
         {
             RaycastHit2D hit = Physics2D.Raycast(

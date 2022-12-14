@@ -199,7 +199,7 @@ public class Bat : ChaseMonster {
     private bool CheckWallBetween(Transform target, float pointY)
     {
         Collider2D collider;
-        print(pointY);
+        // print(pointY);
         if (target.TryGetComponent<Collider2D>(out collider))
         {
             RaycastHit2D hit = Physics2D.Raycast(
@@ -208,7 +208,7 @@ public class Bat : ChaseMonster {
                 Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x / 2,
                 1 << 6
             );
-            print((Vector2)transform.position + new Vector2(0, pointY) + " ~ " + ((Vector2)transform.position + new Vector2(0, pointY) + (Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x / 2) * new Vector2(transform.localScale.x, 0)));
+            // print((Vector2)transform.position + new Vector2(0, pointY) + " ~ " + ((Vector2)transform.position + new Vector2(0, pointY) + (Vector2.Distance((Vector2)transform.position, target.position) - target.GetComponent<Collider2D>().bounds.size.x / 2) * new Vector2(transform.localScale.x, 0)));
             return !!hit && hit.collider.tag == "Ground";
         }
         return false;

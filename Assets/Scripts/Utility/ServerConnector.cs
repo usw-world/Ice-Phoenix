@@ -54,7 +54,6 @@ public class ServerConnector : MonoBehaviour
             if(webRequest.result == UnityWebRequest.Result.Success) {
                 GameManager.GameData gameData = JsonUtility.FromJson<GameManager.GameData>(json);
                 GameManager.instance.SetGameData(gameData);
-                print(json);
                 Callback();
             } else {
                 print(json);
