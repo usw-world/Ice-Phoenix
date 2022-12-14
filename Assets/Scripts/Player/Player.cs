@@ -506,7 +506,7 @@ public class Player : LivingEntity, IDamageable {
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitCoroutine(duration));
         }
-        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, Color.white);
+        UIManager.instance.damageLog.LogDamage((int)damage+"", transform.position, Color.white);
     }
     public void OnDamage(float damage, Color textColor, float duration=.25f) {
         if(isDead) return;
@@ -517,7 +517,7 @@ public class Player : LivingEntity, IDamageable {
             if(hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitCoroutine(duration));
         }
-        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, textColor);
+        UIManager.instance.damageLog.LogDamage((int)damage+"", transform.position, textColor);
     }
     public void OnDamage(float damage, Vector2 force, float duration=.25f) {
         if(isDead) return;

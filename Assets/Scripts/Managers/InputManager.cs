@@ -96,8 +96,5 @@ public class InputManager : MonoBehaviour {
     }
     private void DialogInputSet() {
         player.SetDirection(0);
-        if(Input.GetKeyDown(KeyCode.Return)) {
-            UIManager.instance.dialogUI.CallNext();
-        }
     }
 }

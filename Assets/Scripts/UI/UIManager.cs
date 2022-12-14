@@ -27,11 +27,6 @@ public class UIManager : MonoBehaviour {
             Debug.LogWarning("There is any 'Player Status UI'.");
         }
     }
-    void Start() {
-        if(Stage.currentStage!=null && Stage.currentStage.type==Stage.StageType.Intro) {
-            dialogUI.PlayTimeline();
-        }
-    }
     public void CloseUI() {
         if(activingUI != null) activingUI.OnInactive();
         InputManager.instance.SetInputState(InputManager.instance.playState);

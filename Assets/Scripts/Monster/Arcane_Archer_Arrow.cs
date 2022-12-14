@@ -6,7 +6,7 @@ public class Arcane_Archer_Arrow: MonoBehaviourIF {
     public System.Action endEvent;
 
     float damage = 10f;
-    float moveSpeed = 5f;
+    float moveSpeed = 3f;
 
     Vector2 dir;
 

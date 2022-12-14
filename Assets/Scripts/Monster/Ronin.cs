@@ -170,7 +170,7 @@ public class Ronin : ChaseMonster {
         else
         {
             if (isDead) return;
-            UIManager.instance.damageLog.LogDamage(damage + "", transform.position, Color.white);
+            UIManager.instance.damageLog.LogDamage((int)damage + "", transform.position, Color.white);
             monsterRigidbody.AddForce(force);
             if (hitCoroutine != null)
                 StopCoroutine(hitCoroutine);

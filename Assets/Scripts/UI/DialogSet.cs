@@ -8,7 +8,7 @@ public class DialogSet : MonoBehaviour {
         public string speacker;
         [TextArea(4, 10)] public string script;
     }
-    int offset = -1;
+    public int offset { get; private set; } = -1;
     [SerializeField] private Dialog[] dialogs;
     
     public bool Next() {
@@ -23,8 +23,7 @@ public class DialogSet : MonoBehaviour {
             return null;
         }
     }
-    public void ChangeDialogs(DialogSet next) {
+    public void Reset() {
         offset = -1;
-        dialogs = next.dialogs;
     }
 }

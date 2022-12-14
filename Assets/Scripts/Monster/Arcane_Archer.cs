@@ -102,16 +102,16 @@ public class Arcane_Archer : ChaseMonster {
         else {
             if(remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
-            && !monsterStateMachine.Compare(hitState))
-            {
+            && !monsterStateMachine.Compare(hitState)) {
+                monsterSoundPlayer.PlayClip(monsterAttackClip[0]);
                 int soundIndex = Random.Range(0, monsterAttackClip.Length);
-                monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
                 nextMagicPoint = new Vector2(transform.position.x, transform.position.y);
                 monsterStateMachine.ChangeState(arrawState);
             }
         }
     }
     public void AnimationEvent_SpellEnd() {
+        monsterSoundPlayer.PlayClip(monsterAttackClip[1]);
         monsterStateMachine.ChangeState(idleState);
         lastMagicTime = magicInterval;
         Vector2 point = (Vector2)nextMagicPoint + new Vector2(0, .43f);

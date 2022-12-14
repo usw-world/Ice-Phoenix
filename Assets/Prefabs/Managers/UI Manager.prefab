@@ -16730,11 +16730,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1856458339}
-  - component: {fileID: 1856458340}
-  - component: {fileID: 1856458341}
-  - component: {fileID: 2890454834588939914}
   - component: {fileID: 1856458342}
-  - component: {fileID: 1856458343}
+  - component: {fileID: 86142612580538719}
   m_Layer: 0
   m_Name: 'UI :: Dialog UI'
   m_TagString: Untagged
@@ -16758,81 +16755,6 @@ Transform:
   m_Father: {fileID: 86142611410297198}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!320 &1856458340
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1856458338}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
-  m_InitialState: 0
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings:
-  - key: {fileID: 2487716502295508164, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
-    value: {fileID: 952924279}
-  - key: {fileID: 4496890899983203290, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
-    value: {fileID: 1856458342}
-  - key: {fileID: -519238626577471144, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
-    value: {fileID: 1856458343}
-  - key: {fileID: 5032862087767143349, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
-    value: {fileID: 1135664630}
-  - key: {fileID: 4304309764087017409, guid: e44a7d5d303bf0040bcb82c0b965ed1b, type: 2}
-    value: {fileID: 0}
-  m_ExposedReferences:
-    m_References:
-    - f55ce0987c7c85d4e8771c90bb726af9: {fileID: 1135664630}
-    - 7edd0654a5c69cf4b96215eab38f4ec7: {fileID: 1856458338}
-    - 06140d1b59113a84fa5106e3326275a8: {fileID: 1135664630}
-    - 904281d37421e7a4098e6bd4f3291620: {fileID: 1135664630}
-    - 27f88684b384f5442ae4652581e455ca: {fileID: 1135664630}
-    - 104e13e3440e61941b969f879d902b53: {fileID: 1135664630}
-    - 75217126c2a49b64fa7830ccfab8c9ac: {fileID: 1135664630}
-    - 54e1b506c68693d408555329118f86d9: {fileID: 0}
---- !u!114 &1856458341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1856458338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 877d1d24caed3804aa0758eb7082fc8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  director: {fileID: 1856458340}
-  dialogs: {fileID: 2890454834588939914}
-  speackerTmp: {fileID: 450738470}
-  scriptTmp: {fileID: 1318961695}
---- !u!114 &2890454834588939914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1856458338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d10829103c4c74cafa0e7f847c2db2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogs:
-  - speacker: ...
-    script: ...
-  - speacker: ...
-    script: "\uC5EC\uAE34 \uC5B4\uB514\uC9C0."
-  - speacker: ...
-    script: "\uB09C \uBD84\uBA85 \uC8FD\uC5C8\uC744\uD150\uB370..."
-  - speacker: ...
-    script: "\uADF8\uB807\uB2E4\uBA74 \uC5EC\uAE34 \uCC9C\uAD6D... \uC544\uB2C8 \uC8FD\uC5B4\uB3C4
-      \uCC9C\uAD6D\uC5D0 \uC62C \uC0AC\uB78C\uC740 \uC544\uB2C8\uC9C0... "
-  - speacker: ...
-    script: "\uC9C0\uC625\uC774\uAD70."
 --- !u!95 &1856458342
 Animator:
   serializedVersion: 4
@@ -16853,7 +16775,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1856458343
+--- !u!114 &86142612580538719
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16862,102 +16784,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1856458338}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Script: {fileID: 11500000, guid: 877d1d24caed3804aa0758eb7082fc8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: d5e1ebe70455f544c86fc1aa5b8ccb63, type: 2}
-    - {fileID: 11400000, guid: 0e615b608302f4941a85517f790269ea, type: 2}
-    - {fileID: 11400000, guid: a04ae3086bbf0f94282668e796405b21, type: 2}
-    - {fileID: 11400000, guid: e791c54122676e24da304b3e28b82083, type: 2}
-    - {fileID: 11400000, guid: 97a11270229e6d1418cf8b577a798528, type: 2}
-    - {fileID: 11400000, guid: 4758fdbe4cb033443bd2239e8927200f, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1856458341}
-          m_TargetAssemblyTypeName: DialogComponent, Assembly-CSharp
-          m_MethodName: WaitNext
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 86142611410297185}
-          m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-          m_MethodName: ZoomInCamera
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 86142611410297185}
-          m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-          m_MethodName: ZoomOutCamera
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 86142611410297185}
-          m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-          m_MethodName: ChangeToPlayState
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 86142611410297185}
-          m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-          m_MethodName: ChangeToDialogState
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1856458341}
-          m_TargetAssemblyTypeName: DialogComponent, Assembly-CSharp
-          m_MethodName: ClearDialog
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  speackerTmp: {fileID: 450738470}
+  scriptTmp: {fileID: 1318961695}
 --- !u!1 &1856950694
 GameObject:
   m_ObjectHideFlags: 0
@@ -20932,7 +20763,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -21354,7 +21185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &86142611196969232
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21755,7 +21586,7 @@ MonoBehaviour:
   screenUI: {fileID: 1368186068}
   abilityChoicesUI: {fileID: 7679294965942597431}
   damageLog: {fileID: 2018073903}
-  dialogUI: {fileID: 1856458341}
+  dialogUI: {fileID: 86142612580538719}
   fadeInOutImage: {fileID: 643882401}
 --- !u!1 &86142611427490449
 GameObject:
@@ -23054,10 +22885,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 86142610884911316}
   m_HandleRect: {fileID: 86142612242810592}
   m_Direction: 0
-  m_MinValue: -40
+  m_MinValue: -20
   m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: -10
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -23197,8 +23028,8 @@ RectTransform:
   m_Father: {fileID: 86142611110612110}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -23258,7 +23089,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &86142612352592376
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24589,7 +24420,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.318, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -25192,10 +25023,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 8152896408221104637}
   m_HandleRect: {fileID: 165018269936188745}
   m_Direction: 0
-  m_MinValue: -40
+  m_MinValue: -20
   m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: -10
+  m_Value: -4
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -26752,10 +26583,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 7479089555652660957}
   m_HandleRect: {fileID: 1043935865643488376}
   m_Direction: 0
-  m_MinValue: -40
+  m_MinValue: -20
   m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: -10
+  m_Value: -4
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -27265,7 +27096,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -332, y: 212}
+  m_AnchoredPosition: {x: -332, y: 219}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7619083143741753784
@@ -27325,15 +27156,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 4
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

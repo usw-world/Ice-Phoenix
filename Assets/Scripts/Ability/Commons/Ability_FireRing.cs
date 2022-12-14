@@ -6,7 +6,7 @@ using AbilitySystem;
 public class Ability_FireRing : Ability {
     [SerializeField] GameObject fireRingPrefab;
     GameObject fireRing;
-    float[] damage = { 30, 35, 40, 45, 50 };
+    float[] damage = { 14, 18, 22, 26, 30 };
     public float Damage {
         get { return damage[level]; }
     }

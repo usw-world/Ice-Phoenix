@@ -11,12 +11,8 @@ GameObject:
   - component: {fileID: 2613131061454542426}
   - component: {fileID: 2613131061454542428}
   - component: {fileID: 7033742822795117146}
-<<<<<<< Updated upstream
   - component: {fileID: 3328623186988744914}
   - component: {fileID: 4843813411690384556}
-=======
-  - component: {fileID: 3716819646196423595}
->>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Effect __ Arcane Archer Arrow
   m_TagString: Untagged
@@ -104,11 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 2613131061454542426}
-<<<<<<< Updated upstream
 --- !u!61 &3328623186988744914
-=======
---- !u!61 &3716819646196423595
->>>>>>> Stashed changes
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,11 +113,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-<<<<<<< Updated upstream
   m_Offset: {x: 0, y: 0}
-=======
-  m_Offset: {x: 0.04, y: 0}
->>>>>>> Stashed changes
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -136,7 +124,6 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-<<<<<<< Updated upstream
   m_Size: {x: 0.5, y: 0.0625}
   m_EdgeRadius: 0
 --- !u!114 &4843813411690384556
@@ -152,7 +139,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 2613131061454542426}
-=======
-  m_Size: {x: 0.3, y: 0.02}
-  m_EdgeRadius: 0
->>>>>>> Stashed changes

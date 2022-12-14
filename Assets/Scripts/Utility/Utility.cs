@@ -8,22 +8,23 @@ public abstract class Utility : MonoBehaviour {
         yield return new WaitForSeconds(seconds);
         func();
     }
-
-    // public class WaitForRead : IEnumerator {
-    //     int count = 0;
-    //     public object Current {
-    //         get {
-    //             count ++;
-    //             return null;
-    //         }
-    //     }
-
-    //     public bool MoveNext() {
-    //         return count < 1000;
-    //     }
-
-    //     public void Reset() {
-    //         throw new NotImplementedException();
-    //     }
-    // }
+    
+    public class WaitReturnEnumerator : IEnumerator {
+        bool next = false;
+        public object Current {
+            get {
+                next = Input.GetKeyDown(KeyCode.Return);
+                return null;
+            }
+        }
+        public void Reset() {}
+        public bool MoveNext() {
+            if(next) {
+                next = false;
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
 }

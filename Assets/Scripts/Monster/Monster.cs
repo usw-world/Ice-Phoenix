@@ -53,19 +53,21 @@ public abstract class Monster : LivingEntity, IDamageable {
     }
     public virtual void OnDamage(float damage, Color color, float duration=.25f) {
         OnDamage(damage, duration);
-        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, color);
+        UIManager.instance.damageLog.LogDamage((int)damage+"", transform.position, color);
     }
     public virtual void OnDamage(float damage, Vector2 force, float duration=.25f) {
         OnDamage(damage, duration);
     }
     public virtual void OnDamage(float damage, Vector2 force, Color color, float duration=.25f) {
         OnDamage(damage, force, duration);
-        UIManager.instance.damageLog.LogDamage(damage+"", transform.position, color);
+        UIManager.instance.damageLog.LogDamage((int)damage+"", transform.position, color);
     }
 
     protected override void Die() {
         base.Die();
-        monsterSoundPlayer.PlayClip(monsterDeathClip);
+        if(monsterDeathClip != null) {
+            monsterSoundPlayer.PlayClip(monsterDeathClip);
+        }
         gameObject.layer = 10;
         GiveExperience giveExperience;
         if(TryGetComponent<GiveExperience>(out giveExperience)) {

@@ -22,12 +22,12 @@ public class EscapeMenuUI : UI {
         canvas.SetActive(false);
     }
     public void SetMasterVolume() {
-        masterMixer.audioMixer.SetFloat("Master", masterSlider.value<=-40 ? -80 : masterSlider.value);
+        masterMixer.audioMixer.SetFloat("Master", masterSlider.value<=-20 ? -80 : masterSlider.value);
     }
     public void SetEffectVolume() {
-        effectMixer.audioMixer.SetFloat("Effect", effectSlider.value<=-40 ? -80 : effectSlider.value);
+        effectMixer.audioMixer.SetFloat("Effect", effectSlider.value<=-20 ? -80 : effectSlider.value);
     }
     public void SetMusicVolume() {
-        musicMixer.audioMixer.SetFloat("Music", musicSlider.value<=-40 ? -80 : musicSlider.value);
+        musicMixer.audioMixer.SetFloat("Music", musicSlider.value<=-20 ? -80 : musicSlider.value);
     }
 }

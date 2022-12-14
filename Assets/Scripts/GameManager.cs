@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour {
         Unsafe03 = 7,
         Safe04 = 8,
         Unsafe04 = 9,
+        Lobby = 10,
         Test = 66,
     }
     public void ChangeScene(SceneList target) {
@@ -77,7 +78,10 @@ public class GameManager : MonoBehaviour {
                 targetName = "08 Safe-04";
                 break;
             case SceneList.Unsafe04:
-                targetName = "09 Unsafe-04";
+                targetName = "09 Boss";
+                break;
+            case SceneList.Lobby:
+                targetName = "10 Lobby";
                 break;
             case SceneList.Test:
                 targetName = "_ability_test_scene";
