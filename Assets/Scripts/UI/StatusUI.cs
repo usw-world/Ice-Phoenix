@@ -6,6 +6,8 @@ using AbilitySystem;
 public class StatusUI : UI {
     static public StatusUI instance;
 
+    [SerializeField] private AudioClip openingSound;
+
     public AdaptationManager adaptationManager {
         get {
             return AdaptationManager.instance;
@@ -45,6 +47,7 @@ public class StatusUI : UI {
     public override void OnActive() {
         canvas.SetActive(true);
         activeEvent.Invoke();
+        UIManager.instance.soundPlayer.PlayClip(openingSound);
     }
     public override void OnInactive() {
         canvas.SetActive(false);

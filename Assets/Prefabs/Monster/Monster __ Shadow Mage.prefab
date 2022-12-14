@@ -55,7 +55,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2373022375937857559
 Transform:
   m_ObjectHideFlags: 0
@@ -214,7 +214,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 100
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -319,7 +319,7 @@ MonoBehaviour:
   monsterSoundPlayer: {fileID: 1715556717081723235}
   monsterAttackClip:
   - {fileID: 8300000, guid: 7fc533faef3c332408384c6f7150d014, type: 3}
-  monsterDeathClip: {fileID: 8300000, guid: 4cbe3d60f95608741a922fcd61d58a54, type: 3}
+  monsterDeathClip: {fileID: 0}
   monsterHitClip: []
   monsterSideUI: {fileID: 4184693981007674495}
   monsterAnimator: {fileID: 2373022375937857563}
@@ -393,11 +393,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7878756735572652521, guid: 5fe17fd3ded98664e98b815bb3df5758, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.507
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7878756735572652521, guid: 5fe17fd3ded98664e98b815bb3df5758, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fe17fd3ded98664e98b815bb3df5758, type: 3}

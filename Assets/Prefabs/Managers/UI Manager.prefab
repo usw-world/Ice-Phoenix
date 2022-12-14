@@ -3258,8 +3258,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -3}
-  m_SizeDelta: {x: 10, y: 22}
+  m_AnchoredPosition: {x: 0, y: -2}
+  m_SizeDelta: {x: 5, y: 11}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &310209551
 CanvasRenderer:
@@ -9003,8 +9003,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  adaptationManager: {fileID: 0}
-  abilityManager: {fileID: 0}
+  openingSound: {fileID: 8300000, guid: 412efa02f921ddd4792a54133a3ea096, type: 3}
   rateGaugeSlider: {fileID: 3392415003987193744}
   rateTmp: {fileID: 8792756985937525790}
   abilityUI: {fileID: 637849152}
@@ -21541,6 +21540,8 @@ GameObject:
   m_Component:
   - component: {fileID: 86142611410297198}
   - component: {fileID: 86142611410297185}
+  - component: {fileID: 7575459268002420848}
+  - component: {fileID: 8897588116596698826}
   m_Layer: 0
   m_Name: UI Manager
   m_TagString: Untagged
@@ -21588,7 +21589,117 @@ MonoBehaviour:
   abilityChoicesUI: {fileID: 7679294965942597431}
   damageLog: {fileID: 2018073903}
   dialogUI: {fileID: 86142612580538719}
+  soundPlayer: {fileID: 7575459268002420848}
   fadeInOutImage: {fileID: 643882401}
+--- !u!114 &7575459268002420848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86142611410297184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d05c178cddd0f048a42e4b9142eff67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 8897588116596698826}
+--- !u!82 &8897588116596698826
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86142611410297184}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 6188649168492415148, guid: 1b0e66066de28d841ac5d5aa95cb51f8, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &86142611427490449
 GameObject:
   m_ObjectHideFlags: 0
@@ -24421,7 +24532,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.318, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -26915,7 +27026,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 748774844163474910}
   m_HandleRect: {fileID: 0}
@@ -28082,6 +28193,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   firstCard: {fileID: 7679294965951186686}
+  openingSound: {fileID: 8300000, guid: 3ea37f0a2f691814fbc781edf9257f3c, type: 3}
+  clickSound: {fileID: 8300000, guid: cb4dd4ae2954dde44b7900505a6288fd, type: 3}
   abilityChoices:
   - ability: {fileID: 0}
     icon: {fileID: 7679294966947113256}

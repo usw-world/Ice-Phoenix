@@ -7,6 +7,10 @@ using AbilitySystem;
 
 public class AbilityChoicesUI : UI {
     [SerializeField] private Button firstCard;
+
+    [SerializeField] private AudioClip openingSound;
+    [SerializeField] private AudioClip clickSound;
+
     [System.Serializable]
     private class AbilityChoice {
         public Ability ability;
@@ -27,6 +31,7 @@ public class AbilityChoicesUI : UI {
     public void ShowChoices() {
         isChoosing = true;
         UIManager.instance.OpenUI(this);
+        UIManager.instance.soundPlayer.PlayClip(openingSound);
         firstCard.Select();
     }
     public void SetChoice(int index, Ability ability) {
@@ -39,6 +44,7 @@ public class AbilityChoicesUI : UI {
     }
     public void SelectChoice(int index) {
         if(index > 2) return;
+        UIManager.instance.soundPlayer.PlayClip(clickSound);
         AbilityManager.instance.AddAbility(abilityChoices[index].ability);
         isChoosing = false;
     }

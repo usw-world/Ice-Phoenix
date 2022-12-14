@@ -10,8 +10,6 @@ public class Shadow_Magic : MonoBehaviourIF {
     float damage = 20;
     float moveSpeed = 3.5f;
 
-    Vector2 dir;
-
     private void Start() {
         StartCoroutine("RemoveMagicOverTime");
     }
@@ -20,17 +18,11 @@ public class Shadow_Magic : MonoBehaviourIF {
     }
 
     private void MoveToTarget() {
-        transform.Translate(Vector3.right * Time.deltaTime * moveSpeed * (Mathf.Sin(Time.time) + 1));
-        transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg, Vector3.forward);
-    }
-
-    private float MagicLookAtX(float x) {
-        if (x > 0)
-            transform.localScale = new Vector3(.5f, .5f, .5f);
-        else if (x < 0)
-            transform.localScale = new Vector3(-.5f, .5f, .5f);
-
-        return transform.localScale.x;
+        try {
+            transform.Translate((target.position - transform.position).normalized * Time.deltaTime * moveSpeed * (Mathf.Sin(Time.time) + 1));
+        } catch {
+            Destroy(gameObject);
+        }
     }
 
     private IEnumerator RemoveMagicOverTime()

@@ -7,7 +7,6 @@ namespace CmpLinkedList {
     public class IntegratedList<T> : System.Collections.IEnumerable {
         protected Node<T> head;
         public int Count { get; private set; } = 0;
-
         public T this[int index] {
             get {
                 Node<T> current = head;
@@ -36,7 +35,6 @@ namespace CmpLinkedList {
             }
             Count++;
         }
-
         public void Unshift(T value) {
             Node<T> newNode = new Node<T>(value);
 
@@ -142,13 +140,6 @@ namespace CmpLinkedList {
             data = default(T);
             return false;
         }
-        // public T GetRandom() {
-        //     Node<T> temp = head;
-        //     for (int i = 0; i < Random.Range(0, count); i++) {
-        //         temp = temp.next;
-        //     }
-        //     return temp.value;
-        // }
         public T Pop() {
             if(Count <= 0)
                 throw new EmptyReferenceException();
@@ -197,7 +188,6 @@ namespace CmpLinkedList {
             }
             return false;
         }
-
         public IEnumerator GetEnumerator() {
             Node<T> current = head;
             while(current != null) {

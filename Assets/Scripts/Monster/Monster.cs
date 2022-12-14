@@ -20,9 +20,18 @@ public abstract class Monster : LivingEntity, IDamageable {
     [SerializeField] protected Rigidbody2D monsterRigidbody;
 
 
-
+    public void GameSet() {
+        Destroy(this);
+    }
     protected override void Awake() {
         base.Awake();
+
+        try {
+            SetMaxHP(maxHp + GameManager.instance.gameData.clearCount * .15f, true);
+        } catch(System.Exception e) {
+            print(e.StackTrace);
+        }
+
         monsterAnimator = GetComponent<Animator>();
         if(monsterAnimator == null)
             Debug.LogWarning($"Monster hasn't any 'Animator'.");
@@ -72,6 +81,8 @@ public abstract class Monster : LivingEntity, IDamageable {
 
     protected override void Die() {
         base.Die();
+        if(Player.playerInstance.onDefeatMonster != null)
+            Player.playerInstance.onDefeatMonster(this);
         if(monsterDeathClip != null) {
             monsterSoundPlayer.PlayClip(monsterDeathClip);
         }

@@ -608,7 +608,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 0}
-  maxHp: 150
+  maxHp: 2700
   monsterSoundPlayer: {fileID: 230398872}
   monsterAttackClip: []
   monsterDeathClip: {fileID: 8300000, guid: 5b76334cbb7db60469daba55b2a00320, type: 3}
@@ -621,6 +621,7 @@ MonoBehaviour:
   bgmAudioSource: {fileID: 77217155}
   commonPhaseBGMClip: {fileID: 8300000, guid: 944323b8d386ffe409c025f91118c069, type: 3}
   bossFootStep: {fileID: 8300000, guid: 3fa8898bf9a0db64b890b886f24389de, type: 3}
+  punchClip: {fileID: 8300000, guid: 516453d354f2d974bb468de79321572e, type: 3}
   punchEffectPoint: {fileID: 965340772}
   punchEffect: {fileID: 4889247088415743580, guid: c991328f73982a64cba13cca643242e8, type: 3}
   summonEffect: {fileID: 3215608279376747186, guid: 4eea24eab989ca446873e0a3961c7044, type: 3}
@@ -634,6 +635,7 @@ MonoBehaviour:
   shadowMages:
   - {fileID: 3483962779466191027}
   - {fileID: 646284725}
+  thunder: {fileID: 1511312475102745184, guid: e175925acb5ac034cb4d7741cb27349c, type: 3}
   shoutClip: {fileID: 8300000, guid: 5b76334cbb7db60469daba55b2a00320, type: 3}
 --- !u!60 &230398869
 PolygonCollider2D:
@@ -1622,9 +1624,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 142435781}
     m_Modifications:
+    - target: {fileID: 1709016879049981986, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.507
+      objectReference: {fileID: 0}
+    - target: {fileID: 1709016879049981986, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2373022375937857556, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
       propertyPath: m_Name
       value: Monster __ Shadow Mage
+      objectReference: {fileID: 0}
+    - target: {fileID: 2373022375937857556, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2373022375937857559, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
       propertyPath: m_RootOrder
@@ -3215,6 +3229,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 52977633, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 264161679, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3222,18 +3240,6 @@ PrefabInstance:
     - target: {fileID: 264161679, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 310209549, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 310209549, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 310209549, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 1760303354, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3290,6 +3296,14 @@ PrefabInstance:
     - target: {fileID: 86142611410297198, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 748774844163474910, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.318
+      objectReference: {fileID: 0}
+    - target: {fileID: 748774844163474910, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e967316e4839eef4ab7b11141a686c46, type: 3}
@@ -3499,9 +3513,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 142435781}
     m_Modifications:
+    - target: {fileID: 1709016879049981986, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.507
+      objectReference: {fileID: 0}
+    - target: {fileID: 1709016879049981986, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2373022375937857556, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
       propertyPath: m_Name
       value: Monster __ Shadow Mage
+      objectReference: {fileID: 0}
+    - target: {fileID: 2373022375937857556, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2373022375937857559, guid: 344d3f488e7bf894ca4737ec1d0e85e0, type: 3}
       propertyPath: m_RootOrder

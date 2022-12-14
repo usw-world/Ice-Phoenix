@@ -96,6 +96,20 @@ public class GameManager : MonoBehaviour {
         if(targetName != null)
             UnityEngine.SceneManagement.SceneManager.LoadScene(targetName);
     }
+
+    void Update() {
+        __cheet();
+    }
+    /*  */
+    public void __cheet() {
+        if(Input.GetKey(KeyCode.LeftShift)) {
+            if(Input.GetKeyDown(KeyCode.Alpha1)) ChangeScene(SceneList.Safe01);
+            if(Input.GetKeyDown(KeyCode.Alpha2)) ChangeScene(SceneList.Safe02);
+            if(Input.GetKeyDown(KeyCode.Alpha3)) ChangeScene(SceneList.Safe03);
+            if(Input.GetKeyDown(KeyCode.Alpha4)) ChangeScene(SceneList.Safe04);
+        }
+    }
+    /*  */
     public void GameOver() {
         SynchronizeData();
         UIManager.instance.FadeOut(() => {
@@ -103,7 +117,6 @@ public class GameManager : MonoBehaviour {
                 Destroy(gobj);
             }
             LoadData();
-            print(gameData.adaptation.Length);
             ChangeScene(SceneList.Lobby);
         }, 5);
     }

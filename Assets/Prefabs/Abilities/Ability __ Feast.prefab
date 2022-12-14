@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3640839873714048147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3640839873714048144}
+  - component: {fileID: 3640839873714048145}
+  m_Layer: 0
+  m_Name: Ability __ Feast
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3640839873714048144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3640839873714048147}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 37.65993, y: 3.6475053, z: -0.014401862}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3640839873714048145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3640839873714048147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ff770e3f3811fd43b9d536a67480ec2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  derivedAbilityList: []
+  abilityImage: {fileID: 21300000, guid: 57b3c3a5cd9efbc4ab2deaee06451442, type: 3}
+  abilityName: Feast
+  description: "\uC801\uC744 \uCC98\uCE58\uD558\uBA74 \uCD5C\uB300 \uCCB4\uB825\uC774
+    1 / 1.5 / 2 \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+  annotation: "(\uC783\uC740 \uCCB4\uB825\uACFC \uBB34\uAD00\uD558\uAC8C \uD604\uC7AC
+    \uCCB4\uB825\uB3C4 \uB3D9\uC77C\uD558\uAC8C \uC99D\uAC00\uD569\uB2C8\uB2E4)"
+  abilitySummary: "\uC801\uC744 \uCC98\uCE58\uD558\uC5EC \uCD5C\uB300 \uCCB4\uB825
+    \uC99D\uAC00"
+  currentLevel: 0

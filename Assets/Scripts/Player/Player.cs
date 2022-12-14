@@ -118,9 +118,11 @@ public class Player : LivingEntity, IDamageable {
         get {
             float coef = 0;
             int strong = adaptationManager.points[(int)AdaptationManager.Type.Strong];
-            Delegate[] coefficient = armorCoefficients.GetInvocationList();
-            for(int i=0; i<coefficient.Length; i++) {
-                coef += ((Coefficients) coefficient[i])();
+            if(armorCoefficients != null) {
+                Delegate[] coefficient = armorCoefficients.GetInvocationList();
+                for(int i=0; i<coefficient.Length; i++) {
+                    coef += ((Coefficients) coefficient[i])();
+                }
             }
             return (defaultArmor * coef) + (strong * .01f);
         }
@@ -198,6 +200,11 @@ public class Player : LivingEntity, IDamageable {
     #region Die
     [SerializeField] GameObject playerDieParticle;
     #endregion Die
+
+    #region Monster
+    public delegate void MonsterVoidDelegate(Monster monster);
+    public MonsterVoidDelegate onDefeatMonster;
+    #endregion Monster
 
     protected override void Awake() {
         base.Awake();
@@ -517,11 +524,17 @@ public class Player : LivingEntity, IDamageable {
         ScreenUI.instance.UpdateHPSlider(this);
         return nextHp;
     }
-    private float IncreaseHP(float amount) {
-        float nextHp = SetHP(hp + amount);
+    public float IncreaseHP(float amount) {
+        SetHP(hp + amount);
         return hp;
     }
+    public float IncreaseMaxHP(float amount) {
+        SetMaxHP(maxHp + amount);
+        SetHP(hp + amount);
+        return maxHp;
+    }
     public void OnDamage(float damage, float duration=.25f) {
+        damage = damage * (1 - armor);
         if(isDead) return;
         IncreaseHP(-damage);
         if(hp <= 0) {

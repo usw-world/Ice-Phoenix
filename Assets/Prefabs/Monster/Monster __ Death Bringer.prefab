@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 53708725893303895}
   - component: {fileID: 4043575329871374859}
   - component: {fileID: 3085429600452471686}
+  - component: {fileID: 6533147427505989739}
   m_Layer: 7
   m_Name: Monster __ Death Bringer
   m_TagString: Untagged
@@ -339,6 +340,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
+--- !u!114 &6533147427505989739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53708725893303897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0c20373eb6aef4abdcadd3243d200f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expAmount: 125
+  expParticleObject: {fileID: 7193905233714009055, guid: 1ee2bac629f720747b7bcc0fe22a8e69, type: 3}
 --- !u!1001 &6247208460345177999
 PrefabInstance:
   m_ObjectHideFlags: 0

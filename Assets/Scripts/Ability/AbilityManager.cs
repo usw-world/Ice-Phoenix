@@ -50,6 +50,7 @@ namespace AbilitySystem {
                     str += a.GetLevel+", ";
                 }
                 print(str);
+                player.IncreaseExp(500);
             }
             /* ------------------- */
         }

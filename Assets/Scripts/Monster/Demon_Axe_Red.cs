@@ -2,11 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
-using UnityEngine.U2D;
-using static UnityEngine.Rendering.DebugUI;
-using UnityEditor;
-using static UnityEditor.PlayerSettings;
-using UnityEngine.UIElements;
 
 public class Demon_Axe_Red : ChaseMonster {
     const string ATTACK_STATE_TAG = "tag:Attack";

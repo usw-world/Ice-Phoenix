@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3779717828520972351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3779717828520972344}
+  - component: {fileID: 3779717828520972345}
+  m_Layer: 0
+  m_Name: Ability __ Fire Walk
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3779717828520972344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3779717828520972351}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3779717828520972345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3779717828520972351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d0ad9481f754248b2c8d099e30010b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  derivedAbilityList: []
+  abilityImage: {fileID: 21300000, guid: 5b807dc8550932043997da5935901849, type: 3}
+  abilityName: Fire Walk
+  description: "\uBC1B\uB294 \uD53C\uD574\uAC00 15% / 20% / 25% \uC99D\uAC00\uD558\uACE0
+    \uC774\uB3D9\uC18D\uB3C4\uAC00 20% / 30% / 40% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  annotation: 
+  abilitySummary: "\uBC1B\uB294 \uD53C\uD574\uB7C9, \uC774\uB3D9\uC18D\uB3C4 \uC99D\uAC00"
+  currentLevel: 0

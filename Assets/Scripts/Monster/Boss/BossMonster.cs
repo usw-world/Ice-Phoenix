@@ -34,6 +34,7 @@ public class BossMonster : Monster {
     Transform playerTransform;
 
     #region Punch
+    [SerializeField] AudioClip punchClip;
     [SerializeField] Transform punchEffectPoint;
     [SerializeField] GameObject punchEffect;
     EffectPool punchEffectPool;
@@ -51,9 +52,16 @@ public class BossMonster : Monster {
 
     #region Summon Mages
     [SerializeField] GameObject[] shadowMages;
-    float summonShadowMagesCooldown = 0;
+    float summonShadowMagesCooldown = 15;
     float summonShadowMagesInterval = 30f;
     #endregion Summon Mages
+
+    #region Thunder Calling
+    [SerializeField] GameObject thunder;
+    EffectPool thunderPool;
+    float thunderCooldown = 2f;
+    float thunderInterval = 8f;
+    #endregion Thunder Calling
     
     [SerializeField] AudioClip shoutClip;
 
@@ -71,6 +79,7 @@ public class BossMonster : Monster {
         };
         punchEffectPool = new EffectPool("Boss Punch Effect", punchEffect, 5, 2, null);
         summonEffectPool = new EffectPool("Summon Effect", summonEffect);
+        thunderPool = new EffectPool("Thunder", thunder, 20, 10);
     }
     private void InitializeStates() {
         idleState.OnActive = (State prevState) => {
@@ -98,9 +107,14 @@ public class BossMonster : Monster {
             monsterAnimator.SetBool("Punch", false);
         };
         
-        summonThunderState.OnActive = (State prevState) => {};
-        summonThunderState.OnInactive = (State nextState) => {};
-        
+        summonThunderState.OnActive = (State prevState) => {
+            monsterAnimator.SetBool("Thunder Calling", true);
+        };
+        summonThunderState.OnInactive = (State nextState) => {
+            monsterAnimator.SetBool("Thunder Calling", false);
+        };
+
+
         summonDogsState.OnActive = (State prevState) => {
             monsterAnimator.SetBool("Summon Dogs", true);
         };
@@ -114,9 +128,6 @@ public class BossMonster : Monster {
         summonMagesState.OnInactive = (State nextState) => {
             monsterAnimator.SetBool("Summon Soldiers", false);
         };
-        
-        hitState.OnActive = (State prevState) => {};
-        hitState.OnInactive = (State nextState) => {};
 
         dieState.OnActive = (State prevState) => {
             monsterAnimator.SetBool("Die", true);
@@ -134,6 +145,12 @@ public class BossMonster : Monster {
 
         if(turningMoveState) return;
 
+        if(isAngry
+        && thunderCooldown <= 0) {
+           thunderCooldown = thunderInterval;
+           bossStateMachine.ChangeState(summonThunderState);
+        }
+
         if(summonShadowMagesCooldown <= 0) {
             summonShadowMagesCooldown = summonShadowMagesInterval;
             bossStateMachine.ChangeState(summonMagesState);
@@ -146,15 +163,24 @@ public class BossMonster : Monster {
             return;
         }
 
-        if(Mathf.Abs(playerTransform.position.x - transform.position.x)< 12
-        && punchCooldown <= 0) {
-            bossStateMachine.ChangeState(punchState);
+        try {
+            if(Mathf.Abs(playerTransform.position.x - transform.position.x)< 12
+            && punchCooldown <= 0) {
+                bossStateMachine.ChangeState(punchState);
+                return;
+            }
+        } catch(System.Exception e) {
+            print(e.StackTrace);
             return;
         }
     }
     protected override void Update() {
         base.Update();
-        dirX = playerTransform.position.x-transform.position.x<0 ? -1 : 1;
+        try {
+            dirX = playerTransform.position.x-transform.position.x<0 ? -1 : 1;
+        } catch {
+            dirX = -1;
+        }
 
         if(punchCooldown > 0)
             punchCooldown -= Time.deltaTime;
@@ -162,6 +188,8 @@ public class BossMonster : Monster {
             summonDogsCooldown -= Time.deltaTime;
         if(summonShadowMagesCooldown > 0)
             summonShadowMagesCooldown -= Time.deltaTime;
+        if(thunderCooldown > 0)
+            thunderCooldown -= Time.deltaTime;
     }
 
     protected override void LookAtX(float x) {
@@ -178,6 +206,7 @@ public class BossMonster : Monster {
         base.OnDamage(damage, duration);
         if(hp < maxHp/2) {
             isAngry = true;
+            monsterAnimator.speed = 1.25f;
             SpriteRenderer renderer;
             if(TryGetComponent<SpriteRenderer>(out renderer)) {
                 renderer.color = new Color(.5f, 0, .15f);
@@ -195,7 +224,12 @@ public class BossMonster : Monster {
         bgmAudioSource.Play();
         GameManager.instance.IncreaseClearCount();
         foreach(GameObject dog in shadowDogs) {
-            dog.GetComponent<IDamageable>().OnDamage(dog.GetComponent<LivingEntity>().maxHp);
+            if(!dog.GetComponent<LivingEntity>().isDead && dog.activeInHierarchy)
+                dog.GetComponent<IDamageable>().OnDamage(dog.GetComponent<LivingEntity>().maxHp);
+        }
+        foreach(GameObject mage in shadowMages) {
+            if(!mage.GetComponent<LivingEntity>().isDead && mage.activeInHierarchy)
+                mage.GetComponent<IDamageable>().OnDamage(mage.GetComponent<LivingEntity>().maxHp);
         }
     }
 
@@ -214,6 +248,7 @@ public class BossMonster : Monster {
             punchEffectPool.InPool(effect);
         };
         monsterRigidbody.AddForce(Vector3.Scale(transform.localScale, -Vector3.right) * 300);
+        monsterSoundPlayer.PlayClip(punchClip);
     }
     public void AnimationEvent_Footstep() {
         monsterSoundPlayer.PlayClip(bossFootStep);
@@ -253,6 +288,13 @@ public class BossMonster : Monster {
                 summonEffectPool.InPool(s_effect);
             }, 4));
         }
+    }
+    public void AnimationEvent_Thunder() {
+        StartCoroutine(IntervalCoroutine((int i) => {
+            Vector2 pos = new Vector2(i*5+45, -.2f);
+            GameObject effect = thunderPool.OutPool(pos, null);
+            effect.GetComponent<BossThunderbolt>().endEvent = () => {thunderPool.InPool(effect);};
+        }, .2f, 9));
     }
     public IEnumerator IntervalCoroutine(System.Action<int> func, float interval, int count) {
         for(int i=0; i<count; i++) {

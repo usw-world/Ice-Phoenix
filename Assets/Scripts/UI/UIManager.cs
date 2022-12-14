@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour {
     [SerializeField] public DamageTextGenerator damageLog;
     [SerializeField] public DialogComponent dialogUI;
 
+    [SerializeField] public SoundPlayer soundPlayer;
+
     [SerializeField] UnityEngine.UI.Image fadeInOutImage;
 
     public void Awake() {

@@ -2,12 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameObjectState;
-using UnityEngine.U2D;
-using static UnityEngine.Rendering.DebugUI;
-using UnityEditor;
-using static UnityEditor.PlayerSettings;
-using UnityEngine.UIElements;
-using System.Drawing;
 using Color = UnityEngine.Color;
 
 public class Ronin : ChaseMonster {
