@@ -106,7 +106,7 @@ public class ShadowMage : ChaseMonster {
         lastMagicTime = magicInterval;
         Vector2 point = (Vector2)nextMagicPoint + new Vector2(0, .43f);
         GameObject effect = magicEffectPool.OutPool(point, null);
-        effect.GetComponent<Necromancer_Magic>().endEvent = () => {
+        effect.GetComponent<Shadow_Magic>().endEvent = () => {
             magicEffectPool.InPool(effect);
         };
     }
