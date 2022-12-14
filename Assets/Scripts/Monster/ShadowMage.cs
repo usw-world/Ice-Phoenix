@@ -93,6 +93,7 @@ public class ShadowMage : ChaseMonster {
             if(remainingDistance <= magicDistance
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
             && !monsterStateMachine.Compare(hitState)) {
+                print("usoock");
                 int soundIndex = Random.Range(0, monsterAttackClip.Length);
                 monsterSoundPlayer.PlayClip(monsterAttackClip[soundIndex]);
                 nextMagicPoint = new Vector2(transform.position.x, transform.position.y - 1);
