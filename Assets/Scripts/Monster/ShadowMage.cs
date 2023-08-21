@@ -9,7 +9,6 @@ public class ShadowMage : ChaseMonster {
     State magicState = new State("Magic", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
 
-    private float magicDamage = 22f;
     private float lastMagicTime = 2f;
     private float magicInterval = 10f;
     private float magicDistance = 50f;

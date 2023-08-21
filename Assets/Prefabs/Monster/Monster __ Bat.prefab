@@ -190,23 +190,21 @@ MonoBehaviour:
   - {fileID: 0}
   monsterDeathClip: {fileID: 8300000, guid: cc9f7149148619e40b06bc03a40cd3b9, type: 3}
   monsterHitClip:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 54df8a15ec9115344a6f9d75c56bffc5, type: 3}
   monsterSideUI: {fileID: 7475998942747557931}
   monsterAnimator: {fileID: 53708725893303894}
   monsterRigidbody: {fileID: 0}
   monsterStateMachine: {fileID: 53708725893303895}
   moveSpeed: 5
-  stoppingDistance: 0.5
+  stoppingDistance: 0.25
   targetTransform: {fileID: 0}
   detectRange:
     center: {x: 0, y: 0}
     radius: 15
   attackDamage: 10
   attackArea:
-    center: {x: 1, y: 0}
-    bounds: {x: 2, y: 1}
+    center: {x: 0.5, y: 0}
+    bounds: {x: 1, y: 1}
   experience: {fileID: 2701023004819062330}
 --- !u!58 &8948505109215955203
 CircleCollider2D:

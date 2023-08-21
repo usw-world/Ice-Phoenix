@@ -42,8 +42,8 @@ public class MeleePlayer : Player {
     protected override void Update() {
         base.Update();
     }
-    protected override void InitialState() {
-        base.InitialState();
+    protected override void InitializeState() {
+        base.InitializeState();
         #region Attack State
         attackState01.OnActive += (prevState) => {
             playerAnimator.SetBool("Melee Attack 01", true);

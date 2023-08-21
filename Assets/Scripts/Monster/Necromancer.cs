@@ -9,7 +9,7 @@ public class Necromancer : ChaseMonster {
     State magicState = new State("Magic", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
 
-    private float magicDamage = 22f;
+    // private float magicDamage = 22f;
     private float lastMagicTime = 0f;
     private float magicInterval = 3f;
     private float magicDistance = 6.5f;

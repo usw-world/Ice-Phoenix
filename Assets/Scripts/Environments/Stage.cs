@@ -36,4 +36,7 @@ public class Stage : MonoBehaviour {
             UIManager.instance.playerStatusUI.SetActiveAdaptationButtons(false);
         }
     }
+    public void GameClear() {
+        GameManager.instance.GameClear();
+    }
 }

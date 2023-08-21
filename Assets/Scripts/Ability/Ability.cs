@@ -12,6 +12,7 @@ namespace AbilitySystem {
         [SerializeField] Ability[] derivedAbilityList;
         [SerializeField] protected Sprite abilityImage;
         [SerializeField] protected string abilityName;
+        public bool isMaxLevel => level+1 >= maxLevel;
         [TextArea(3, 10)][SerializeField] protected string description/*  = "잃은 체력이 비례해 추가 피해를 가합니다.\n추가 피해량 : 15% / 40% / 65%" */;
         [TextArea(3, 10)][SerializeField] protected string annotation/*  = "(현재 체력 20%에서 최고 상승량)" */;
         [TextArea(3, 10)][SerializeField] protected string abilitySummary;
@@ -23,7 +24,7 @@ namespace AbilitySystem {
         public virtual string GetDescription { get { return description; } }
         public virtual string GetAnnotation { get { return annotation; } }
         public virtual string GetSummary { get { return abilitySummary; } }
-        bool isUnlock = false;
+        // bool isUnlock = false;
         
         public abstract int maxLevel { get; }
         [SerializeField] private int currentLevel = 0;

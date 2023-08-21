@@ -16,6 +16,6 @@ public class Ability_Feast : Ability {
         Player.playerInstance.onDefeatMonster -= IncreaseHP;
     }
     public void IncreaseHP(Monster monster) {
-        print(Player.playerInstance.IncreaseMaxHP(amount[level]));
+        Player.playerInstance.IncreaseMaxHP(amount[level]);
     }
 }

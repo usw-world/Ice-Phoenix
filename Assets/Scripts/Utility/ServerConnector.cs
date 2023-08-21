@@ -15,7 +15,6 @@ public class ServerConnector : MonoBehaviour
 {
     const string SERVER_HOST = "http://34.64.81.199:2022/";
     // const string SERVER_HOST = "localhost:2022/";
-    public GameObject logMessageBox;
 
     [SerializeField]
     public class Response {
@@ -23,7 +22,7 @@ public class ServerConnector : MonoBehaviour
         public string userKey;
         public string message;
     }
-    public IEnumerator GetNewUserKey(Action<string> Callback) {
+    public IEnumerator GetNewUserKey(Action<string> callback, Action<string> errorCallback) {
         WWWForm www = new WWWForm();
         // form.AddField("key", "value");
         using (UnityWebRequest webRequest = UnityWebRequest.Post(SERVER_HOST + "create-user" , www)) {
@@ -35,17 +34,18 @@ public class ServerConnector : MonoBehaviour
                 string json = webRequest.downloadHandler.text;
                 Response res = JsonUtility.FromJson<Response>(json);
                 if(res.result == 200) {
-                    Callback(res.userKey);
+                    callback(res.userKey);
                 } else {
-                    TextMeshProUGUI text = logMessageBox.GetComponentInChildren<TextMeshProUGUI>();
-                    text.text = res.message;
-                    logMessageBox.SetActive(true);
+                    errorCallback.Invoke(res.message);
+                    // TextMeshProUGUI text = logMessageBox.GetComponentInChildren<TextMeshProUGUI>();
+                    // text.text = res.message;
+                    // logMessageBox.SetActive(true);
                 }
             }
             webRequest.Dispose();
         }
     }
-    public IEnumerator LoadGameData(string userKey, Action Callback) {
+    public IEnumerator LoadGameData(string userKey, Action<bool> Callback) {
         WWWForm www = new WWWForm();
         www.AddField("userKey", userKey);
         using (UnityWebRequest webRequest = UnityWebRequest.Post(SERVER_HOST + "get-data", www)) {
@@ -54,16 +54,13 @@ public class ServerConnector : MonoBehaviour
             if(webRequest.result == UnityWebRequest.Result.Success) {
                 GameManager.GameData gameData = JsonUtility.FromJson<GameManager.GameData>(json);
                 GameManager.instance.SetGameData(gameData);
-                Callback();
+                Callback(true);
             } else {
-                print(json);
-                Response res = JsonUtility.FromJson<Response>(json);
-                TextMeshProUGUI text = logMessageBox.GetComponentInChildren<TextMeshProUGUI>();
-                text.text = res.message;
-                logMessageBox.SetActive(true);
-                // foreach(string keys in webRequest.GetResponseHeaders().Keys) {
-                //     print(keys + " : " + webRequest.GetResponseHeaders()[keys]);
-                // }
+                Callback(false);
+                // Response res = JsonUtility.FromJson<Response>(json);
+                // TextMeshProUGUI text = logMessageBox.GetComponentInChildren<TextMeshProUGUI>();
+                // text.text = res.message;
+                // logMessageBox.SetActive(true);
             }
         }
     }
@@ -77,6 +74,7 @@ public class ServerConnector : MonoBehaviour
     System.Collections.Generic.Queue<SynchroData> synchronizationQueue = new System.Collections.Generic.Queue<SynchroData>();
     bool isSynchronizing = false;
     public IEnumerator SynchronizeData(string dataJson, Action Callback) {
+
         if(isSynchronizing) {
             synchronizationQueue.Enqueue(new SynchroData(dataJson, Callback));
         } else {

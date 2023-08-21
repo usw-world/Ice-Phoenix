@@ -33,10 +33,8 @@ public class CaninBlack : ChaseMonster {
         }
     }
 
-    protected Vector2 targetDirection
-    {
-        get
-        {
+    protected override Vector2 targetDirection {
+        get {
             return new Vector2(
                 targetTransform != null && targetTransform.position.x - transform.position.x > 0 ? -1 : 1,
                 targetTransform != null && targetTransform.position.y - transform.position.y > 0 ? -1 : 1

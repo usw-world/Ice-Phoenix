@@ -608,7 +608,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotatelessChildren: {fileID: 0}
-  maxHp: 2700
+  maxHp: 3700
   monsterSoundPlayer: {fileID: 230398872}
   monsterAttackClip: []
   monsterDeathClip: {fileID: 8300000, guid: 5b76334cbb7db60469daba55b2a00320, type: 3}
@@ -1201,27 +1201,14 @@ GameObject:
   - component: {fileID: 477885937}
   - component: {fileID: 477885936}
   - component: {fileID: 477885935}
-  - component: {fileID: 477885934}
+  - component: {fileID: 477885938}
   m_Layer: 0
-  m_Name: 'Door :: Next Stage'
+  m_Name: 'Door :: Clear'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &477885934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 477885933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44cddb9974b204f418a4d1b388b98655, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetScene: 10
 --- !u!61 &477885935
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1315,6 +1302,33 @@ Transform:
   m_Father: {fileID: 521537332}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &477885938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477885933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4757189aef37eb4eacf01f017bb875c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 521537335}
+        m_TargetAssemblyTypeName: Stage, Assembly-CSharp
+        m_MethodName: GameClear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

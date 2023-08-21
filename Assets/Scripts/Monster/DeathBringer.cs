@@ -15,7 +15,6 @@ public class DeathBringer : ChaseMonster {
     private float attackInterval = 1.2f;
     private float attackDistance = 1.5f;
 
-    private float magicDamage = 22f;
     private float lastMagicTime = 0f;
     private float magicInterval = 4f;
     private float magicDistance = 6.5f;

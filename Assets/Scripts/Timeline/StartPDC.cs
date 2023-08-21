@@ -8,7 +8,7 @@ public class StartPDC : MonoBehaviour {
     [SerializeField] PlayableDirector director;
     [SerializeField] DialogSet dialogs;
 
-    public void Awake() {
+    private void Start() {
         director = director==null ? GetComponent<UnityEngine.Playables.PlayableDirector>() : director;
         
         var timelineAsset = director.playableAsset as TimelineAsset;

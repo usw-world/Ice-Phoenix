@@ -35,6 +35,7 @@ public class AdaptationUI : MonoBehaviour {
             else
                 adaptation.Increase((AdaptationManager.Type)type);
         } catch(System.Exception e) {
+            Debug.LogError(e);
         }
         RefreshAmount();
     }

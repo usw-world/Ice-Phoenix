@@ -10,7 +10,7 @@ public class Ability_GetRateGauge : Ability
     }
 
     public override void OnGetAbility() {
-        Player.playerInstance.IncreaseRageGauge(100);
+        Player.playerInstance.IncreaseRateGauge(100);
         AbilityManager.instance.RemoveAbility(this);
     }
 

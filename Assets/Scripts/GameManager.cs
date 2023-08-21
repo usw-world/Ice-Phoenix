@@ -6,8 +6,13 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
     static public GameManager instance { get; private set; }
 
+    public bool isLocalData = false;
+
     string PRODUCT_DIR = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile) + "\\Ice Phoenix";
-    string SAVE_FILE_NAME = "\\userinfo.csv";
+    string USER_KEY_FILENAME = "\\userinfo.csv";
+
+    public string SAVE_DATA_DIR = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile) + "\\Ice Phoenix\\SaveData";
+    public string SAVE_DATA_FILENAME = "\\savedata.json";
 
     ServerConnector serverConnector;
     public GameData gameData { get; private set; }
@@ -15,6 +20,8 @@ public class GameManager : MonoBehaviour {
     public List<GameObject> destroyObjectsOnGameOver = new List<GameObject>();
 
     public void Awake() {
+        UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
+
         if(instance == null) {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
@@ -110,19 +117,27 @@ public class GameManager : MonoBehaviour {
         }
     }
     /*  */
-    public void GameOver() {
+    public void GameClear() {
+        GameOver(true);
+    }
+    public void GameOver(bool clear, float delay=2f) {
+        gameData.clearCount++;
         SynchronizeData();
-        UIManager.instance.FadeOut(() => {
-            foreach(GameObject gobj in destroyObjectsOnGameOver) {
-                Destroy(gobj);
-            }
-            LoadData();
-            ChangeScene(SceneList.Lobby);
-        }, 5);
+        StartCoroutine(Utility.TimeoutTask(() => {
+            UIManager.instance.FadeOut(() => {
+                foreach(GameObject gobj in destroyObjectsOnGameOver) {
+                    Destroy(gobj);
+                }
+                LoadData();
+                ChangeScene(SceneList.Lobby);
+            }, 5);
+        }, delay));
     }
     public void SetAdaptations(int[] next) {
-        if(gameData != null) gameData.adaptation = next;
-        else Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
+        if(gameData != null)
+            gameData.adaptation = next;
+        else
+            Debug.LogWarning("Can't read game data. If your are not during debugging, Check connecting state.");
         SynchronizeData();
     }
     public void SetRate(int next, int nextGauge) {
@@ -136,19 +151,36 @@ public class GameManager : MonoBehaviour {
             gameData.clearCount ++;
     }
     public void SynchronizeData() {
-        string payload = JsonUtility.ToJson(gameData);
-        StartCoroutine(serverConnector.SynchronizeData(payload, () => {
-            print("data sended!");
-        }));
+        if(GameManager.instance.isLocalData) {
+            print("Local save");
+            if(!File.Exists(SAVE_DATA_DIR))
+                Directory.CreateDirectory(SAVE_DATA_DIR);
+            if(!File.Exists(SAVE_DATA_DIR + SAVE_DATA_FILENAME)) {
+                FileStream fs = new FileInfo(SAVE_DATA_DIR + SAVE_DATA_FILENAME).Create();
+                fs.Close();
+            }
+            string json = JsonUtility.ToJson(gameData);
+            StreamWriter writer = new StreamWriter(SAVE_DATA_DIR + SAVE_DATA_FILENAME);
+            writer.Write(json);
+            writer.Close();
+        } else {
+            print("Remove save");
+            string payload = JsonUtility.ToJson(gameData);
+            StartCoroutine(serverConnector.SynchronizeData(payload, () => {
+                print("data sended!");
+            }));
+        }
+
     }
     public class GameData {
         public string userKey;
-        public int rate;
-        public int rateGauge;
-        public int sceneNo;
-        public int clearCount;
-        public int[] adaptation;
+        public int rate = 1;
+        public int rateGauge = 0;
+        public int sceneNo = 0;
+        public int clearCount = 0;
+        public int[] adaptation = new int[]{ 0, 0, 0, 0, 0 };
         
+        public GameData() {}
         public GameData(string userKey, int rate, int rateGauge, int sceneNo, int clearCount, int[] adaptation) {
             this.userKey = userKey;
             this.rate = rate;
@@ -159,23 +191,39 @@ public class GameManager : MonoBehaviour {
         }
     }
     public void LoadData() {
-        if(!File.Exists(PRODUCT_DIR + SAVE_FILE_NAME)) return;
-
-        FileInfo userinfo = new FileInfo(PRODUCT_DIR + SAVE_FILE_NAME);
-        StreamReader reader = new StreamReader(PRODUCT_DIR + SAVE_FILE_NAME);
-        string[] heads = reader.ReadLine().Split(',');
-        string[] datas = reader.ReadLine().Split(',');
-        
-        Dictionary<string, string> infoMap = new Dictionary<string, string>();
-        for (int i=0; i<heads.Length; i++) {
-            infoMap.Add(heads[i], datas[i]);
-        }
-        string userKey = infoMap["user_key"];
-        if(userKey == null) {
-            Debug.LogError("Found local user-key but any unknown error was happened.");
-            return;
+        if(isLocalData) {
+            string saveDataDir = GameManager.instance.SAVE_DATA_DIR + GameManager.instance.SAVE_DATA_FILENAME;
+            if(!File.Exists(saveDataDir)) {
+                gameData = new GameData();
+            } else {
+                StreamReader reader = new StreamReader(GameManager.instance.SAVE_DATA_DIR + GameManager.instance.SAVE_DATA_FILENAME);
+                string json = reader.ReadLine();
+                gameData = JsonUtility.FromJson<GameManager.GameData>(json);
+            }
         } else {
-            StartCoroutine(serverConnector.LoadGameData(userKey, () => {}));
+            if(!File.Exists(PRODUCT_DIR + USER_KEY_FILENAME)) return;
+            FileInfo userinfo = new FileInfo(PRODUCT_DIR + USER_KEY_FILENAME);
+            StreamReader reader = new StreamReader(PRODUCT_DIR + USER_KEY_FILENAME);
+            string[] heads = reader.ReadLine().Split(',');
+            string[] datas = reader.ReadLine().Split(',');
+            
+            Dictionary<string, string> infoMap = new Dictionary<string, string>();
+            for (int i=0; i<heads.Length; i++) {
+                infoMap.Add(heads[i], datas[i]);
+            }
+            string userKey = infoMap["user_key"];
+            if(userKey == null) {
+                Debug.LogError("Found local user-key but any unknown error was happened.");
+                return;
+            } else {
+                StartCoroutine(serverConnector.LoadGameData(userKey, (bool successConnecting) => {
+                    if(successConnecting) {
+                        /* success */
+                    } else {
+                        /* fail */
+                    }
+                }));
+            }
         }
     }
     public void GameQuit() {

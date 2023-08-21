@@ -10,7 +10,6 @@ public class Arcane_Archer : ChaseMonster {
     State arrawState = new State("Magic", ATTACK_STATE_TAG);
     State hitState = new State("Hit");
 
-    private float magicDamage = 22f;
     private float lastMagicTime = 0f;
     private float magicInterval = 3f;
     private float magicDistance = 11f;

@@ -17,6 +17,8 @@ public class Player : LivingEntity, IDamageable {
     public delegate float Coefficients();
     public delegate void DamageEnemyEvent(Transform target);
 
+    public bool isInvincible = false;
+
     #region States (and State Machine)
     protected StateMachine playerStateMachine;
     public State idleState { get; protected set; } = new State("Idle");
@@ -233,13 +235,13 @@ public class Player : LivingEntity, IDamageable {
         playerSoundPlayer = playerSoundPlayer==null ? GetComponent<SoundPlayer>() : playerSoundPlayer;
     }
     protected override void Start() {
-        InitialState();
+        InitializeState();
         InitializeRate();
         ScreenUI.instance.UpdateHPSlider(this);
         ScreenUI.instance.UpdateExpSlider();
         StatusUI.instance.UpdateRateUI();
     }
-    protected virtual void InitialState() {
+    protected virtual void InitializeState() {
         #region Idle State >>
         idleState.OnActive += (prevState) => {
             playerAnimator.SetBool("Idle", true);
@@ -260,8 +262,6 @@ public class Player : LivingEntity, IDamageable {
                 playerAnimator.SetTrigger("Double Jump");
             else
                 playerAnimator.SetBool("Float", true);
-                
-            currentJumpCount ++;
         };
         floatState.OnInactive += (nextState) => {
             playerAnimator.SetBool("Float", false);
@@ -293,10 +293,6 @@ public class Player : LivingEntity, IDamageable {
 
         #region Dodge State >>
         dodgeState.OnActive += (prevState) => {
-            if(prevState.Compare(floatState)
-            || prevState.Compare(JUMP_ATTACK_STATE_TAG))
-                currentJumpCount --;
-
             dodgeParticle.Play();
             playerSoundPlayer.PlayClip(playerDodgeClip);
             playerRigidbody.gravityScale = 0;
@@ -335,10 +331,15 @@ public class Player : LivingEntity, IDamageable {
     }
     public void Jump() {
         if(currentJumpCount >= maxJumpCount
-        || playerStateMachine.Compare(dodgeState)
+        /* || playerStateMachine.Compare(dodgeState) */
         || playerStateMachine.Compare(hitState)
         || playerStateMachine.Compare(ATTACK_STATE_TAG) && !canMove)
             return;
+            
+        if(playerStateMachine.currentState.Compare(floatState)) {
+            currentJumpCount = Mathf.Max(1, currentJumpCount);
+        }
+        currentJumpCount ++;
         playerSoundPlayer.PlayClip(playerJumpClip);
         playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 0);
         playerRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
@@ -363,8 +364,8 @@ public class Player : LivingEntity, IDamageable {
     }
     public void Dodge() {
         if(dodgeCount <= 0
-        || playerStateMachine.Compare(hitState)
-        /* || playerStateMachine.Compare(JUMP_ATTACK_STATE_TAG) */) return;
+        || isDead
+        || playerStateMachine.Compare(hitState)) return;
         if(dodgeCoroutine != null) StopCoroutine(dodgeCoroutine);
         dodgeCoroutine = StartCoroutine(DodgeCoroutine());
     }
@@ -498,9 +499,9 @@ public class Player : LivingEntity, IDamageable {
             Debug.LogWarning(e.StackTrace);
         }
     }
-    public void IncreaseRageGauge(int amount) {
+    public void IncreaseRateGauge(int amount) {
         rateGauge += amount;
-        if(rateGauge >= nextRateGauge) {
+        while(rateGauge >= nextRateGauge) {
             RateUp();
         }
         GameManager.instance.SetRate(rate, rateGauge);
@@ -534,8 +535,8 @@ public class Player : LivingEntity, IDamageable {
         return maxHp;
     }
     public void OnDamage(float damage, float duration=.25f) {
+        if(isDead || isInvincible) return;
         damage = damage * (1 - armor);
-        if(isDead) return;
         IncreaseHP(-damage);
         if(hp <= 0) {
             Die();
@@ -546,7 +547,7 @@ public class Player : LivingEntity, IDamageable {
         UIManager.instance.damageLog.LogDamage((int)damage+"", transform.position, Color.white);
     }
     public void OnDamage(float damage, Color textColor, float duration=.25f) {
-        if(isDead) return;
+        if(isDead || isInvincible) return;
         IncreaseHP(-damage);
         if(hp <= 0) {
             Die();
@@ -557,14 +558,14 @@ public class Player : LivingEntity, IDamageable {
         UIManager.instance.damageLog.LogDamage((int)damage+"", transform.position, textColor);
     }
     public void OnDamage(float damage, Vector2 force, float duration=.25f) {
-        if(isDead) return;
+        if(isDead || isInvincible) return;
         OnDamage(damage, duration);
         playerSoundPlayer.PlayClip(playerHitClip);
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(force, ForceMode2D.Force);
     }
     public void OnDamage(float damage, Vector2 force, Color textColor, float duration=.25f) {
-        if(isDead) return;
+        if(isDead || isInvincible) return;
         OnDamage(damage, textColor, duration);
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(force, ForceMode2D.Force);
@@ -574,12 +575,9 @@ public class Player : LivingEntity, IDamageable {
         playerDieParticle.SetActive(true);
         playerDieParticle.transform.parent = null;
         playerSoundPlayer.PlayClip(playerDieClip);
-        playerSprite.color = new Color(0, 0, 0, 0);
-        playerRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
         gameObject.layer = 10;
-        StartCoroutine(Utility.TimeoutTask(() => {
-            GameManager.instance.GameOver();
-        }, 2));
+        GameManager.instance.GameOver(false);
+        gameObject.SetActive(false);
     }
     IEnumerator HitCoroutine(float duration) {
         if(duration > 0) {

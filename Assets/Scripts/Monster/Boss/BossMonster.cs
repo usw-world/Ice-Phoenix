@@ -222,6 +222,7 @@ public class BossMonster : Monster {
         bgmAudioSource.Stop();
         bgmAudioSource.clip = commonPhaseBGMClip;
         bgmAudioSource.Play();
+
         GameManager.instance.IncreaseClearCount();
         foreach(GameObject dog in shadowDogs) {
             if(!dog.GetComponent<LivingEntity>().isDead && dog.activeInHierarchy)
@@ -231,6 +232,9 @@ public class BossMonster : Monster {
             if(!mage.GetComponent<LivingEntity>().isDead && mage.activeInHierarchy)
                 mage.GetComponent<IDamageable>().OnDamage(mage.GetComponent<LivingEntity>().maxHp);
         }
+
+        Player.playerInstance.IncreaseRateGauge(2200);
+        Player.playerInstance.isInvincible = true;
     }
 
     public void Move() {

@@ -16,7 +16,7 @@ public abstract class ChaseMonster : Monster {
 
     [SerializeField] protected Area detectRange;
     
-    protected Vector2 targetDirection {
+    protected virtual Vector2 targetDirection {
         get {
             return new Vector2(
                 targetTransform!=null && targetTransform.position.x-transform.position.x>0 ? 1 : -1,

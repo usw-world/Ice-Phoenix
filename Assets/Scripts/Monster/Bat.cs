@@ -11,7 +11,7 @@ public class Bat : ChaseMonster {
 
     private float lastAttackTime = 0f;
     private float attackInterval = 1.2f;
-    private float attackDistance = .75f;
+    // private float attackDistance = .75f;
 
     [SerializeField] float attackDamage = 30f;
     [SerializeField] Range attackArea;
@@ -98,16 +98,13 @@ public class Bat : ChaseMonster {
         }
     }
     void AttackToTarget() {
-        if (lastAttackTime > 0)
-        {
+        if(lastAttackTime > 0) {
             lastAttackTime -= Time.deltaTime;
-        }
-        else
-        {
-            if (remainingDistance <= attackDistance
+        } else {
+            if(remainingDistance <= attackArea.bounds.x
+            && Mathf.Abs(targetTransform.position.y-transform.position.y) < attackArea.bounds.y/2
             && !monsterStateMachine.Compare(ATTACK_STATE_TAG)
-            && !monsterStateMachine.Compare(hitState))
-            {
+            && !monsterStateMachine.Compare(hitState)) {
                 monsterStateMachine.ChangeState(attackState);
             }
         }
@@ -172,7 +169,7 @@ public class Bat : ChaseMonster {
         Collider2D inner = Physics2D.OverlapCircle((Vector2)transform.position + detectRange.center, detectRange.radius, Player.DEFAULT_PLAYER_LAYERMASK);
         if(inner != null) {
             targetTransform = inner.transform;
-            remainingDistance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(targetTransform.position.x, 0));
+            remainingDistance = Vector2.Distance(transform.position, targetTransform.position);
         } else {
             MissTarget();
         }
@@ -192,7 +189,6 @@ public class Bat : ChaseMonster {
     }
     bool CheckDirection() {
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + targetDirection.x*.7f, transform.position.y), Vector2.down, 1.1f);
-        //print(new Vector2(transform.position.x + targetDirection.x, transform.position.y - .1f));
         return !!hit;
     }
 

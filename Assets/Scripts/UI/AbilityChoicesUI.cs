@@ -6,6 +6,8 @@ using TMPro;
 using AbilitySystem;
 
 public class AbilityChoicesUI : UI {
+    public const int CHOISE_NUMBER = 3;
+
     [SerializeField] private Button firstCard;
 
     [SerializeField] private AudioClip openingSound;

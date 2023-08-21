@@ -5,29 +5,29 @@ using UnityEngine;
 
 namespace CmpLinkedList {
     public class IntegratedList<T> : System.Collections.IEnumerable {
-        protected Node<T> head;
+        protected Node head;
         public int Count { get; private set; } = 0;
         public T this[int index] {
             get {
-                Node<T> current = head;
+                Node current = head;
                 for (int i=0; i<index; i++)
                     current = current.next;
                 return current.value;
             }
             set {
-                Node<T> current = head;
+                Node current = head;
                 for (int i=0; i<index; i++)
                     current = current.next;
                 current.value = value;
             }
         }
         public void Push(T value) {
-            Node<T> newNode = new Node<T>(value);
+            Node newNode = new Node(value);
 
             if (head == null)
                 head = newNode;
             else {
-                Node<T> temp = head;
+                Node temp = head;
                 while (temp.next != null) {
                     temp = temp.next;
                 }
@@ -36,7 +36,7 @@ namespace CmpLinkedList {
             Count++;
         }
         public void Unshift(T value) {
-            Node<T> newNode = new Node<T>(value);
+            Node newNode = new Node(value);
 
             if (head == null)
                 head = newNode;
@@ -54,8 +54,8 @@ namespace CmpLinkedList {
                 head = head.next;
                 Count --;
             } else {
-                Node<T> temp = null;
-                Node<T> current = head;
+                Node temp = null;
+                Node current = head;
                 for(int i=0; i<index; i++) {
                     temp = current;
                     current = current.next;
@@ -74,7 +74,7 @@ namespace CmpLinkedList {
                 }
             } else {
                 int n = 0;
-                Node<T> current = head;
+                Node current = head;
                 while(current != null) {
                     if(current.value.Equals(target)) {
                         Remove(n);
@@ -109,8 +109,8 @@ namespace CmpLinkedList {
                 return Shift();
             }
 
-            Node<T> current = head;
-            Node<T> temp = null;
+            Node current = head;
+            Node temp = null;
             for(int i=0; i<index; i++) {
                 temp = current;
                 current = current.next;
@@ -124,8 +124,8 @@ namespace CmpLinkedList {
         public bool Shift(T target, out T data) {
             // if(Count <= 0)
             //     throw new EmptyReferenceException();
-            Node<T> temp = null;
-            Node<T> current = head;
+            Node temp = null;
+            Node current = head;
             while(current != null) {
                 if(current.value.Equals(target)) {
                     data = current.value;
@@ -144,8 +144,8 @@ namespace CmpLinkedList {
             if(Count <= 0)
                 throw new EmptyReferenceException();
                 
-            Node<T> current;
-            Node<T> temp;
+            Node current;
+            Node temp;
             if(Count < 2) {
                 temp = head;
                 head = null;
@@ -164,7 +164,7 @@ namespace CmpLinkedList {
             }
         }
         public bool Find(T target, out T data) {
-            Node<T> current = head;
+            Node current = head;
             while (current != null) {
                 if(current.value.Equals(target)) {
                     data = current.value;
@@ -179,7 +179,7 @@ namespace CmpLinkedList {
             if(Count <= 0)
                 return false;
             
-            Node<T> current = head;
+            Node current = head;
             while(current != null) {
                 if(current.value.Equals(target)) {
                     return true;
@@ -189,22 +189,27 @@ namespace CmpLinkedList {
             return false;
         }
         public IEnumerator GetEnumerator() {
-            Node<T> current = head;
+            Node current = head;
             while(current != null) {
                 yield return current.value;
                 current = current.next;
             }
         }
-    }
+        public IntegratedList<T> Copy() {
+            IntegratedList<T> res = new IntegratedList<T>();
+            foreach(T item in this) {
+                res.Push(item);
+            }
+            return res;
+        }
 
-    public class Node<T> {
-        public T value;
-        public Node<T> next;
-        
-        public Node(T newNodeData)
-        {
-            this.value = newNodeData;
-            this.next = null;
+        protected class Node {
+            public T value;
+            public Node next;
+            public Node(T newNodeData) {
+                this.value = newNodeData;
+                this.next = null;
+            }
         }
     }
     public class EmptyReferenceException : System.Exception {}

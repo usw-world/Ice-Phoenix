@@ -38,6 +38,7 @@ public class Ability_Bleeding : Ability {
             }
         } else {
             var bleeding = bleedingAttachPool.OutPool(le.transform.position, le.transform) as Attach_Bleeding;
+            bleeding.lifetime = 0;
             bleeding.duration = duration;
             bleeding.damagePerSecond = damagesPerSecond[level] * Player.playerInstance.abilityCoef;
             bleeding.maxAttachedCount = maxAttachCount[level];
